@@ -16,7 +16,7 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 * ~~Accès aux web services REST~~
 * ~~Accès aux propriétés~~
 * Gestion des messages
-* Système de logging
+* ~~Système de logging~~
 
 ###### Mises à jours
 
@@ -41,6 +41,9 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
     * Méthode utilitaire pour générer une requête SQL avec une clause `UPDATE` (+1 pour les `Blob`)
   * Gestion des erreurs corrigée
     * Laisser le serveur gérer les erreurs SQL
+  * Fichiers de logging automatiquement gérés par Spring
+    * Fichier de logging renommé
+    * Limite de fichiers de logging fixée à 1 an
 
 * ##### 26/05/2019:
   * Configuration Maven
@@ -76,4 +79,3 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 ###### To Do
 
 * Gérer les messages (exceptions + warnings)
-* Gérer l'historique des fichiers de logging
