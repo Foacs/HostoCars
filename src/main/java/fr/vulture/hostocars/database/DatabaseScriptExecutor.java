@@ -16,7 +16,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 /**
- * Utility component for executing SQL scripts on the database from files
+ * Utility component for executing SQL scripts on the database from files.
  */
 @Component("databaseScriptExecutor")
 class DatabaseScriptExecutor {
@@ -131,7 +131,7 @@ class DatabaseScriptExecutor {
                     // Executes the query on delimiter found
                     if (query.endsWith(";")) {
                         // Removes useless spaces
-                        query = query.trim().replaceAll("  ", " ");
+                        query = query.trim().replaceAll(" {2}", " ");
 
                         logger.debug("Executing query \"{}\"", query);
 

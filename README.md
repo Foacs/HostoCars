@@ -20,6 +20,24 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 
 ###### Mises à jours
 
+* ##### 31/05/2019:
+  * Enrichissement du modèle de `Contact`
+    * Champ `String` facultatif ajouté
+    * Champ `Integer` facultatif ajouté
+    * Champ `Boolean` avec valeur par défaut ajouté
+    * `Converter` adapté
+  * Controller REST pour les `Contact` DTOs enrichi
+    * Méthodes pour insérer, modifier et supprimmer des `Contact`
+    * Interface `RequestBody` créée et implémentée pour les `Contact`
+    * Classes `QueryArgument` et `QueryArgumentType` créées
+  * Classe utilitaire `ObjectUtils` créée
+  * Classe utilitaire `SQLUtils` créée
+    * Méthode utilitaire pour générer une requête SQL avec une clause `WHERE` (pour la recherche)
+    * Méthode utilitaire pour générer une requête SQL avec une clause `INSERT`
+    * Méthode utilitaire pour générer une requête SQL avec une clause `UPDATE`
+  * Gestion des erreurs corrigée
+    * Laisser le serveur gérer les erreurs SQL
+
 * ##### 26/05/2019:
   * Configuration Maven
     * Configuration Spring Boot par défaut
@@ -53,7 +71,6 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 
 ###### To Do
 
-* Web services pour les méthodes `POST` et `DELETE`
 * Web service pour ajouter une image en base
 * Gérer les messages (exceptions + warnings)
 * Gérer l'historique des fichiers de logging
