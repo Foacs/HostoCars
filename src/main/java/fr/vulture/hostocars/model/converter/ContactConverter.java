@@ -26,6 +26,7 @@ public class ContactConverter implements Converter<ResultSet, Contact> {
         contact.setNickname(input.getString("nickname"));
         contact.setNumber(input.getLong("number"));
         contact.setFavorite(input.getBoolean("favorite"));
+        contact.setPicture(input.getBytes("picture"));
 
         return contact;
     }

@@ -34,18 +34,18 @@ public class SQLUtils {
      * @throws SQLException
      *     if the statement generation failed
      */
-    public static PreparedStatement generateStatementWithWhereClause(DatabaseConnection connection, String query, RequestBody requestBody)
-        throws SQLException {
+    public static PreparedStatement generateStatementWithWhereClause(final DatabaseConnection connection, final String query,
+        final RequestBody requestBody) throws SQLException {
         // Gets the query arguments from the request body
-        Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
+        final Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
 
         // If the request body has non null fields, adds a 'WHERE' clause
         if (requestBody.hasNonNullFields()) {
             final StringBuilder queryBuilder = new StringBuilder(query);
-            Iterator<QueryArgument> iterator = queryArguments.iterator();
+            final Iterator<QueryArgument> iterator = queryArguments.iterator();
 
             // Adds the first query argument with a 'WHERE' clause
-            QueryArgument firstArgument = iterator.next();
+            final QueryArgument firstArgument = iterator.next();
             queryBuilder.append(" WHERE ").append(firstArgument.getName());
 
             if (firstArgument.getValue() != null) {
@@ -56,7 +56,7 @@ public class SQLUtils {
 
             // Adds the other query arguments with 'AND' clauses
             while (iterator.hasNext()) {
-                QueryArgument argument = iterator.next();
+                final QueryArgument argument = iterator.next();
                 queryBuilder.append(" AND ").append(argument.getName());
 
                 if (argument.getValue() != null) {
@@ -67,11 +67,11 @@ public class SQLUtils {
             }
 
             // Generates the statement
-            PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
+            final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
             // Sets the query arguments to the statement
             int index = 1;
-            for (QueryArgument argument : queryArguments) {
+            for (final QueryArgument argument : queryArguments) {
                 if (argument.getValue() != null) {
                     statement.setObject(index++, argument.getValue(), argument.getType());
                 }
@@ -99,10 +99,10 @@ public class SQLUtils {
      * @throws SQLException
      *     if the statement generation failed
      */
-    public static PreparedStatement generateStatementWithInsertClause(DatabaseConnection connection, String query, RequestBody requestBody)
-        throws SQLException {
+    public static PreparedStatement generateStatementWithInsertClause(final DatabaseConnection connection, final String query,
+        final RequestBody requestBody) throws SQLException {
         // Gets the query arguments from the request body
-        Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
+        final Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
 
         final StringBuilder queryBuilder = new StringBuilder(query);
 
@@ -111,16 +111,16 @@ public class SQLUtils {
             queryBuilder.append("(");
             final StringBuilder queryValuesBuilder = new StringBuilder(" VALUES (");
 
-            Iterator<QueryArgument> iterator = queryArguments.iterator();
+            final Iterator<QueryArgument> iterator = queryArguments.iterator();
 
             // Adds the first query argument
-            QueryArgument firstArgument = iterator.next();
+            final QueryArgument firstArgument = iterator.next();
             queryBuilder.append(firstArgument.getName());
             queryValuesBuilder.append("?");
 
             // Adds the other query arguments
             while (iterator.hasNext()) {
-                QueryArgument argument = iterator.next();
+                final QueryArgument argument = iterator.next();
                 queryBuilder.append(", ").append(argument.getName());
                 queryValuesBuilder.append(", ?");
             }
@@ -129,11 +129,11 @@ public class SQLUtils {
             queryBuilder.append(")").append(queryValuesBuilder.append(")"));
 
             // Generates the statement
-            PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
+            final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
             // Sets the query arguments to the statement
             int index = 1;
-            for (QueryArgument argument : queryArguments) {
+            for (final QueryArgument argument : queryArguments) {
                 if (argument.getValue() != null) {
                     statement.setObject(index++, argument.getValue(), argument.getType());
                 }
@@ -163,24 +163,24 @@ public class SQLUtils {
      * @throws SQLException
      *     if the statement generation failed
      */
-    public static PreparedStatement generateStatementWithUpdateClause(DatabaseConnection connection, String query, RequestBody requestBody, QueryArgument id)
-        throws SQLException {
+    public static PreparedStatement generateStatementWithUpdateClause(final DatabaseConnection connection, final String query,
+        final RequestBody requestBody, final QueryArgument id) throws SQLException {
         // Gets the query arguments from the request body
-        Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
+        final Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
 
         final StringBuilder queryBuilder = new StringBuilder(query);
 
         // If the request body has non null fields, adds a 'VALUES' clause
         if (requestBody.hasNonNullFields()) {
-            Iterator<QueryArgument> iterator = queryArguments.iterator();
+            final Iterator<QueryArgument> iterator = queryArguments.iterator();
 
             // Adds the first query argument
-            QueryArgument firstArgument = iterator.next();
+            final QueryArgument firstArgument = iterator.next();
             queryBuilder.append(firstArgument.getName()).append(" = ?");
 
             // Adds the other query arguments
             while (iterator.hasNext()) {
-                QueryArgument argument = iterator.next();
+                final QueryArgument argument = iterator.next();
                 queryBuilder.append(", ").append(argument.getName()).append(" = ?");
             }
 
@@ -188,11 +188,11 @@ public class SQLUtils {
             queryBuilder.append(" WHERE ").append(id.getName()).append(" = ?");
 
             // Generates the statement
-            PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
+            final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
             // Sets the query arguments to the statement
             int index = 1;
-            for (QueryArgument argument : queryArguments) {
+            for (final QueryArgument argument : queryArguments) {
                 if (argument.getValue() != null) {
                     statement.setObject(index++, argument.getValue(), argument.getType());
                 }
@@ -206,6 +206,56 @@ public class SQLUtils {
 
         // Else, just returns a statement from the basic query with default values
         return connection.prepareStatement(queryBuilder.append(" DEFAULT VALUES").toString());
+    }
+
+    /**
+     * Generates a prepared statement from a basic query and a BLOB for an 'UPDATE' clause.
+     *
+     * @param connection
+     *     The connection used to generate the statement
+     * @param query
+     *     The basic query
+     * @param blob
+     *     The BLOB
+     * @param id
+     *     The ID of the entity to update
+     *
+     * @return a prepared statement with an 'UPDATE' clause for a BLOB
+     *
+     * @throws SQLException
+     *     if the statement generation failed
+     */
+    public static PreparedStatement generateStatementWithUpdateClauseWithBlob(final DatabaseConnection connection, final String query,
+        final byte[] blob, final QueryArgument id) throws SQLException {
+        final StringBuilder queryBuilder = new StringBuilder(query);
+
+        final PreparedStatement statement;
+
+        // If the URL is null, sets the picture to NULL
+        if (blob == null) {
+            // Sets the picture to NULL <and adds the closing 'WHERE' clause for the ID
+            queryBuilder.append("NULL WHERE ").append(id.getName()).append(" = ?");
+
+            // Generates the statement
+            statement = connection.prepareStatement(queryBuilder.toString());
+
+            // Sets the ID argument
+            statement.setObject(1, id.getValue(), id.getType());
+        } else {
+            // Adds the picture argument and the closing 'WHERE' clause for the ID
+            queryBuilder.append("? WHERE ").append(id.getName()).append(" = ?");
+
+            // Generates the statement
+            statement = connection.prepareStatement(queryBuilder.toString());
+
+            // Sets the picture argument
+            statement.setBytes(1, blob);
+
+            // Sets the ID argument
+            statement.setObject(2, id.getValue(), id.getType());
+        }
+
+        return statement;
     }
 
 }

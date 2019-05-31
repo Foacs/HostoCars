@@ -1,6 +1,7 @@
 package fr.vulture.hostocars.model;
 
 import java.text.MessageFormat;
+import java.util.Objects;
 
 /**
  * Entity of a contact.
@@ -12,6 +13,7 @@ public class Contact {
     private String nickname;
     private Long number;
     private Boolean favorite;
+    private byte[] picture;
 
     /**
      * Default constructor.
@@ -101,7 +103,7 @@ public class Contact {
      *
      * @return if the contact is flagged as favorite
      */
-    public Boolean getFavorite() {
+    public boolean isFavorite() {
         return favorite;
     }
 
@@ -116,12 +118,32 @@ public class Contact {
     }
 
     /**
+     * Returns the contact picture BLOB.
+     *
+     * @return the contact picture
+     */
+    public byte[] getPicture() {
+        return picture;
+    }
+
+    /**
+     * Sets the contact picture BLOB.
+     *
+     * @param picture
+     *     The BLOB to set
+     */
+    public void setPicture(byte[] picture) {
+        this.picture = picture;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public String toString() {
         return MessageFormat
-            .format("Contact[ID: {0}; Name: \"{1}\"; Nickname: \"{2}\"; Number: {3}; Favorite: {4}]", id, name, nickname, number, favorite);
+            .format("Contact[ID: {0}; Name: \"{1}\"; Nickname: \"{2}\"; Number: {3}; Favorite: {4}; Picture: {5}]", id, name, nickname, number,
+                favorite, Objects.nonNull(picture));
     }
 
 }

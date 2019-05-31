@@ -7,7 +7,9 @@ import fr.vulture.hostocars.model.converter.ContactConverter;
 import fr.vulture.hostocars.model.request.ContactRequestBody;
 import fr.vulture.hostocars.model.request.QueryArgument;
 import fr.vulture.hostocars.model.request.QueryArgumentType;
+import fr.vulture.hostocars.util.FileUtils;
 import fr.vulture.hostocars.util.SQLUtils;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -49,10 +52,8 @@ public class ContactController {
     public List<Contact> getContacts() throws SQLException {
         logger.debug("Calling getContacts");
 
-        // Prepares the query
-        final String query = "SELECT * FROM Contacts";
-
         // Prepares the statement
+        final String query = "SELECT * FROM Contacts";
         final PreparedStatement statement = connection.prepareStatement(query);
 
         // Executes the query
@@ -180,8 +181,8 @@ public class ContactController {
      *     if the call fails
      */
     @RequestMapping(value = "/{id}/update", method = RequestMethod.PUT)
-    public void updateContact(@PathVariable Integer id, @RequestBody ContactRequestBody contact) throws SQLException {
-        logger.debug("Calling updateContact with id = {} and request body = {}", id, contact);
+    public void updateContactByID(@PathVariable Integer id, @RequestBody ContactRequestBody contact) throws SQLException {
+        logger.debug("Calling updateContactByID with id = {} and request body = {}", id, contact);
 
         if (contact.hasNonNullFields()) {
             // Prepares the statement
@@ -201,6 +202,39 @@ public class ContactController {
     }
 
     /**
+     * Updates a contact's picture from its ID with the url in the database.
+     *
+     * @param id
+     *     The ID of the contact to delete
+     * @param url
+     *     The URL of the picture to add
+     *
+     * @throws IOException
+     *     if the file reading fails
+     * @throws SQLException
+     *     if the call fails
+     */
+    @RequestMapping(value = "/{id}/updatePicture", method = RequestMethod.PUT)
+    public void updateContactPictureByID(@PathVariable Integer id, @RequestParam(required = false) String url) throws IOException, SQLException {
+        logger.debug("Calling updateContactPictureByID with id = {} and url = \"{}\"", id, url);
+
+        // Retrieves the BLOB from the url
+        final byte[] blob = FileUtils.readBlobFromUrl(url);
+
+        // Prepares the statement
+        final String query = "UPDATE Contacts SET picture = ";
+        final QueryArgument idArgument = new QueryArgument("id", id, QueryArgumentType.INTEGER);
+        final PreparedStatement statement = SQLUtils.generateStatementWithUpdateClauseWithBlob(connection, query, blob, idArgument);
+
+        // Executes the query
+        if (statement.executeUpdate() == 0) {
+            logger.info("Contact not found for ID: {}, nothing to update", id);
+        } else {
+            logger.info("Picture of contact {} updated", id);
+        }
+    }
+
+    /**
      * Deletes a contact from its ID from the database.
      *
      * @param id
@@ -210,8 +244,8 @@ public class ContactController {
      *     if the call fails
      */
     @RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE)
-    public void deleteContact(@PathVariable Integer id) throws SQLException {
-        logger.debug("Calling deleteContact with id = {}", id);
+    public void deleteContactByID(@PathVariable Integer id) throws SQLException {
+        logger.debug("Calling deleteContactByID with id = {}", id);
 
         // Prepares the statement
         final String query = "DELETE FROM Contacts WHERE id = ?";

@@ -4,5 +4,6 @@ CREATE TABLE IF NOT EXISTS Contacts (
     name     TEXT NOT NULL,
     nickname TEXT,
     number   INTEGER,
-    favorite INTEGER DEFAULT 0
+    favorite INTEGER DEFAULT 0,
+    picture  BLOB
 );

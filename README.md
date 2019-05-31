@@ -13,7 +13,7 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 * ~~Configuration Maven + Spring~~
 * ~~Démarrage du serveur~~
 * ~~Accès à la base de données~~
-* Accès aux web services REST
+* ~~Accès aux web services REST~~
 * ~~Accès aux propriétés~~
 * Gestion des messages
 * Système de logging
@@ -25,16 +25,20 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
     * Champ `String` facultatif ajouté
     * Champ `Integer` facultatif ajouté
     * Champ `Boolean` avec valeur par défaut ajouté
+    * Champ `Blob` facultatif ajouté
     * `Converter` adapté
   * Controller REST pour les `Contact` DTOs enrichi
     * Méthodes pour insérer, modifier et supprimmer des `Contact`
+    * Méthode pour modifier l'image d'un `Contact`
     * Interface `RequestBody` créée et implémentée pour les `Contact`
     * Classes `QueryArgument` et `QueryArgumentType` créées
   * Classe utilitaire `ObjectUtils` créée
+  * Classe utilitaire `FileUtils` créée
+    * Méthode pour extraire un `Blob` d'un fichier
   * Classe utilitaire `SQLUtils` créée
     * Méthode utilitaire pour générer une requête SQL avec une clause `WHERE` (pour la recherche)
     * Méthode utilitaire pour générer une requête SQL avec une clause `INSERT`
-    * Méthode utilitaire pour générer une requête SQL avec une clause `UPDATE`
+    * Méthode utilitaire pour générer une requête SQL avec une clause `UPDATE` (+1 pour les `Blob`)
   * Gestion des erreurs corrigée
     * Laisser le serveur gérer les erreurs SQL
 
@@ -71,6 +75,5 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 
 ###### To Do
 
-* Web service pour ajouter une image en base
 * Gérer les messages (exceptions + warnings)
 * Gérer l'historique des fichiers de logging
