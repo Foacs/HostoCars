@@ -3,6 +3,7 @@ package fr.vulture.hostocars.database;
 import fr.vulture.hostocars.controller.DatabaseController;
 import fr.vulture.hostocars.error.TechnicalException;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -47,7 +48,7 @@ public class DatabaseConnection implements InitializingBean {
      * {@inheritDoc}
      */
     @Override
-    public void afterPropertiesSet() throws TechnicalException, SQLException {
+    public void afterPropertiesSet() throws TechnicalException, SQLException, IOException {
         logger.debug("Initializing {}", logger.getName());
 
         final File dataFolder = new File(databaseLocation);

@@ -1,13 +1,11 @@
 package fr.vulture.hostocars.database;
 
-import fr.vulture.hostocars.error.TechnicalException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.MessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,21 +36,20 @@ class DatabaseScriptExecutor {
     /**
      * Initializes the database from scratch to the current project version.
      *
-     * @throws TechnicalException
-     *     if the initialization fails
+     * @throws IOException
+     *     if a script file can not be found or read
+     * @throws SQLException
+     *     if a script file execution fails
      */
-    void initializeDatabaseToCurrentVersion() throws TechnicalException {
+    void initializeDatabaseToCurrentVersion() throws IOException, SQLException {
         logger.debug("Initializing the database to version {}", projectVersion);
 
-        try {
-            File resources = new ClassPathResource(sqlScriptsResourcesLocation).getFile();
-            File[] versions = resources.listFiles(file -> file.isDirectory()
-                && file.getName().compareTo(projectVersion) <= 0);
+        File resources = new ClassPathResource(sqlScriptsResourcesLocation).getFile();
+        File[] versions = resources.listFiles(file -> file.isDirectory()
+            && file.getName().compareTo(projectVersion) <= 0);
 
-            updateDatabaseToVersions(versions);
-        } catch (IOException e) {
-            throw new TechnicalException("SQL scripts resources not found", e);
-        }
+        updateDatabaseToVersions(versions);
+
     }
 
     /**
@@ -61,20 +58,18 @@ class DatabaseScriptExecutor {
      * @param databaseVersion
      *     The current database version
      *
-     * @throws TechnicalException
-     *     if the update fails
+     * @throws IOException
+     *     if a script file can not be found or read
+     * @throws SQLException
+     *     if a script file execution fails
      */
-    void updateDatabaseToCurrentVersion(String databaseVersion) throws TechnicalException {
-        try {
-            File resources = new ClassPathResource(sqlScriptsResourcesLocation).getFile();
-            File[] versions = resources.listFiles(file -> file.isDirectory()
-                && file.getName().compareTo(projectVersion) <= 0
-                && file.getName().compareTo(databaseVersion) > 0);
+    void updateDatabaseToCurrentVersion(String databaseVersion) throws IOException, SQLException {
+        File resources = new ClassPathResource(sqlScriptsResourcesLocation).getFile();
+        File[] versions = resources.listFiles(file -> file.isDirectory()
+            && file.getName().compareTo(projectVersion) <= 0
+            && file.getName().compareTo(databaseVersion) > 0);
 
-            updateDatabaseToVersions(versions);
-        } catch (IOException e) {
-            throw new TechnicalException("SQL scripts resources not found", e);
-        }
+        updateDatabaseToVersions(versions);
     }
 
     /**
@@ -83,27 +78,25 @@ class DatabaseScriptExecutor {
      * @param versions
      *     The versions folders
      *
-     * @throws TechnicalException
-     *     if the updates fails
+     * @throws IOException
+     *     if a script file can not be found or read
+     * @throws SQLException
+     *     if a script file execution fails
      */
-    private void updateDatabaseToVersions(File[] versions) throws TechnicalException {
-        if (versions == null) {
-            throw new TechnicalException(MessageFormat.format("No SQL resources scripts folder found for version {0} or under", projectVersion));
-        } else {
-            for (File version : versions) {
-                logger.debug("Updating the database to version {}", version.getName());
+    private void updateDatabaseToVersions(File[] versions) throws IOException, SQLException {
+        for (File version : versions) {
+            logger.debug("Updating the database to version {}", version.getName());
 
-                File[] scripts = version.listFiles(file -> !file.isDirectory() && file.getName().endsWith(sqlScriptsExtension));
+            File[] scripts = version.listFiles(file -> !file.isDirectory() && file.getName().endsWith(sqlScriptsExtension));
 
-                if (scripts == null) {
-                    logger.warn("No SQL script found for database version {}", version.getName());
-                } else {
-                    for (File script : scripts) {
-                        executeScript(script);
-                    }
-
-                    logger.debug("Database successfully updated to version {}", version.getName());
+            if (scripts == null) {
+                logger.warn("No SQL script found for database version {}", version.getName());
+            } else {
+                for (File script : scripts) {
+                    executeScript(script);
                 }
+
+                logger.debug("Database successfully updated to version {}", version.getName());
             }
         }
     }
@@ -114,41 +107,38 @@ class DatabaseScriptExecutor {
      * @param script
      *     The SQL script file
      *
-     * @throws TechnicalException
-     *     if the execution fails
+     * @throws IOException
+     *     if the script file can not be found or read
+     * @throws SQLException
+     *     if the script file execution fails
      */
-    private void executeScript(File script) throws TechnicalException {
+    private void executeScript(File script) throws IOException, SQLException {
         logger.debug("Executing script file {}", script.getName());
 
         String query = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader(script))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Ignores comments
-                if (!line.startsWith("--")) {
-                    query = query.concat(line);
+        BufferedReader reader = new BufferedReader(new FileReader(script));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            // Ignores comments
+            if (!line.startsWith("--")) {
+                query = query.concat(line);
 
-                    // Executes the query on delimiter found
-                    if (query.endsWith(";")) {
-                        // Removes useless spaces
-                        query = query.trim().replaceAll(" {2}", " ");
+                // Executes the query on delimiter found
+                if (query.endsWith(";")) {
+                    // Removes useless spaces
+                    query = query.trim().replaceAll(" {2}", " ");
 
-                        logger.debug("Executing query \"{}\"", query);
+                    logger.debug("Executing query \"{}\"", query);
 
-                        final Statement statement = connection.createStatement();
-                        statement.execute(query);
+                    final Statement statement = connection.createStatement();
+                    statement.execute(query);
 
-                        logger.debug("Query successfully executed");
+                    logger.debug("Query successfully executed");
 
-                        // Re-initializes the query
-                        query = "";
-                    }
+                    // Re-initializes the query
+                    query = "";
                 }
             }
-        } catch (IOException e) {
-            throw new TechnicalException(MessageFormat.format("Unable to parse script file {0}", script.getName()), e);
-        } catch (SQLException e) {
-            throw new TechnicalException(MessageFormat.format("Error while executing query {0} from script file {1}", query, script.getName()), e);
         }
     }
 

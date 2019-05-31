@@ -15,7 +15,7 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
 * ~~Accès à la base de données~~
 * ~~Accès aux web services REST~~
 * ~~Accès aux propriétés~~
-* Gestion des messages
+* ~~Gestion des messages~~
 * ~~Système de logging~~
 
 ###### Mises à jours
@@ -40,7 +40,7 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
     * Méthode utilitaire pour générer une requête SQL avec une clause `INSERT`
     * Méthode utilitaire pour générer une requête SQL avec une clause `UPDATE` (+1 pour les `Blob`)
   * Gestion des erreurs corrigée
-    * Laisser le serveur gérer les erreurs SQL
+    * Laisser le serveur gérer les erreurs IO et SQL
   * Fichiers de logging automatiquement gérés par Spring
     * Fichier de logging renommé
     * Limite de fichiers de logging fixée à 1 an
@@ -75,7 +75,3 @@ Le but de cette branche est de préparer les fondations du server backend, à sa
     * `PUT` méthode
   * Mise en place du repository Git `HostoCars`
     * Création des branches `develop` et `feature/backend_foundation`
-
-###### To Do
-
-* Gérer les messages (exceptions + warnings)
