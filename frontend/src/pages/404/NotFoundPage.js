@@ -2,16 +2,16 @@ import React from 'react';
 
 import logo from '../../resources/logo.svg';
 
-import './NotFoundPage.css';
+import StyledNotFoundPage from './StyledNotFoundPage';
 
 function NotFoundPage() {
     return (
-        <div className="NotFoundPage">
-            <header className="NotFoundPage__header">
-                <img src={logo} className="NotFoundPage__header__logo" alt="logo" />
+        <StyledNotFoundPage>
+            <header className="header">
+                <img src={logo} className="logo" alt="logo" />
                 <p>404 - Page not found</p>
             </header>
-        </div>
+        </StyledNotFoundPage>
     );
 }
 

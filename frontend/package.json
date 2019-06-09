@@ -3,18 +3,21 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "node-sass": "^4.12.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-jss": "^8.6.1",
     "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1"
+    "react-scripts": "3.0.1",
+    "sass-extract": "^2.1.0",
+    "sass-extract-js": "^0.4.0",
+    "sass-extract-loader": "^1.1.0",
+    "styled-components": "^4.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && rm -rf ../src/main/resources/static && mv build ../src/main/resources/static",
     "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "browserslist": [
     "last 2 firefox major versions",

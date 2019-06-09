@@ -4,10 +4,9 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { unregister } from './serviceWorker';
 
-import HomePage from './pages/home/HomePage';
-import NotFoundPage from './pages/404/NotFoundPage';
+import { HomePage, NotFoundPage } from 'pages';
 
-import './index.css';
+import './index.scss';
 
 ReactDOM.render(
     <BrowserRouter>
