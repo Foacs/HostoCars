@@ -11,8 +11,8 @@
 Le but de cette branche est de préparer les fondations du server frontend, à savoir:
 
 * Configuration de React
-* Mise en place du rooting
-* Mise en place de Redux
+* ~~Mise en place du rooting~~
+* ~~Mise en place de Redux~~
 * Appel au server backend
 * Mise en place du thème de base
 
@@ -24,8 +24,8 @@ Le but de cette branche est de préparer les fondations du server frontend, à s
   * Rooting mis en place
     * Home page à la racine
     * 404 page sinon
+  * SASS et Styled-components mis en place
+  * Redux mis en place
 
 ###### To Do
 
-* Mise en place de SASS
-* Mise en place de Redux
