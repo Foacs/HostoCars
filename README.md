@@ -9,14 +9,22 @@
 ###### Description
 
 Le but de cette branche est de préparer les fondations du server frontend, à savoir:
-
-* Configuration de React
-* ~~Mise en place du rooting~~
-* ~~Mise en place de Redux~~
-* Appel au server backend
-* Mise en place du thème de base
+  
+  * ~~Configuration de React~~
+  * ~~Mise en place du rooting~~
+  * ~~Mise en place de Redux~~
+  * ~~Appel au server backend~~
+  * Mise en place du thème de base
 
 ###### Mises à jour
+
+* ##### 10/06/2019:
+
+  * Axios mis en place
+    * Appels aux différents services du back
+    * Configuration CROSS au niveau du contrôleur du back
+  * Rooting corrigé
+    * WebMvcConfig ajouté
 
 * ##### 09/06/2019:
 
@@ -28,4 +36,7 @@ Le but de cette branche est de préparer les fondations du server frontend, à s
   * Redux mis en place
 
 ###### To Do
-
+  
+   * Créer la page de base
+   * Créer le thème de base
+   * Créer les composants de base

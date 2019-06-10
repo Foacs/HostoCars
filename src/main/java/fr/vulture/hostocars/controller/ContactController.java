@@ -18,6 +18,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/contacts")
+@CrossOrigin(origins = "*")
 public class ContactController {
 
     private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
@@ -121,7 +123,7 @@ public class ContactController {
      * @throws SQLException
      *     if the call fails
      */
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
     public List<Contact> searchContacts(@RequestBody ContactRequestBody contact) throws SQLException {
         logger.debug("Calling searchContacts with request body = {}", contact);
 
