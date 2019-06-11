@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Typography } from '@material-ui/core'
+
 import logo from '../../resources/logo.svg';
 
 import StyledHomePage from './StyledHomePage';
@@ -9,7 +11,7 @@ function HomePage() {
         <StyledHomePage>
             <header className="header">
                 <img src={logo} className="logo" alt="logo" />
-                <p>Hello World!</p>
+                <Typography>Hello World!</Typography>
             </header>
         </StyledHomePage>
     );

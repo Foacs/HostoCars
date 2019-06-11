@@ -61,7 +61,7 @@ export const updateContactByIdAction = (id, data) => dispatch => {
 };
 
 export const updateContactPictureByIdAction = (id, url) => dispatch => {
-    axios.put(`${WEB_SERVICE_BASE_URL}/contacts/${id}/updatePicture`, null, { params: { url }})
+    axios.put(`${WEB_SERVICE_BASE_URL}/contacts/${id}/updatePicture`, null, { params: { url } })
     .then(dispatch({
         type: TYPES.UPDATE_CONTACT_PICTURE_BY_ID
     }));

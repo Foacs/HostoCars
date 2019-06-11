@@ -1,32 +1,35 @@
 {
-  "name": "hostocars",
-  "version": "0.0.1",
-  "private": true,
-  "dependencies": {
-    "axios": "^0.19.0",
-    "history": "^4.9.0",
-    "node-sass": "^4.12.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-jss": "^8.6.1",
-    "react-redux": "^7.0.3",
-    "react-router-dom": "^5.0.1",
-    "react-scripts": "3.0.1",
-    "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0",
-    "sass-extract": "^2.1.0",
-    "sass-extract-js": "^0.4.0",
-    "sass-extract-loader": "^1.1.0",
-    "styled-components": "^4.3.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build && rm -rf ../src/main/resources/static && mv build ../src/main/resources/static",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": [
-    "last 2 firefox major versions",
-    "last 2 chrome major versions",
-    "not dead"
-  ]
+    "name": "hostocars",
+    "version": "0.0.1",
+    "private": true,
+    "dependencies": {
+        "@material-ui/core": "^4.1.0",
+        "@material-ui/icons": "^4.1.0",
+        "axios": "^0.19.0",
+        "history": "^4.9.0",
+        "node-sass": "^4.12.0",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
+        "react-jss": "^8.6.1",
+        "react-redux": "^7.0.3",
+        "react-router-dom": "^5.0.1",
+        "react-scripts": "3.0.1",
+        "redux": "^4.0.1",
+        "redux-thunk": "^2.3.0",
+        "sass-extract": "^2.1.0",
+        "sass-extract-js": "^0.4.0",
+        "sass-extract-loader": "^1.1.0",
+        "styled-components": "^4.3.1",
+        "typeface-roboto": "0.0.54"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build && rm -rf ../src/main/resources/static && mv build ../src/main/resources/static",
+        "eject": "react-scripts eject"
+    },
+    "browserslist": [
+        "last 2 firefox major versions",
+        "last 2 chrome major versions",
+        "not dead"
+    ]
 }

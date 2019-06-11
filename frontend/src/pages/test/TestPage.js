@@ -4,7 +4,17 @@ import { bindActionCreators } from 'redux';
 
 import logo from '../../resources/logo.svg';
 
-import { getContactByIdAction, getContactsAction, searchContactsAction, saveContactAction, updateContactByIdAction, logUserInAction, logUserOutAction, updateContactPictureByIdAction, deleteContactByIdAction } from 'actions';
+import {
+    deleteContactByIdAction,
+    getContactByIdAction,
+    getContactsAction,
+    logUserInAction,
+    logUserOutAction,
+    saveContactAction,
+    searchContactsAction,
+    updateContactByIdAction,
+    updateContactPictureByIdAction
+} from 'actions';
 
 import StyledTestPage from './StyledTestPage';
 
@@ -27,7 +37,9 @@ function TestPage({ isUserLogged, contacts, contactById, searchedContacts, logUs
                 <button onClick={() => searchContacts({ name: 'Brice' })}>Search contacts with name Brice</button>
                 <p>Contacts with name Brice: {searchedContacts.length}</p>
 
-                <button onClick={() => saveContact({ name: 'Brice', nickname: 'Brice de Nice', number: 33684581274, favorite: true })}>Save new contact</button>
+                <button onClick={() => saveContact({ name: 'Brice', nickname: 'Brice de Nice', number: 33684581274, favorite: true })}>Save new
+                    contact
+                </button>
 
                 <button onClick={() => updateContactById(1, { name: 'Tamère' })}>Update contact</button>
 
