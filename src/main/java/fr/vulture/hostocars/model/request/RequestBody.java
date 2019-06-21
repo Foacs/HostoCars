@@ -1,5 +1,7 @@
 package fr.vulture.hostocars.model.request;
 
+import java.util.Collection;
+
 /**
  * Interface describing the behavior of a request body.
  */
@@ -17,6 +19,6 @@ public interface RequestBody {
      *
      * @return the list of query arguments
      */
-    Iterable<QueryArgument> getQueryArguments();
+    Collection<QueryArgument> getQueryArguments();
 
 }

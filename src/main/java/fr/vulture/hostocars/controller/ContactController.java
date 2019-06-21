@@ -1,12 +1,17 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.constant.SQLConstants.*;
+import static fr.vulture.hostocars.model.request.QueryArgumentType.INTEGER;
+import static java.util.Objects.*;
+import static org.springframework.http.HttpStatus.*;
+
 import fr.vulture.hostocars.database.DatabaseConnection;
+import fr.vulture.hostocars.error.FunctionalException;
 import fr.vulture.hostocars.error.TechnicalException;
 import fr.vulture.hostocars.model.Contact;
 import fr.vulture.hostocars.model.converter.ContactConverter;
 import fr.vulture.hostocars.model.request.ContactRequestBody;
 import fr.vulture.hostocars.model.request.QueryArgument;
-import fr.vulture.hostocars.model.request.QueryArgumentType;
 import fr.vulture.hostocars.util.FileUtils;
 import fr.vulture.hostocars.util.SQLUtils;
 import java.io.IOException;
@@ -18,10 +23,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/contacts")
+@CrossOrigin(origins = "*")
 public class ContactController {
 
     private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
@@ -43,194 +54,410 @@ public class ContactController {
     /**
      * Retrieves the list of all the contacts from the database.
      *
-     * @return the list of all the contacts
-     *
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Contact> getContacts() throws SQLException {
-        logger.debug("Calling getContacts");
+    @GetMapping
+    public ResponseEntity<?> getContacts() {
+        logger.debug("[getContacts <= Calling]");
 
-        // Prepares the statement
-        final String query = "SELECT * FROM Contacts";
-        final PreparedStatement statement = connection.prepareStatement(query);
+        try {
+            // Prepares the statement
+            final PreparedStatement statement = connection.prepareStatement(GET_CONTACTS_QUERY);
 
-        // Executes the query
-        final ResultSet result = statement.executeQuery();
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate SQL statement");
+            }
 
-        // Retrieves the resultant contacts
-        final List<Contact> contacts = new ArrayList<>();
-        while (result.next()) {
-            contacts.add(contactConverter.from(result));
+            // Executes the query
+            final ResultSet result = statement.executeQuery();
+
+            // If the result is null, throws a technical exception
+            if (isNull(result)) {
+                throw new TechnicalException("The query execution failed");
+            }
+
+            // Retrieves the resultant contacts
+            final List<Contact> contacts = new ArrayList<>();
+            while (result.next()) {
+                // Converts the current query result to a contact entity
+                final Contact contact = contactConverter.from(result);
+
+                // If the contact entity is null, throws a technical exception
+                if (isNull(contact)) {
+                    throw new TechnicalException("The query returned a null element");
+                }
+
+                // Adds the contact entity to the result list
+                contacts.add(contact);
+            }
+
+            // If no contact was found, returns a 204 status
+            if (contacts.isEmpty()) {
+                logger.debug("[getContacts => {}] No contact found", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            }
+
+            // Returns the list of found contacts with a 200 status
+            logger.debug("[getContacts => {}] {} contact(s) found", OK.value(), contacts.size());
+            return ResponseEntity.ok(contacts);
         }
 
-        if (contacts.isEmpty()) {
-            logger.info("No contact found in the database");
-        } else {
-            logger.info("{} contacts found in the database", contacts.size());
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[getContacts => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
-
-        return contacts;
     }
 
     /**
      * Retrieves the contact with the given ID from the database.
      *
-     * @return the contact with the given ID
+     * @param id
+     *     The contact's ID
      *
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Contact getContactByID(@PathVariable Integer id) throws SQLException, TechnicalException {
-        logger.debug("Calling getContactByID with ID = {}", id);
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<?> getContactByID(@PathVariable Integer id) {
+        logger.debug("[getContactByID <= Calling] With ID = {}", id);
 
-        // Prepares the statement
-        final String query = "SELECT * FROM Contacts WHERE id = ?";
-        final PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, id);
-
-        // Executes the query
-        final ResultSet result = statement.executeQuery();
-
-        // Retrieves the resultant contact
-        Contact contact = null;
-        if (result.next()) {
-            contact = contactConverter.from(result);
-
-            if (result.next()) {
-                // If there is more than one result, throw a technical exception
-                throw new TechnicalException("More than one contact found for ID = {0} in the database", id);
+        try {
+            // If the ID is missing, throws a functional exception
+            if (isNull(id)) {
+                throw new FunctionalException("Missing contact ID");
             }
 
-            logger.info("Contact found for ID: {}", id);
-        } else {
-            logger.info("No contact found for ID: {}", id);
+            // If the ID is negative or zero, throws a functional exception
+            if (MINIMUM_ID.compareTo(id) > 0) {
+                throw new FunctionalException("The contact ID can not be negative or zero");
+            }
+
+            // Prepares the statement
+            final PreparedStatement statement = connection.prepareStatement(GET_CONTACT_BY_ID_QUERY);
+
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate SQL statement");
+            }
+
+            // Sets the query's arguments
+            statement.setInt(1, id);
+
+            // Executes the query
+            final ResultSet result = statement.executeQuery();
+
+            // If the result is null, throws a technical exception
+            if (isNull(result)) {
+                throw new TechnicalException("The query execution failed");
+            }
+
+            // Retrieves the resultant contact
+            if (result.next()) {
+                // Converts the query result to a contact entity
+                final Contact contact = contactConverter.from(result);
+
+                // If there is more than one result, throws a technical exception
+                if (result.next()) {
+                    throw new TechnicalException("More than one contact found for ID = {} in the database", id);
+                }
+
+                // If the found contact entity is not null, returns it with a 200 status
+                if (nonNull(contact)) {
+                    logger.debug("[getContactByID => {}] Contact found for ID = {}", OK.value(), id);
+                    return ResponseEntity.ok(contact);
+                }
+            }
+
+            // Returns a 204 status
+            logger.debug("[getContactByID => {}] No contact found for ID = {}", NO_CONTENT.value(), id);
+            return ResponseEntity.noContent().build();
         }
 
-        return contact;
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[getContactByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[getContactByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
     }
 
     /**
-     * Retrieves the list of contacts corresponding to filters from a JSON request in the database.
+     * Retrieves the list of contacts corresponding to filters from a JSON body in the database.
      *
-     * @param contact
+     * @param body
      *     The contact request body to search
      *
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public List<Contact> searchContacts(@RequestBody ContactRequestBody contact) throws SQLException {
-        logger.debug("Calling searchContacts with request body = {}", contact);
+    @PostMapping(value = "/search")
+    public ResponseEntity<?> searchContacts(@RequestBody ContactRequestBody body) {
+        logger.debug("[searchContacts <= Calling] With body = {}", body);
 
-        // Prepares the statement
-        final String query = "SELECT * FROM Contacts";
-        final PreparedStatement statement = SQLUtils.generateStatementWithWhereClause(connection, query, contact);
+        try {
+            // If the body is missing, throws a functional exception
+            if (isNull(body)) {
+                throw new FunctionalException("Missing contact request body");
+            }
 
-        // Executes the query
-        final ResultSet result = statement.executeQuery();
+            // Prepares the statement
+            final PreparedStatement statement = SQLUtils.generateStatementWithWhereClause(connection, SEARCH_CONTACTS_QUERY, body);
 
-        // Retrieves the resultant contacts
-        final List<Contact> contacts = new ArrayList<>();
-        while (result.next()) {
-            contacts.add(contactConverter.from(result));
+            // Executes the query
+            final ResultSet result = statement.executeQuery();
+
+            // If the result is null, throws a technical exception
+            if (isNull(result)) {
+                throw new TechnicalException("The query execution failed");
+            }
+
+            // Retrieves the resultant contacts
+            final List<Contact> contacts = new ArrayList<>();
+            while (result.next()) {
+                // Converts the current query result to a contact entity
+                final Contact contact = contactConverter.from(result);
+
+                // If the contact entity is null, throws a technical exception
+                if (isNull(contact)) {
+                    throw new TechnicalException("The query returned a null element");
+                }
+
+                // Adds the contact entity to the result list
+                contacts.add(contact);
+            }
+
+            // If no contact was found, returns a 204 status
+            if (contacts.isEmpty()) {
+                logger.debug("[searchContacts => {}] No contact found", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            }
+
+            // Returns the list of found contacts with a 200 status
+            logger.debug("[searchContacts => {}] {} contact(s) found", OK.value(), contacts.size());
+            return ResponseEntity.ok(contacts);
         }
 
-        if (contacts.isEmpty()) {
-            logger.info("No contact found in the database for search request: {}", contact);
-        } else {
-            logger.info("{} contacts found in the database for search request: {}", contacts.size(), contact);
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[searchContacts => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
         }
 
-        return contacts;
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[searchContacts => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
     }
 
     /**
-     * Saves a new contact from a JSON request in the database.
+     * Saves a new contact from a JSON body in the database.
      *
-     * @param contact
+     * @param body
      *     The contact request body to save
      *
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public void saveContact(@RequestBody ContactRequestBody contact) throws SQLException {
-        logger.debug("Calling saveContact with request body = {}", contact);
+    @PostMapping(value = "/save")
+    public ResponseEntity<?> saveContact(@RequestBody ContactRequestBody body) {
+        logger.debug("[saveContact <= Calling] With body = {}", body);
 
-        // Prepares the statement
-        final String query = "INSERT INTO Contacts";
-        final PreparedStatement statement = SQLUtils.generateStatementWithInsertClause(connection, query, contact);
+        try {
+            // If the body is missing, throws a functional exception
+            if (isNull(body)) {
+                throw new FunctionalException("Missing contact request body");
+            }
 
-        // Executes the query
-        statement.executeUpdate();
-        logger.info("New contact saved");
+            // If any of the mandatory fields are missing from the body, throws a functional exception
+            if (body.hasMissingMandatoryFields()) {
+                throw new FunctionalException("Missing mandatory field(s) in contact request body");
+            }
+
+            // Prepares the statement
+            final PreparedStatement statement = SQLUtils.generateStatementWithInsertClause(connection, SAVE_CONTACT_QUERY, body);
+
+            // Executes the query and retrieves the generated keys
+            statement.executeUpdate();
+            ResultSet result = statement.getGeneratedKeys();
+
+            // If the result is null, throws a technical exception
+            if (isNull(result)) {
+                throw new TechnicalException("The query execution failed");
+            }
+
+            // Retrieves the generated entity ID
+            if (result.next()) {
+                // Retrieves the generated key
+                final int generatedID = result.getInt(1);
+
+                // If the generated ID is 0, throws a technical exception
+                if (MINIMUM_ID.compareTo(generatedID) > 0) {
+                    throw new TechnicalException("The new contact has not been saved");
+                }
+
+                // If there is more than one generated key, throws a technical exception
+                if (result.next()) {
+                    throw new TechnicalException("More than one contact has been saved in the database");
+                }
+
+                // Returns the generated key with a 200 status
+                logger.debug("[saveContact => {}] New contact saved with ID = {}", OK.value(), generatedID);
+                return ResponseEntity.ok(generatedID);
+            }
+
+            // If the contact has not been saved, throws a technical exception
+            throw new TechnicalException("The new contact has not been saved");
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[saveContact => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[saveContact => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
     }
 
     /**
-     * Updates a contact from its ID with the data from a JSON request in the database.
+     * Updates a contact from its ID with the data from a JSON body in the database.
      *
      * @param id
      *     The ID of the contact to delete
-     * @param contact
+     * @param body
      *     The data to update
      *
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(value = "/{id}/update", method = RequestMethod.PUT)
-    public void updateContactByID(@PathVariable Integer id, @RequestBody ContactRequestBody contact) throws SQLException {
-        logger.debug("Calling updateContactByID with id = {} and request body = {}", id, contact);
+    @PutMapping(value = "/{id}/update")
+    public ResponseEntity<?> updateContactByID(@PathVariable Integer id, @RequestBody ContactRequestBody body) {
+        logger.debug("[updateContactByID <= Calling] With ID = {} and body = {}", id, body);
 
-        if (contact.hasNonNullFields()) {
-            // Prepares the statement
-            final String query = "UPDATE Contacts SET ";
-            final QueryArgument idArgument = new QueryArgument("id", id, QueryArgumentType.INTEGER);
-            final PreparedStatement statement = SQLUtils.generateStatementWithUpdateClause(connection, query, contact, idArgument);
-
-            // Executes the query
-            if (statement.executeUpdate() == 0) {
-                logger.info("Contact not found for ID: {}, nothing to update", id);
-            } else {
-                logger.info("Contact {} updated", id);
+        try {
+            // If the ID is missing, throws a functional exception
+            if (isNull(id)) {
+                throw new FunctionalException("Missing contact ID");
             }
-        } else {
-            logger.warn("No field to update");
+
+            // If the ID is negative or zero, throws a functional exception
+            if (MINIMUM_ID.compareTo(id) > 0) {
+                throw new FunctionalException("The contact ID can not be negative or zero");
+            }
+
+            // If the body is missing, throws a functional exception
+            if (isNull(body)) {
+                throw new FunctionalException("Missing contact request body");
+            }
+
+            // If the body has not any non null value, throws a functional exception
+            if (!body.hasNonNullFields()) {
+                throw new FunctionalException("No value to update");
+            }
+
+            // Prepares the statement
+            final QueryArgument idArgument = new QueryArgument("id", id, INTEGER);
+            final PreparedStatement statement = SQLUtils.generateStatementWithUpdateClause(connection, UPDATE_CONTACT_BY_ID_QUERY, body, idArgument);
+
+            // Executes the query and retrieves the number of updated contacts
+            int result = statement.executeUpdate();
+
+            switch (result) {
+                case 0:
+                    // If no contact has been updated, returns a 204 status
+                    logger.debug("[updateContactByID => {}] No contact found to update", NO_CONTENT.value());
+                    return ResponseEntity.noContent().build();
+                case 1:
+                    // If exactly one contact has been updated, returns a 200 status
+                    logger.debug("[updateContactByID => {}] Contact updated", OK.value());
+                    return ResponseEntity.ok().build();
+                default:
+                    // If there more than one contacts have been updated, throws a technical exception
+                    throw new TechnicalException("More than one contact has been updated in the database");
+            }
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[updateContactByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[updateContactByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
     }
 
     /**
-     * Updates a contact's picture from its ID with the url in the database.
+     * Updates a contact's picture from its ID with the input url in the database.
      *
      * @param id
      *     The ID of the contact to delete
      * @param url
      *     The URL of the picture to add
      *
-     * @throws IOException
-     *     if the file reading fails
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(value = "/{id}/updatePicture", method = RequestMethod.PUT)
-    public void updateContactPictureByID(@PathVariable Integer id, @RequestParam(required = false) String url) throws IOException, SQLException {
-        logger.debug("Calling updateContactPictureByID with id = {} and url = \"{}\"", id, url);
+    @PutMapping(value = "/{id}/updatePicture")
+    public ResponseEntity<?> updateContactPictureByID(@PathVariable Integer id, @RequestParam(required = false) String url) {
+        logger.debug("[updateContactPictureByID <= Calling] With ID = {} and url = {}", id, url);
 
-        // Retrieves the BLOB from the url
-        final byte[] blob = FileUtils.readBlobFromUrl(url);
+        try {
+            // If the ID is missing, throws a functional exception
+            if (isNull(id)) {
+                throw new FunctionalException("Missing contact ID");
+            }
 
-        // Prepares the statement
-        final String query = "UPDATE Contacts SET picture = ";
-        final QueryArgument idArgument = new QueryArgument("id", id, QueryArgumentType.INTEGER);
-        final PreparedStatement statement = SQLUtils.generateStatementWithUpdateClauseWithBlob(connection, query, blob, idArgument);
+            // If the ID is negative or zero, throws a functional exception
+            if (MINIMUM_ID.compareTo(id) > 0) {
+                throw new FunctionalException("The contact ID can not be negative or zero");
+            }
 
-        // Executes the query
-        if (statement.executeUpdate() == 0) {
-            logger.info("Contact not found for ID: {}, nothing to update", id);
-        } else {
-            logger.info("Picture of contact {} updated", id);
+            // Retrieves the picture from the url
+            final byte[] picture = FileUtils.readBlobFromUrl(url);
+
+            // Prepares the statement
+            final QueryArgument idArgument = new QueryArgument("id", id, INTEGER);
+            final PreparedStatement statement = SQLUtils
+                .generateStatementWithUpdateClauseWithBlob(connection, UPDATE_CONTACT_PICTURE_BY_ID_QUERY, picture, idArgument);
+
+            // Executes the query and retrieves the number of updated contacts
+            int result = statement.executeUpdate();
+
+            switch (result) {
+                case 0:
+                    // If no contact has been updated, returns a 204 status
+                    logger.debug("[updateContactPictureByID => {}] No contact found to update", NO_CONTENT.value());
+                    return ResponseEntity.noContent().build();
+                case 1:
+                    // If exactly one contact has been updated, returns a 200 status
+                    logger.debug("[updateContactPictureByID => {}] Contact picture updated", OK.value());
+                    return ResponseEntity.ok().build();
+                default:
+                    // If there more than one contacts have been updated, throws a technical exception
+                    throw new TechnicalException("More than one contact has been updated in the database");
+            }
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[updateContactPictureByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (IOException | SQLException | TechnicalException e) {
+            logger.error("[updateContactPictureByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
     }
 
@@ -240,23 +467,62 @@ public class ContactController {
      * @param id
      *     The ID of the contact to delete
      *
-     * @throws SQLException
-     *     if the call fails
+     * @return an HTTP response
      */
-    @RequestMapping(value = "/{id}/delete", method = RequestMethod.DELETE)
-    public void deleteContactByID(@PathVariable Integer id) throws SQLException {
-        logger.debug("Calling deleteContactByID with id = {}", id);
+    @DeleteMapping(value = "/{id}/delete")
+    public ResponseEntity<?> deleteContactByID(@PathVariable Integer id) {
+        logger.debug("[deleteContactByID <= Calling] With ID = {}", id);
 
-        // Prepares the statement
-        final String query = "DELETE FROM Contacts WHERE id = ?";
-        final PreparedStatement statement = connection.prepareStatement(query);
-        statement.setInt(1, id);
+        try {
+            // If the ID is missing, throws a functional exception
+            if (isNull(id)) {
+                throw new FunctionalException("Missing contact ID");
+            }
 
-        // Executes the query
-        if (statement.executeUpdate() == 0) {
-            logger.info("Contact not found for ID: {}, nothing to delete", id);
-        } else {
-            logger.info("Contact {} deleted", id);
+            // If the ID is negative or zero, throws a functional exception
+            if (MINIMUM_ID.compareTo(id) > 0) {
+                throw new FunctionalException("The contact ID can not be negative or zero");
+            }
+
+            // Prepares the statement
+            final PreparedStatement statement = connection.prepareStatement(DELETE_CONTACT_BY_ID_QUERY);
+
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate SQL statement");
+            }
+
+            // Sets the query's arguments
+            statement.setInt(1, id);
+
+            // Executes the query and retrieves the number of updated contacts
+            int result = statement.executeUpdate();
+
+            switch (result) {
+                case 0:
+                    // If no contact has been deleted, returns a 204 status
+                    logger.debug("[deleteContactByID => {}] No contact found to delete", NO_CONTENT.value());
+                    return ResponseEntity.noContent().build();
+                case 1:
+                    // If exactly one contact has been deleted, returns a 200 status
+                    logger.debug("[deleteContactByID => {}] Contact deleted", OK.value());
+                    return ResponseEntity.ok().build();
+                default:
+                    // If there more than one contacts have been deleted, throws a technical exception
+                    throw new TechnicalException("More than one contact has been deleted from the database");
+            }
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[deleteContactByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[deleteContactByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
     }
 

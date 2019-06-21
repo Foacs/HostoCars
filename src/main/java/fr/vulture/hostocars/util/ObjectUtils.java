@@ -16,6 +16,18 @@ public class ObjectUtils {
     }
 
     /**
+     * Returns true if any input object is null.
+     *
+     * @param objects
+     *     The objects
+     *
+     * @return true if any input object is null
+     */
+    public static boolean isAnyNull(Object... objects) {
+        return Arrays.stream(objects).anyMatch(Objects::isNull);
+    }
+
+    /**
      * Returns true if any input object is not null.
      *
      * @param objects

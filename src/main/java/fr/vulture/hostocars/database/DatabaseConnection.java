@@ -1,5 +1,7 @@
 package fr.vulture.hostocars.database;
 
+import static java.util.Objects.isNull;
+
 import fr.vulture.hostocars.controller.DatabaseController;
 import fr.vulture.hostocars.error.TechnicalException;
 import java.io.File;
@@ -44,9 +46,6 @@ public class DatabaseConnection implements InitializingBean {
     @Autowired
     private DatabaseScriptExecutor databaseScriptExecutor;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterPropertiesSet() throws TechnicalException, SQLException, IOException {
         logger.debug("Initializing {}", logger.getName());
@@ -56,7 +55,7 @@ public class DatabaseConnection implements InitializingBean {
             // If the folder doesn't exist, creates it
             dataFolder.mkdir();
 
-            logger.debug("\"{}\" folder has been created", databaseLocation);
+            logger.debug("Database folder created with name {}", databaseLocation);
         }
 
         // If the database file doesn't exist yet, an initialization is needed
@@ -69,14 +68,13 @@ public class DatabaseConnection implements InitializingBean {
         if (isInitializationNeeded) {
             // Initializes the database to current version
             databaseScriptExecutor.initializeDatabaseToCurrentVersion();
-            databaseVersion = projectVersion;
 
             logger.info("Database initialized to version {}", projectVersion);
         } else {
             // Retrieves the database version
             databaseVersion = databaseController.getCurrentDatabaseVersion();
 
-            if (databaseVersion == null) {
+            if (isNull(databaseVersion)) {
                 // If no version in available in the database, throws an error
                 throw new TechnicalException("Unable to retrieve the database version");
             } else if (databaseVersion.compareTo(projectVersion) > 0) {
@@ -87,12 +85,10 @@ public class DatabaseConnection implements InitializingBean {
                 databaseScriptExecutor.updateDatabaseToCurrentVersion(databaseVersion);
 
                 logger.info("Database updated from version {} to version {}", databaseVersion, projectVersion);
-
-                databaseVersion = projectVersion;
             }
         }
 
-        logger.info("Connection to database established (version: {})", databaseVersion);
+        logger.info("Connection to database established");
     }
 
     /**
@@ -107,6 +103,13 @@ public class DatabaseConnection implements InitializingBean {
      */
     public PreparedStatement prepareStatement(String sql) throws SQLException {
         return connection.prepareStatement(sql);
+    }
+
+    /**
+     * Calls {@link Connection#prepareStatement(String, int)}.
+     */
+    public PreparedStatement prepareStatementWithGeneratedKeys(String sql) throws SQLException {
+        return connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 
 }
