@@ -1,5 +1,8 @@
 package fr.vulture.hostocars.database;
 
+import static java.util.Objects.*;
+
+import fr.vulture.hostocars.error.TechnicalException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -40,16 +43,21 @@ class DatabaseScriptExecutor {
      *     if a script file can not be found or read
      * @throws SQLException
      *     if a script file execution fails
+     * @throws TechnicalException
+     *     if no higher script folder version is found
      */
-    void initializeDatabaseToCurrentVersion() throws IOException, SQLException {
+    void initializeDatabaseToCurrentVersion() throws IOException, SQLException, TechnicalException {
         logger.debug("Initializing the database to version {}", projectVersion);
 
         File resources = new ClassPathResource(sqlScriptsResourcesLocation).getFile();
         File[] versions = resources.listFiles(file -> file.isDirectory()
             && file.getName().compareTo(projectVersion) <= 0);
 
-        updateDatabaseToVersions(versions);
+        if (isNull(versions)) {
+            throw new TechnicalException("No higher script folder version found");
+        }
 
+        updateDatabaseToVersions(versions);
     }
 
     /**
@@ -62,12 +70,21 @@ class DatabaseScriptExecutor {
      *     if a script file can not be found or read
      * @throws SQLException
      *     if a script file execution fails
+     * @throws TechnicalException
+     *     if no higher script folder version is found
      */
-    void updateDatabaseToCurrentVersion(String databaseVersion) throws IOException, SQLException {
+    void updateDatabaseToCurrentVersion(String databaseVersion) throws IOException, SQLException, TechnicalException {
+        logger.debug("Updating the database from version {} to version {}", projectVersion,
+            databaseVersion);
+
         File resources = new ClassPathResource(sqlScriptsResourcesLocation).getFile();
         File[] versions = resources.listFiles(file -> file.isDirectory()
             && file.getName().compareTo(projectVersion) <= 0
             && file.getName().compareTo(databaseVersion) > 0);
+
+        if (isNull(versions)) {
+            throw new TechnicalException("No higher script folder version found");
+        }
 
         updateDatabaseToVersions(versions);
     }
@@ -89,14 +106,15 @@ class DatabaseScriptExecutor {
 
             File[] scripts = version.listFiles(file -> !file.isDirectory() && file.getName().endsWith(sqlScriptsExtension));
 
-            if (scripts == null) {
+            if (isNull(scripts)) {
                 logger.warn("No SQL script found for database version {}", version.getName());
             } else {
                 for (File script : scripts) {
                     executeScript(script);
                 }
 
-                logger.debug("Database successfully updated to version {}", version.getName());
+                logger.debug("The database has been successfully updated to version {}",
+                    version.getName());
             }
         }
     }
@@ -118,7 +136,7 @@ class DatabaseScriptExecutor {
         String query = "";
         BufferedReader reader = new BufferedReader(new FileReader(script));
         String line;
-        while ((line = reader.readLine()) != null) {
+        while (nonNull(line = reader.readLine())) {
             // Ignores comments
             if (!line.startsWith("--")) {
                 query = query.concat(line);
@@ -128,12 +146,12 @@ class DatabaseScriptExecutor {
                     // Removes useless spaces
                     query = query.trim().replaceAll(" {2}", " ");
 
-                    logger.debug("Executing query \"{}\"", query);
+                    logger.debug("Executing query {}", query);
 
                     final Statement statement = connection.createStatement();
                     statement.execute(query);
 
-                    logger.debug("Query successfully executed");
+                    logger.debug("The query has been successfully executed");
 
                     // Re-initializes the query
                     query = "";

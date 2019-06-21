@@ -1,6 +1,8 @@
 package fr.vulture.hostocars.configuration;
 
 import java.io.IOException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -14,8 +16,12 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
+    private static final Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        logger.debug("Adding resources to registry");
+
         registry.addResourceHandler("/**/*")
             .addResourceLocations("classpath:/static/")
             .resourceChain(true)
@@ -29,6 +35,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         : new ClassPathResource("/static/index.html");
                 }
             });
+
+        logger.debug("Resources added to registry");
     }
 
 }

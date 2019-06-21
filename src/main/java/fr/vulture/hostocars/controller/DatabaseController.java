@@ -1,5 +1,8 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.constant.SQLConstants.GET_CURRENT_DATABASE_VERSION_QUERY;
+import static java.util.Objects.isNull;
+
 import fr.vulture.hostocars.database.DatabaseConnection;
 import fr.vulture.hostocars.error.TechnicalException;
 import java.sql.PreparedStatement;
@@ -32,33 +35,38 @@ public class DatabaseController {
      *     if no version or more than one version are found
      */
     public String getCurrentDatabaseVersion() throws SQLException, TechnicalException {
-        logger.debug("Calling getCurrentDatabaseVersion");
-
-        // Prepares the query
-        final String query = "SELECT value FROM DatabaseInfo WHERE key = 'version'";
+        logger.debug("Retrieving the current database version");
 
         // Prepares the statement
-        final PreparedStatement statement = connection.prepareStatement(query);
+        final PreparedStatement statement = connection.prepareStatement(GET_CURRENT_DATABASE_VERSION_QUERY);
+
+        // If the statement is null, throws a technical exception
+        if (isNull(statement)) {
+            throw new TechnicalException("Failed to generate SQL statement");
+        }
 
         // Executes the query
         final ResultSet result = statement.executeQuery();
 
-        // Retrieves the resultant version
-        String version;
-        if (result.next()) {
-            version = result.getString("value");
+        // If the result is null, throws a technical exception
+        if (isNull(result)) {
+            throw new TechnicalException("The query execution failed");
+        }
 
+        // Retrieves the version
+        if (result.next()) {
+            final String version = result.getString("value");
+
+            // If there is more than one result, throws a technical exception
             if (result.next()) {
-                // If there is more than one result, throw a technical exception
                 throw new TechnicalException("More than one result found for version");
             }
 
-            logger.debug("Database version: {}", version);
-        } else {
-            throw new TechnicalException("Database version not found");
+            logger.debug("The current database version ({}) has been successfully retrieved", version);
+            return version;
         }
 
-        return version;
+        throw new TechnicalException("Database version not found");
     }
 
 }

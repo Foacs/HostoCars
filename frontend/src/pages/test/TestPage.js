@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import logo from '../../resources/logo.svg';
-
 import {
+    changeCurrentPageAction,
+    changeSelectedMenuIndexAction,
     deleteContactByIdAction,
     getContactByIdAction,
     getContactsAction,
@@ -16,65 +16,92 @@ import {
     updateContactPictureByIdAction
 } from 'actions';
 
+import { Button, Typography } from '@material-ui/core';
+
 import StyledTestPage from './StyledTestPage';
 
-function TestPage({ isUserLogged, contacts, contactById, searchedContacts, logUserIn, logUserOut, getContacts, getContactById, searchContacts, saveContact, updateContactById, updateContactPictureById, deleteContactById }) {
-    return (
-        <StyledTestPage>
-            <header className="header">
-                <img src={logo} className="logo" alt="logo" />
-                <p>Test</p>
+class TestPage extends PureComponent {
+    componentDidMount() {
+        const { changeCurrentPage, changeSelectedMenuIndex } = this.props;
 
-                <button onClick={isUserLogged ? logUserOut : logUserIn}>{isUserLogged ? 'Log out' : 'Log in'}</button>
-                <span>{isUserLogged ? 'Logged' : 'Not logged'}</span>
+        changeCurrentPage(
+            'Test',
+            [{ label: "Accueil", link: "/" }]
+        );
 
-                <button onClick={getContacts}>Get contacts</button>
-                <p>Contacts: {contacts.length}</p>
+        changeSelectedMenuIndex(2);
+    }
 
-                <button onClick={() => getContactById(1)}>Get contact by ID</button>
-                <p>Contact By ID: {contactById ? contactById.name : ""}</p>
+    render() {
+        const {
+            contactById,
+            contacts,
+            deleteContactById,
+            getContactById,
+            getContacts,
+            logUserIn,
+            logUserOut,
+            isUserLogged,
+            saveContact,
+            searchContacts,
+            searchedContacts,
+            updateContactById,
+            updateContactPictureById
+        } = this.props;
 
-                <button onClick={() => searchContacts({ name: 'Brice' })}>Search contacts with name Brice</button>
-                <p>Contacts with name Brice: {searchedContacts.length}</p>
+        return (
+            <StyledTestPage>
+                <Typography variant='h1'>Test</Typography>
 
-                <button onClick={() => saveContact({ name: 'Brice', nickname: 'Brice de Nice', number: 33684581274, favorite: true })}>Save new
+                <Button onClick={isUserLogged ? logUserOut : logUserIn}>{isUserLogged ? 'Log out' : 'Log in'}</Button>
+                <Typography>{isUserLogged ? 'Logged' : 'Not logged'}</Typography>
+
+                <Button onClick={getContacts}>Get contacts</Button>
+                <Typography>Contacts: {contacts.length}</Typography>
+
+                <Button onClick={() => getContactById(1)}>Get contact by ID</Button>
+                <Typography>Contact By ID: {contactById ? contactById.name : ""}</Typography>
+
+                <Button onClick={() => searchContacts({ name: 'Brice' })}>Search contacts with name Brice</Button>
+                <Typography>Contacts with name Brice: {searchedContacts.length}</Typography>
+
+                <Button onClick={() => saveContact({ name: 'Brice', nickname: 'Brice de Nice', number: 33684581274, favorite: true })}>Save new
                     contact
-                </button>
+                </Button>
 
-                <button onClick={() => updateContactById(1, { name: 'Tamère' })}>Update contact</button>
+                <Button onClick={() => updateContactById(1, { name: 'Pas Brice' })}>Update contact</Button>
 
-                <button onClick={() => updateContactPictureById(2, 'G:/Images/Hinata-chan.png')}>Update contact picture</button>
+                <Button onClick={() => updateContactPictureById(2, 'G:/Images/MangaRock/2uxdBf1IK2.png')}>Update contact picture</Button>
 
-                <button onClick={() => deleteContactById(1)}>Delete contact</button>
-            </header>
-        </StyledTestPage>
-    );
+                <Button onClick={() => deleteContactById(1)}>Delete contact</Button>
+            </StyledTestPage>
+        );
+    }
 }
 
 const mapStateToProps = state => ({
-    isUserLogged: state.isUserLogged,
-    contacts: state.contacts,
-    contactById: state.contactById,
-    searchedContacts: state.searchedContacts
+    contactById: state.test.contactById,
+    contacts: state.test.contacts,
+    isUserLogged: state.test.isUserLogged,
+    searchedContacts: state.test.searchedContacts
 });
 
-const mapDispatchToProps = dispatch =>
-    bindActionCreators(
-        {
-            logUserIn: logUserInAction,
-            logUserOut: logUserOutAction,
-            getContacts: getContactsAction,
-            getContactById: getContactByIdAction,
-            searchContacts: searchContactsAction,
-            saveContact: saveContactAction,
-            updateContactById: updateContactByIdAction,
-            updateContactPictureById: updateContactPictureByIdAction,
-            deleteContactById: deleteContactByIdAction
-        },
-        dispatch,
-    );
+const mapDispatchToProps = dispatch => bindActionCreators({
+        changeCurrentPage: changeCurrentPageAction,
+        changeSelectedMenuIndex: changeSelectedMenuIndexAction,
+        deleteContactById: deleteContactByIdAction,
+        getContactById: getContactByIdAction,
+        getContacts: getContactsAction,
+        logUserIn: logUserInAction,
+        logUserOut: logUserOutAction,
+        saveContact: saveContactAction,
+        searchContacts: searchContactsAction,
+        updateContactById: updateContactByIdAction,
+        updateContactPictureById: updateContactPictureByIdAction
+    }, dispatch
+);
 
 export default connect(
     mapStateToProps,
-    mapDispatchToProps,
+    mapDispatchToProps
 )(TestPage);

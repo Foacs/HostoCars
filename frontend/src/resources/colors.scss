@@ -1,42 +1,44 @@
 // Transparent
-$transparent: #ffffff00;
+$transparent: #ffffff00;                                    // transparent
 
 // Grey colors
-$white: #ffffff;
-$gray-light: #e3e3e3;
-$gray: #757575;
-$gray-dark: #333333;
-$black: #000000;
+$white: #ffffff;                                            // white
+$gray-light: #e3e3e3;                                       // grayLight
+$gray: #757575;                                             // gray
+$gray-dark: #333333;                                        // grayDark
+$black: #000000;                                            // black
 
 // Primary colors
-$primary-light-color: #ff9800;
-$primary-color: #f57c00;
-$primary-dark-color: #e65100;
+$primary-light-color: #2196f3;                              // primaryLightColor
+$primary-color: #1976d2;                                    // primaryColor
+$primary-dark-color: #0d47a1;                               // primaryDarkColor
 
 // Secondary colors
-$secondary-light-color: #2196f3;
-$secondary-color: #1976d2;
-$secondary-dark-color: #0d47a1;
+$secondary-light-color: #ff9800;                            // secondaryLightColor
+$secondary-color: #f57c00;                                  // secondaryColor
+$secondary-dark-color: #e65100;                             // secondaryDarkColor
 
 // Info colors
-$info-light-color: #2196f3;
-$info-color: #1976d2;
-$info-dark-color: #0d47a1;
+$info-light-color: #2196f3;                                 // infoLightColor
+$info-color: #1976d2;                                       // infoColor
+$info-dark-color: #0d47a1;                                  // infoDarkColor
 
 // Success colors
-$success-light-color: #4caf50;
-$success-color: #388e3c;
-$success-dark-color: #1b5e20;
+$success-light-color: #4caf50;                              // successLightColor
+$success-color: #388e3c;                                    // successColor
+$success-dark-color: #1b5e20;                               // successDarkColor
 
 // Warning colors
-$warning-light-color: #ffeb3b;
-$warning-color: #fbc02d;
-$warning-dark-color: #f57f17;
+$warning-light-color: #ffeb3b;                              // warningLightColor
+$warning-color: #fbc02d;                                    // warningColor
+$warning-dark-color: #f57f17;                               // warningDarkColor
 
 // Error colors
-$error-light-color: #f44336;
-$error-color: #d32f2f;
-$error-dark-color: #b71c1c;
+$error-light-color: #f44336;                                // errorLightColor
+$error-color: #d32f2f;                                      // errorColor
+$error-dark-color: #b71c1c;                                 // errorDarkColor
 
-// Background color
-$background-color: #282c34;
+// Background colors
+$background-light-color: #ffffff;                           // backgroundLightColor
+$background-color: #e3e3e3;                                 // backgroundColor
+$background-dark-color: #757575;                            // backgroundDarkColor

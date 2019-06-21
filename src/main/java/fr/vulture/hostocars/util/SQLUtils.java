@@ -1,6 +1,9 @@
 package fr.vulture.hostocars.util;
 
+import static java.util.Objects.*;
+
 import fr.vulture.hostocars.database.DatabaseConnection;
+import fr.vulture.hostocars.error.TechnicalException;
 import fr.vulture.hostocars.model.request.QueryArgument;
 import fr.vulture.hostocars.model.request.RequestBody;
 import java.sql.PreparedStatement;
@@ -35,7 +38,7 @@ public class SQLUtils {
      *     if the statement generation failed
      */
     public static PreparedStatement generateStatementWithWhereClause(final DatabaseConnection connection, final String query,
-        final RequestBody requestBody) throws SQLException {
+        final RequestBody requestBody) throws SQLException, TechnicalException {
         // Gets the query arguments from the request body
         final Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
 
@@ -48,7 +51,7 @@ public class SQLUtils {
             final QueryArgument firstArgument = iterator.next();
             queryBuilder.append(" WHERE ").append(firstArgument.getName());
 
-            if (firstArgument.getValue() != null) {
+            if (nonNull(firstArgument.getValue())) {
                 queryBuilder.append(" = ?");
             } else {
                 queryBuilder.append(" IS NULL");
@@ -59,7 +62,7 @@ public class SQLUtils {
                 final QueryArgument argument = iterator.next();
                 queryBuilder.append(" AND ").append(argument.getName());
 
-                if (argument.getValue() != null) {
+                if (nonNull(argument.getValue())) {
                     queryBuilder.append(" = ?");
                 } else {
                     queryBuilder.append(" IS NULL");
@@ -69,12 +72,15 @@ public class SQLUtils {
             // Generates the statement
             final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate SQL statement");
+            }
+
             // Sets the query arguments to the statement
             int index = 1;
             for (final QueryArgument argument : queryArguments) {
-                if (argument.getValue() != null) {
-                    statement.setObject(index++, argument.getValue(), argument.getType());
-                }
+                statement.setObject(index++, argument.getValue(), argument.getType());
             }
 
             return statement;
@@ -100,7 +106,7 @@ public class SQLUtils {
      *     if the statement generation failed
      */
     public static PreparedStatement generateStatementWithInsertClause(final DatabaseConnection connection, final String query,
-        final RequestBody requestBody) throws SQLException {
+        final RequestBody requestBody) throws SQLException, TechnicalException {
         // Gets the query arguments from the request body
         final Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
 
@@ -131,19 +137,22 @@ public class SQLUtils {
             // Generates the statement
             final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate SQL statement");
+            }
+
             // Sets the query arguments to the statement
             int index = 1;
             for (final QueryArgument argument : queryArguments) {
-                if (argument.getValue() != null) {
-                    statement.setObject(index++, argument.getValue(), argument.getType());
-                }
+                statement.setObject(index++, argument.getValue(), argument.getType());
             }
 
             return statement;
         }
 
         // Else, just returns a statement from the basic query with default values
-        return connection.prepareStatement(queryBuilder.append(" DEFAULT VALUES").toString());
+        return connection.prepareStatementWithGeneratedKeys(queryBuilder.append(" DEFAULT VALUES").toString());
     }
 
     /**
@@ -164,7 +173,7 @@ public class SQLUtils {
      *     if the statement generation failed
      */
     public static PreparedStatement generateStatementWithUpdateClause(final DatabaseConnection connection, final String query,
-        final RequestBody requestBody, final QueryArgument id) throws SQLException {
+        final RequestBody requestBody, final QueryArgument id) throws SQLException, TechnicalException {
         // Gets the query arguments from the request body
         final Iterable<QueryArgument> queryArguments = requestBody.getQueryArguments();
 
@@ -190,12 +199,15 @@ public class SQLUtils {
             // Generates the statement
             final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate SQL statement");
+            }
+
             // Sets the query arguments to the statement
             int index = 1;
             for (final QueryArgument argument : queryArguments) {
-                if (argument.getValue() != null) {
-                    statement.setObject(index++, argument.getValue(), argument.getType());
-                }
+                statement.setObject(index++, argument.getValue(), argument.getType());
             }
 
             // Sets the ID argument
@@ -232,7 +244,7 @@ public class SQLUtils {
         final PreparedStatement statement;
 
         // If the URL is null, sets the picture to NULL
-        if (blob == null) {
+        if (isNull(blob)) {
             // Sets the picture to NULL <and adds the closing 'WHERE' clause for the ID
             queryBuilder.append("NULL WHERE ").append(id.getName()).append(" = ?");
 

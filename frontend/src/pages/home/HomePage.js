@@ -1,20 +1,34 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import { Typography } from '@material-ui/core'
-
-import logo from '../../resources/logo.svg';
+import { changeCurrentPageAction, changeSelectedMenuIndexAction } from "actions";
 
 import StyledHomePage from './StyledHomePage';
 
-function HomePage() {
-    return (
-        <StyledHomePage>
-            <header className="header">
-                <img src={logo} className="logo" alt="logo" />
-                <Typography>Hello World!</Typography>
-            </header>
-        </StyledHomePage>
-    );
+class HomePage extends PureComponent {
+    componentDidMount() {
+        const { changeCurrentPage, changeSelectedMenuIndex } = this.props;
+
+        changeCurrentPage('Accueil', []);
+
+        changeSelectedMenuIndex(0)
+    }
+
+    render() {
+        return (
+            <StyledHomePage />
+        );
+    }
 }
 
-export default HomePage;
+const mapDispatchToProps = dispatch => bindActionCreators({
+        changeCurrentPage: changeCurrentPageAction,
+        changeSelectedMenuIndex: changeSelectedMenuIndexAction,
+    }, dispatch
+);
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(HomePage);

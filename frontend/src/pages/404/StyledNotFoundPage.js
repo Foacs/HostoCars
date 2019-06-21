@@ -1,31 +1,38 @@
 import styled from 'styled-components';
 
-import { backgroundColor } from 'resources';
+import { primaryColor } from 'resources';
 
 const StyledNotFoundPage = styled.div`
     & {
+        color: ${primaryColor};
+        left: calc(50% - 128px);
+        overflow: hidden;
+        pointer-events: none;
+        position: absolute;
         text-align: center;
-        & .header {
-            background-color: ${backgroundColor};
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: calc(10px + 2vmin);
-            color: white;
-            & .logo {
-                animation: logo--spin infinite 20s linear;
-                height: 40vmin;
-                pointer-events: none;
+        top: 20%;
+        & [class*='MuiSvgIcon-root'] {
+            animation: pendulum infinite 3s ease-in-out 1s both;
+            font-size: 512px;
+        }
+        & [class*='MuiTypography-root'] {
+            line-height: 1.25;
+        }
+        @keyframes pendulum {
+            0% {
+                transform: rotate(0deg);
             }
-            @keyframes logo--spin {
-                from {
-                    transform: rotate(0deg);
-                }
-                to {
-                    transform: rotate(360deg);
-                }
+            21% {
+                transform: rotate(30deg);
+            }
+            49% {
+                transform: rotate(-30deg);
+            }
+            70% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(0deg);
             }
         }
     }

@@ -1,18 +1,44 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
-import logo from '../../resources/logo.svg';
+import { changeCurrentPageAction, changeSelectedMenuIndexAction } from "actions";
+
+import { Typography } from '@material-ui/core';
+import { SentimentDissatisfiedRounded } from '@material-ui/icons';
 
 import StyledNotFoundPage from './StyledNotFoundPage';
 
-function NotFoundPage() {
-    return (
-        <StyledNotFoundPage>
-            <header className="header">
-                <img src={logo} className="logo" alt="logo" />
-                <p>404 - Page not found</p>
-            </header>
-        </StyledNotFoundPage>
-    );
+class NotFoundPage extends PureComponent {
+    componentDidMount() {
+        const { changeCurrentPage, changeSelectedMenuIndex } = this.props;
+
+        changeCurrentPage(
+            'Page introuvable',
+            []
+        );
+
+        changeSelectedMenuIndex(-1);
+    }
+
+    render() {
+        return (
+            <StyledNotFoundPage>
+                <SentimentDissatisfiedRounded />
+
+                <Typography variant="h1">Page introuvable</Typography>
+            </StyledNotFoundPage>
+        );
+    }
 }
 
-export default NotFoundPage;
+const mapDispatchToProps = dispatch => bindActionCreators({
+        changeCurrentPage: changeCurrentPageAction,
+        changeSelectedMenuIndex: changeSelectedMenuIndexAction
+    }, dispatch
+);
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(NotFoundPage);

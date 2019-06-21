@@ -1,4 +1,4 @@
-import * as TYPES from 'actions/actionTypes';
+import { testActionTypes as types } from 'actions';
 
 const initialState = {
     isUserLogged: false,
@@ -7,44 +7,44 @@ const initialState = {
     searchedContacts: []
 };
 
-const reducer = (state = initialState, action) => {
+const testReducer = (state = initialState, action) => {
     switch (action.type) {
-        case TYPES.LOG_USER_IN:
+        case types.LOG_USER_IN:
             return {
                 ...state,
                 isUserLogged: true
             };
-        case TYPES.LOG_USER_OUT:
+        case types.LOG_USER_OUT:
             return {
                 ...state,
                 isUserLogged: false
             };
-        case TYPES.GET_CONTACTS:
+        case types.GET_CONTACTS:
             return {
                 ...state,
                 contacts: action.data
             };
-        case TYPES.GET_CONTACT_BY_ID:
+        case types.GET_CONTACT_BY_ID:
             return {
                 ...state,
                 contactById: action.data
             };
-        case TYPES.SEARCH_CONTACTS:
+        case types.SEARCH_CONTACTS:
             return {
                 ...state,
                 searchedContacts: action.data
             };
-        case TYPES.SAVE_CONTACT:
+        case types.SAVE_CONTACT:
             return state;
-        case TYPES.UPDATE_CONTACT_BY_ID:
+        case types.UPDATE_CONTACT_BY_ID:
             return state;
-        case TYPES.UPDATE_CONTACT_PICTURE_BY_ID:
+        case types.UPDATE_CONTACT_PICTURE_BY_ID:
             return state;
-        case TYPES.DELETE_CONTACT_BY_ID:
+        case types.DELETE_CONTACT_BY_ID:
             return state;
         default:
             return state;
     }
 };
 
-export default reducer;
+export default testReducer;
