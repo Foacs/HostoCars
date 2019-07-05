@@ -3,12 +3,12 @@ import thunk from 'redux-thunk';
 
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import { navigationReducer, testReducer } from 'store';
+import { carsReducer, navigationReducer } from 'store';
 
 const store = createStore(
     combineReducers({
-        navigation: navigationReducer,
-        test: testReducer
+        cars: carsReducer,
+        navigation: navigationReducer
     }),
     composeWithDevTools(applyMiddleware(thunk))
 );

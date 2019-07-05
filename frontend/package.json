@@ -1,6 +1,6 @@
 {
     "name": "hostocars",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "private": true,
     "homepage": "http://localhost:8080/",
     "dependencies": {

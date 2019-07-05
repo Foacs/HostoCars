@@ -1,4 +1,4 @@
-package fr.vulture.hostocars.model.request;
+package fr.vulture.hostocars.model.request.api;
 
 import lombok.Data;
 

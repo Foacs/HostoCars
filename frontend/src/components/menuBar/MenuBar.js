@@ -7,9 +7,8 @@ import StyledMenuBar from './StyledMenuBar';
 
 import { List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import {
-    BuildRounded as TestIcon,
-    HomeRounded as HomeIcon,
-    SentimentDissatisfiedRounded as NotFoundIcon
+    DirectionsCarRounded as CarsIcon,
+    ListAltRounded as InterventionsIcon,
 } from '@material-ui/icons';
 
 import { changeSelectedMenuIndexAction } from "actions";
@@ -17,9 +16,8 @@ import { changeSelectedMenuIndexAction } from "actions";
 import logo from '../../resources/logo.svg';
 
 const menuItems = [
-    { label: 'Accueil', link: '/', icon: <HomeIcon /> },
-    { label: 'Page introuvable', link: '/404', icon: <NotFoundIcon /> },
-    { label: 'Test', link: '/test', icon: <TestIcon /> }
+    { label: 'Voitures', link: '/cars', icon: <CarsIcon /> },
+    { label: 'Interventions', link: '/interventions', icon: <InterventionsIcon /> }
 ];
 
 function MenuBar({ changeSelectedMenuIndex, selectedMenuIndex }) {

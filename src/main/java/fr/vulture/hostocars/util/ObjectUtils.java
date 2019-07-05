@@ -23,7 +23,7 @@ public class ObjectUtils {
      *
      * @return true if any input object is null
      */
-    public static boolean isAnyNull(Object... objects) {
+    public static boolean isAnyNull(final Object... objects) {
         return Arrays.stream(objects).anyMatch(Objects::isNull);
     }
 
@@ -35,7 +35,7 @@ public class ObjectUtils {
      *
      * @return true if any input object is not null
      */
-    public static boolean isAnyNonNull(Object... objects) {
+    public static boolean isAnyNonNull(final Object... objects) {
         return Arrays.stream(objects).anyMatch(Objects::nonNull);
     }
 

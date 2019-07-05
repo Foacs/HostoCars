@@ -1,9 +1,7 @@
-package fr.vulture.hostocars.controller;
+package fr.vulture.hostocars.database;
 
-import static fr.vulture.hostocars.constant.SQLConstants.GET_CURRENT_DATABASE_VERSION_QUERY;
 import static java.util.Objects.isNull;
 
-import fr.vulture.hostocars.database.DatabaseConnection;
 import fr.vulture.hostocars.error.TechnicalException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,6 +19,11 @@ public class DatabaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseController.class);
 
+    /**
+     * Query for the getCurrentDatabaseVersion method.
+     */
+    private static final String GET_CURRENT_DATABASE_VERSION_QUERY = "SELECT value FROM DatabaseInfo WHERE key = 'version'";
+
     @Autowired
     private DatabaseConnection connection;
 
@@ -34,7 +37,7 @@ public class DatabaseController {
      * @throws TechnicalException
      *     if no version or more than one version are found
      */
-    public String getCurrentDatabaseVersion() throws SQLException, TechnicalException {
+    String getCurrentDatabaseVersion() throws SQLException, TechnicalException {
         logger.debug("Retrieving the current database version");
 
         // Prepares the statement
@@ -42,7 +45,7 @@ public class DatabaseController {
 
         // If the statement is null, throws a technical exception
         if (isNull(statement)) {
-            throw new TechnicalException("Failed to generate SQL statement");
+            throw new TechnicalException("Failed to generate the SQL statement");
         }
 
         // Executes the query

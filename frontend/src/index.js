@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Route, Router, Switch } from 'react-router-dom';
+import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { ThemeProvider } from '@material-ui/styles';
 
@@ -11,7 +11,7 @@ import { theme } from 'resources';
 import { CssBaseline } from '@material-ui/core';
 
 import { AppBar, MenuBar } from 'components';
-import { HomePage, NotFoundPage, TestPage } from 'pages';
+import { CarsPage, NotFoundPage } from 'pages';
 
 import './index.scss';
 
@@ -33,9 +33,9 @@ ReactDOM.render(
 
                 <main>
                     <Switch>
-                        <Route exact path="/" component={HomePage} />
-                        <Route exact path="/test" component={TestPage} />
-                        <Route component={NotFoundPage} />
+                        <Route exact path="/cars" component={CarsPage} />
+                        <Redirect exact from="/" to="/cars" />
+                        <Route exact push component={NotFoundPage} />
                     </Switch>
                 </main>
 

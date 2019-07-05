@@ -1,4 +1,4 @@
-package fr.vulture.hostocars.model.request;
+package fr.vulture.hostocars.model.request.api;
 
 import java.sql.Types;
 
@@ -7,9 +7,10 @@ import java.sql.Types;
  */
 public class QueryArgumentType {
 
-    public static final int BOOLEAN = Types.BOOLEAN;
     public static final int INTEGER = Types.INTEGER;
     public static final int TEXT = Types.VARCHAR;
+    public static final int DATE = Types.DATE;
+    public static final int BLOB = Types.BLOB;
 
     /**
      * Default constructor.

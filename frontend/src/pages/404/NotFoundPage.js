@@ -13,10 +13,7 @@ class NotFoundPage extends PureComponent {
     componentDidMount() {
         const { changeCurrentPage, changeSelectedMenuIndex } = this.props;
 
-        changeCurrentPage(
-            'Page introuvable',
-            []
-        );
+        changeCurrentPage('Page introuvable', []);
 
         changeSelectedMenuIndex(-1);
     }

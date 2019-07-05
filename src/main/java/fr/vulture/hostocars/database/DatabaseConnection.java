@@ -2,7 +2,6 @@ package fr.vulture.hostocars.database;
 
 import static java.util.Objects.isNull;
 
-import fr.vulture.hostocars.controller.DatabaseController;
 import fr.vulture.hostocars.error.TechnicalException;
 import java.io.File;
 import java.io.IOException;

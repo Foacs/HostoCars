@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS DatabaseInfo (
     value TEXT
 );
 
--- Setting Database version to 0.0.1
-INSERT INTO DatabaseInfo(key, value) VALUES ('version', '0.0.1');
+-- Setting Database version to 1.0.0
+INSERT INTO DatabaseInfo(key, value) VALUES ('version', '1.0.0');
 INSERT INTO DatabaseInfo(key, value) VALUES ('lastUpdate', date());

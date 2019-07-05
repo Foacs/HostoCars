@@ -10,7 +10,7 @@ import { HomeRounded as HomeIcon, NavigateNextRounded as NextIcon } from '@mater
 function Breadcrumbs({ currentNavigationPath, currentPageName }) {
     return (
         <StyledBreadcrumbs separator={<NextIcon fontSize="small" />}>
-            <Link component={RouterLink} to="/">
+            <Link component={RouterLink} to="/cars">
                 <HomeIcon />
             </Link>
 
