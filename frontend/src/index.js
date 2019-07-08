@@ -3,15 +3,15 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
+
 import { ThemeProvider } from '@material-ui/styles';
-
-import { store } from 'store';
-import { theme } from 'resources';
-
 import { CssBaseline } from '@material-ui/core';
 
 import { AppBar, MenuBar } from 'components';
 import { CarsPage, NotFoundPage } from 'pages';
+
+import { store } from 'store';
+import { theme } from 'resources';
 
 import './index.scss';
 
@@ -33,8 +33,8 @@ ReactDOM.render(
 
                 <main>
                     <Switch>
-                        <Route exact path="/cars" component={CarsPage} />
-                        <Redirect exact from="/" to="/cars" />
+                        <Route exact path='/cars' component={CarsPage} />
+                        <Redirect exact from='/' to='/cars' />
                         <Route exact push component={NotFoundPage} />
                     </Switch>
                 </main>

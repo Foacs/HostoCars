@@ -6,13 +6,18 @@ import static java.util.Objects.isNull;
 import fr.vulture.hostocars.model.Car;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.springframework.stereotype.Component;
 
 /**
  * Converter from an SQL query result set to a car entity.
  */
-@Component("carConverter")
 public class CarConverter {
+
+    /**
+     * Default constructor.
+     */
+    private CarConverter() {
+        super();
+    }
 
     /**
      * Extracts a car from a result set.
@@ -25,7 +30,7 @@ public class CarConverter {
      * @throws SQLException
      *     if any of the columns in not found in the result set
      */
-    public Car from(final ResultSet resultSet) throws SQLException {
+    public static Car from(final ResultSet resultSet) throws SQLException {
         if (isNull(resultSet)) {
             return null;
         }
@@ -39,7 +44,7 @@ public class CarConverter {
         car.setMotorization(resultSet.getString("motorization"));
         car.setReleaseDate(getDateFromResultSet(resultSet, "releaseDate"));
         car.setCertificate(resultSet.getBytes("certificate"));
-        car.setComments(resultSet.getString( "comments"));
+        car.setComments(resultSet.getString("comments"));
         car.setPicture(resultSet.getBytes("picture"));
 
         return car;

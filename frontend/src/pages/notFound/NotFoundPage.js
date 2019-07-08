@@ -1,13 +1,14 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import { changeCurrentPageAction, changeSelectedMenuIndexAction } from "actions";
+import PropTypes from 'prop-types';
 
 import { Typography } from '@material-ui/core';
-import { SentimentDissatisfiedRounded } from '@material-ui/icons';
+import { SentimentDissatisfiedRounded as SmileyIcon } from '@material-ui/icons';
 
 import StyledNotFoundPage from './StyledNotFoundPage';
+
+import { changeCurrentPageAction, changeSelectedMenuIndexAction } from 'actions';
 
 class NotFoundPage extends PureComponent {
     componentDidMount() {
@@ -20,10 +21,10 @@ class NotFoundPage extends PureComponent {
 
     render() {
         return (
-            <StyledNotFoundPage>
-                <SentimentDissatisfiedRounded />
+            <StyledNotFoundPage className='NotFoundPage'>
+                <SmileyIcon className='NotFoundPage-SmileyIcon' />
 
-                <Typography variant="h1">Page introuvable</Typography>
+                <Typography className='NotFoundPage-Label' variant='h1'>Page introuvable</Typography>
             </StyledNotFoundPage>
         );
     }
@@ -34,6 +35,11 @@ const mapDispatchToProps = dispatch => bindActionCreators({
         changeSelectedMenuIndex: changeSelectedMenuIndexAction
     }, dispatch
 );
+
+NotFoundPage.propTypes = {
+    changeCurrentPage: PropTypes.func.isRequired,
+    changeSelectedMenuIndex: PropTypes.func.isRequired
+};
 
 export default connect(
     null,

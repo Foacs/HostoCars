@@ -12,7 +12,6 @@ import fr.vulture.hostocars.model.Car;
 import fr.vulture.hostocars.model.converter.CarConverter;
 import fr.vulture.hostocars.model.request.CarRequestBody;
 import fr.vulture.hostocars.model.request.api.QueryArgument;
-import fr.vulture.hostocars.util.FileUtils;
 import fr.vulture.hostocars.util.SQLUtils;
 import java.io.IOException;
 import java.sql.PreparedStatement;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -48,15 +46,13 @@ public class CarController {
     private static final String GET_CARS_QUERY = "SELECT * FROM Cars";
     private static final String GET_CAR_BY_ID_QUERY = "SELECT * FROM Cars WHERE id = ?";
     private static final String SEARCH_CARS_QUERY = "SELECT * FROM Cars";
+    private static final String GET_DISTINCT_FIELD_VALUES_QUERY = "SELECT DISTINCT ? FROM Cars";
     private static final String SAVE_CAR_QUERY = "INSERT INTO Cars";
     private static final String UPDATE_CAR_BY_ID_QUERY = "UPDATE Cars SET ";
     private static final String DELETE_CAR_BY_ID_QUERY = "DELETE FROM Cars WHERE id = ?";
 
     @Autowired
     private DatabaseConnection connection;
-
-    @Autowired
-    private CarConverter carConverter;
 
     /**
      * Retrieves the list of all the cars from the database.
@@ -88,7 +84,7 @@ public class CarController {
             final List<Car> cars = new ArrayList<>();
             while (result.next()) {
                 // Converts the current query result to a car entity
-                final Car car = carConverter.from(result);
+                final Car car = CarConverter.from(result);
 
                 // If the car entity is null, throws a technical exception
                 if (isNull(car)) {
@@ -162,7 +158,7 @@ public class CarController {
             // Retrieves the resultant car
             if (result.next()) {
                 // Converts the query result to a car entity
-                final Car car = carConverter.from(result);
+                final Car car = CarConverter.from(result);
 
                 // If there is more than one result, throws a technical exception
                 if (result.next()) {
@@ -195,6 +191,86 @@ public class CarController {
     }
 
     /**
+     * Retrieves the distinct values of the given field from the database.
+     *
+     * @param field
+     *     The field name
+     *
+     * @return the distinct values of the given field from the database
+     */
+    @GetMapping(value = "/field/{field}")
+    public ResponseEntity<?> getDistinctFieldValues(@PathVariable String field) {
+        logger.debug("[getDistinctFieldValues <= Calling] With field = {}", field);
+
+        try {
+            // If the field is missing or empty, throws a functional exception
+            if (isNull(field) || field.isEmpty()) {
+                throw new FunctionalException("Missing or empty field name");
+            }
+
+            // If the field is inexistant in the Cars table or irrelevant for the query, throws a functional exception
+            if (!CarRequestBody.hasRelevantField(field)) {
+                throw new FunctionalException("Inexistant or irrelevant field in the Cars table");
+            }
+
+            // Prepares the statement
+            final PreparedStatement statement = connection.prepareStatement(GET_DISTINCT_FIELD_VALUES_QUERY.replace("?", field));
+
+            // If the statement is null, throws a technical exception
+            if (isNull(statement)) {
+                throw new TechnicalException("Failed to generate the SQL statement");
+            }
+
+            // Executes the query
+            final ResultSet result = statement.executeQuery();
+
+            // If the result is null, throws a technical exception
+            if (isNull(result)) {
+                throw new TechnicalException("The query execution failed");
+            }
+
+            // Retrieves the resultant values
+            final List<Object> values = new ArrayList<>();
+            while (result.next()) {
+                final Object value = result.getObject(1);
+
+                // If the current value is not null, adds it to the resultant list
+                if (nonNull(value)) {
+                    if (values.contains(value)) {
+                        // If the current value has already been added to the list, raises a warning
+                        logger.warn("[getDistinctFieldValues] Duplicate value found ({}); ignored", value);
+                    } else {
+                        // Else, just adds it
+                        values.add(value);
+                    }
+                }
+            }
+
+            // If no value was found, returns a 204 status
+            if (values.isEmpty()) {
+                logger.debug("[getDistinctFieldValues => {}] No value found", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            }
+
+            // Returns the list of found values with a 200 status
+            logger.debug("[getDistinctFieldValues => {}] {} distinct values(s) found", OK.value(), values.size());
+            return ResponseEntity.ok(values);
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[getDistinctFieldValues => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (SQLException | TechnicalException e) {
+            logger.error("[getDistinctFieldValues => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
+    }
+
+    /**
      * Retrieves the list of cars corresponding to filters from a JSON body in the database.
      *
      * @param body
@@ -222,7 +298,7 @@ public class CarController {
             final List<Car> cars = new ArrayList<>();
             while (result.next()) {
                 // Converts the current query result to a car entity
-                final Car car = carConverter.from(result);
+                final Car car = CarConverter.from(result);
 
                 // If the car entity is null, throws a technical exception
                 if (isNull(car)) {

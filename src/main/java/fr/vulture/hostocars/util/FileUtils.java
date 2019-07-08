@@ -29,7 +29,7 @@ public class FileUtils {
      * @throws IOException
      *     if the file reading fails
      */
-    public static byte[] readBlobFromUrl(final String url) throws IOException {
+    static byte[] readBlobFromUrl(final String url) throws IOException {
         return nonNull(url) ? Files.readAllBytes(Paths.get(url)) : null;
     }
 

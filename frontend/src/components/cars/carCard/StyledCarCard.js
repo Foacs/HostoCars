@@ -2,35 +2,62 @@ import styled from 'styled-components';
 
 import { Card } from '@material-ui/core';
 
-import { primaryColor, primaryLightColor, white } from 'resources';
+import { gray, transparent } from 'resources';
 
 const StyledCarCard = styled(Card)`
-    &{
-        & [class*='CardActionArea-root'] {
-            width: 100%;
-            padding-top: 100%;
-            position: relative;
-            & img {
+    .CarCard {
+        &-ActionArea {
+            &-PictureBox {
+                overflow:hidden;
+                padding-top: 56.25%;
+                position: relative;
                 width: 100%;
-                position: absolute;
-                margin: auto;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                &.defaultCarPicture {
-                    width: 80%;
+                
+                &-Picture {
+                    bottom: 0;
+                    height: 100%;
+                    left: 0;
+                    margin: auto;
+                    object-fit: cover;
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    width: 100%;
+                    &_default {
+                        height: 80%;
+                        object-fit: none;
+                        width: 80%;
+                    }
                 }
             }
-        }
-        & [class*='MuiCardActions-root'] {
-            padding: 0;
-            & [class*='MuiButton-root'] {
-                border-radius: 0px;
-                background: radial-gradient(circle at center, ${primaryLightColor}, ${primaryColor});
-                color: ${white};
-                height: 100%;
-                width: 100%;
+            
+            &-TitleBox {
+                padding: 12px;
+                
+                &-RegistrationTitle, &-OwnerSubTitle, &-ModelSubTitle {
+                    overflow: visible;
+                }
+                
+                &-RegistrationTitle {
+                    font-size: calc(16px + 10 * ((100vw - 280px) / (1600 - 280)));
+                    line-height: 1.2;
+                }
+                
+                &-OwnerSubTitle {
+                    font-size: calc(12px + 8 * ((100vw - 280px) / (1600 - 280)));
+                    line-height: 1;
+                }
+                
+                &-ModelSubTitle {
+                    color: ${gray};
+                    font-size: calc(10px + 6 * ((100vw - 280px) / (1600 - 280)));
+                    font-style: italic;
+                    line-height: 1.4;
+                    
+                    &_missing {
+                        color: ${transparent};
+                    }
+                }
             }
         }
     }

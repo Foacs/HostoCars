@@ -1,14 +1,17 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
-import { changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from "actions";
+import PropTypes from 'prop-types';
 
 import { Grid } from '@material-ui/core';
 
-import { CarCard, Loading } from 'components';
+import { CarCard, ErrorPanel, LoadingPanel } from 'components';
 
 import StyledCarsPage from './StyledCarsPage';
+
+import { changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from 'actions';
+
+import { CarPropType } from 'resources';
 
 class CarsPage extends PureComponent {
     componentDidMount() {
@@ -16,28 +19,30 @@ class CarsPage extends PureComponent {
 
         changeCurrentPage('Voitures', []);
 
-        getCars();
+        changeSelectedMenuIndex(0);
 
-        changeSelectedMenuIndex(0)
+        getCars();
     }
 
     render() {
-        const { cars, isLoading, isInError } = this.props;
+        const { cars, isInError, isLoading } = this.props;
 
         let content;
         if (isInError) {
-            content = "Error";
+            content = <ErrorPanel className='CarsPage-ErrorPanel' />;
         } else if (isLoading) {
-            content = <Loading />;
+            content = <LoadingPanel className='CarsPage-LoadingPanel' />;
         } else {
             content = (
-                <Grid container
-                      justify="flex-start"
-                      alignItems="flex-start"
-                      spacing={4}>
+                <Grid
+                    className='CarsPage-CarsGrid'
+                    container
+                    justify='flex-start'
+                    alignItems='flex-start'
+                    spacing={4}>
                     {cars.map(car =>
-                        <Grid item xs={3} ms={2}>
-                            <CarCard car={car} />
+                        <Grid className='CarsPage-CarsGrid-Item' item lg={4} md={6} sm={12} xl={3} xs={12}>
+                            <CarCard car={car} className='CarsPage-CarsGrid-Item-CarCard' />
                         </Grid>
                     )}
                 </Grid>
@@ -45,7 +50,7 @@ class CarsPage extends PureComponent {
         }
 
         return (
-            <StyledCarsPage>
+            <StyledCarsPage className='CarsPage'>
                 {content}
             </StyledCarsPage>
         );
@@ -64,6 +69,15 @@ const mapDispatchToProps = dispatch => bindActionCreators({
         getCars: getCarsAction
     }, dispatch
 );
+
+CarsPage.propTypes = {
+    cars: PropTypes.arrayOf(CarPropType).isRequired,
+    changeCurrentPage: PropTypes.func.isRequired,
+    changeSelectedMenuIndex: PropTypes.func.isRequired,
+    getCars: PropTypes.func.isRequired,
+    isInError: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired
+};
 
 export default connect(
     mapStateToProps,

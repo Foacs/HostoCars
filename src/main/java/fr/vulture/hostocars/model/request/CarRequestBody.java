@@ -1,6 +1,6 @@
 package fr.vulture.hostocars.model.request;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.*;
 
 import fr.vulture.hostocars.model.request.api.QueryArgument;
 import fr.vulture.hostocars.model.request.api.QueryArgumentType;
@@ -9,6 +9,7 @@ import fr.vulture.hostocars.model.request.api.UpdateRequestBody;
 import fr.vulture.hostocars.util.ObjectUtils;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -30,6 +31,24 @@ public class CarRequestBody implements SearchRequestBody, UpdateRequestBody {
     private Optional<String> certificate;
     private Optional<String> comments;
     private Optional<String> picture;
+
+    /**
+     * Returns true if the given field name exists in the Car table and is relevant.
+     *
+     * @param fieldName
+     *     The field name
+     *
+     * @return true if the given field name exists in the Car table and is relevant
+     */
+    public static boolean hasRelevantField(final String fieldName) {
+        if (isNull(fieldName) || fieldName.isEmpty()) {
+            return false;
+        }
+
+        final List<String> fieldNames = Arrays.asList("owner", "registration", "brand", "model", "motorization", "releaseDate");
+
+        return fieldNames.contains(fieldName);
+    }
 
     @Override
     public Collection<QueryArgument> getSearchQueryArguments() {
