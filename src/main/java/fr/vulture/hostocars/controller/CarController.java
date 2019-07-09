@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -44,6 +45,7 @@ public class CarController {
     private static final Logger logger = LoggerFactory.getLogger(CarController.class);
 
     private static final String GET_CARS_QUERY = "SELECT * FROM Cars";
+    private static final String GET_CARS_SORTED_BY_QUERY = "SELECT * FROM Cars ORDER BY ?";
     private static final String GET_CAR_BY_ID_QUERY = "SELECT * FROM Cars WHERE id = ?";
     private static final String SEARCH_CARS_QUERY = "SELECT * FROM Cars";
     private static final String GET_DISTINCT_FIELD_VALUES_QUERY = "SELECT DISTINCT ? FROM Cars";
@@ -60,12 +62,27 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping
-    public ResponseEntity<?> getCars() {
+    public ResponseEntity<?> getCars(@RequestParam(required = false) String sortedBy) {
         logger.debug("[getCars <= Calling]");
 
         try {
             // Prepares the statement
-            final PreparedStatement statement = connection.prepareStatement(GET_CARS_QUERY);
+            PreparedStatement statement;
+            if (nonNull(sortedBy)) {
+                // If the sorting field is missing or empty, throws a functional exception
+                if (sortedBy.isEmpty()) {
+                    throw new FunctionalException("Empty sorting field name");
+                }
+
+                // If the sorting field is inexistant in the Cars table or irrelevant for the query, throws a functional exception
+                if (!CarRequestBody.hasRelevantField(sortedBy)) {
+                    throw new FunctionalException("Inexistant or irrelevant sorting field in the Cars table");
+                }
+
+                statement = connection.prepareStatement(GET_CARS_SORTED_BY_QUERY.replace("?", sortedBy));
+            } else {
+                statement = connection.prepareStatement(GET_CARS_QUERY);
+            }
 
             // If the statement is null, throws a technical exception
             if (isNull(statement)) {
@@ -106,6 +123,12 @@ public class CarController {
             return ResponseEntity.ok(cars);
         }
 
+        // If a functional exception has been thrown, returns a 400 status
+        catch (FunctionalException e) {
+            logger.error("[getCars => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
         // If a technical exception has been thrown, returns a 500 status
         catch (SQLException | TechnicalException e) {
             logger.error("[getCars => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
@@ -122,7 +145,7 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getCarByID(@PathVariable Integer id) {
+    public ResponseEntity<?> getCarByID(@PathVariable final Integer id) {
         logger.debug("[getCarByID <= Calling] With ID = {}", id);
 
         try {
@@ -199,7 +222,7 @@ public class CarController {
      * @return the distinct values of the given field from the database
      */
     @GetMapping(value = "/field/{field}")
-    public ResponseEntity<?> getDistinctFieldValues(@PathVariable String field) {
+    public ResponseEntity<?> getDistinctFieldValues(@PathVariable final String field) {
         logger.debug("[getDistinctFieldValues <= Calling] With field = {}", field);
 
         try {
@@ -279,7 +302,7 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping(value = "/search")
-    public ResponseEntity<?> searchCars(@RequestBody CarRequestBody body) {
+    public ResponseEntity<?> searchCars(@RequestBody final CarRequestBody body) {
         logger.debug("[searchCars <= Calling] With body = {}", body);
 
         try {
@@ -342,7 +365,7 @@ public class CarController {
      * @return an HTTP response
      */
     @PostMapping(value = "/save")
-    public ResponseEntity<?> saveCar(@RequestBody CarRequestBody body) {
+    public ResponseEntity<?> saveCar(@RequestBody final CarRequestBody body) {
         logger.debug("[saveCar <= Calling] With body = {}", body);
 
         try {
@@ -406,7 +429,7 @@ public class CarController {
      * @return an HTTP response
      */
     @PutMapping(value = "/{id}/update")
-    public ResponseEntity<?> updateCarByID(@PathVariable Integer id, @RequestBody CarRequestBody body) {
+    public ResponseEntity<?> updateCarByID(@PathVariable final Integer id, @RequestBody final CarRequestBody body) {
         logger.debug("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
 
         try {
@@ -464,7 +487,7 @@ public class CarController {
      * @return an HTTP response
      */
     @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<?> deleteCarByID(@PathVariable Integer id) {
+    public ResponseEntity<?> deleteCarByID(@PathVariable final Integer id) {
         logger.debug("[deleteCarByID <= Calling] With ID = {}", id);
 
         try {
