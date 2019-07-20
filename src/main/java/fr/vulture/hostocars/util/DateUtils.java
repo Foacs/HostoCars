@@ -1,47 +1,31 @@
 package fr.vulture.hostocars.util;
 
-import static java.util.Objects.nonNull;
+import static java.util.Objects.isNull;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class to manipulate dates.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateUtils {
 
     /**
-     * Default constructor.
+     * Parses a string and converts it into a {@link LocalDate} object.
+     *
+     * @param dateText
+     *     The date string
+     *
+     * @return a {@link LocalDate} object
      */
-    private DateUtils() {
-        super();
-    }
-
-    /**
-     * Retrieves a date from a result set and converts it to a {@code LocalDate} object.
-     *
-     * @param resultSet
-     *     The result set
-     * @param columnLabel
-     *     The date column label
-     *
-     * @return a {@code LocalDate} object
-     *
-     * @throws SQLException
-     *     if the queried column doesn't exist in the database
-     */
-    public static LocalDate getDateFromResultSet(final ResultSet resultSet, final String columnLabel) throws SQLException {
-        // Retrieves the date as text from the result set
-        final String dateText = resultSet.getString(columnLabel);
-
-        // If it is not null, converts it to a LocalDate object and returns it
-        if (nonNull(dateText)) {
-            return LocalDate.parse(dateText);
+    public static LocalDate getDateFromString(final String dateText) {
+        if (isNull(dateText)) {
+            return null;
         }
 
-        // Returns null
-        return null;
+        return LocalDate.parse(dateText);
     }
 
 }

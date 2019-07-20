@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -63,7 +64,6 @@ public class DatabaseConnection implements InitializingBean {
         // Connects to the database
         connection = DriverManager.getConnection(databaseUrl);
 
-        String databaseVersion;
         if (isInitializationNeeded) {
             // Initializes the database to current version
             databaseScriptExecutor.initializeDatabaseToCurrentVersion();
@@ -71,7 +71,7 @@ public class DatabaseConnection implements InitializingBean {
             logger.info("Database initialized to version {}", projectVersion);
         } else {
             // Retrieves the database version
-            databaseVersion = databaseController.getCurrentDatabaseVersion();
+            final String databaseVersion = databaseController.getCurrentDatabaseVersion();
 
             if (isNull(databaseVersion)) {
                 // If no version in available in the database, throws an error
@@ -100,14 +100,14 @@ public class DatabaseConnection implements InitializingBean {
     /**
      * Calls {@link Connection#prepareStatement(String)}.
      */
-    public PreparedStatement prepareStatement(String sql) throws SQLException {
+    public PreparedStatement prepareStatement(@NotNull final String sql) throws SQLException {
         return connection.prepareStatement(sql);
     }
 
     /**
      * Calls {@link Connection#prepareStatement(String, int)}.
      */
-    public PreparedStatement prepareStatementWithGeneratedKeys(String sql) throws SQLException {
+    public PreparedStatement prepareStatementWithGeneratedKeys(@NotNull final String sql) throws SQLException {
         return connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
     }
 

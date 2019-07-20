@@ -1,26 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Paper, Typography } from '@material-ui/core';
 import { ErrorOutlineRounded as ErrorIcon } from '@material-ui/icons';
 
-import StyledErrorPanel from './StyledErrorPanel';
+import './ErrorPanel.scss';
 
 function ErrorPanel({ className, transparent }) {
-    const componentClassName = `ErrorPanel ${transparent && 'ErrorPanel_transparent'} ${className}`;
+    const componentClassName = `${transparent && 'transparent'} ${className}`;
 
     return (
-        <StyledErrorPanel className={componentClassName}>
-            <Grid alignItems='center' className='ErrorPanel-Grid' container direction='column'>
-                <Grid className='ErrorPanel-Grid-IconItem' item>
-                    <ErrorIcon className='ErrorPanel-Grid-IconItem-Icon' />
+        <Paper className={componentClassName} id='ErrorPanel'>
+            <Grid alignItems='center' className='Grid' container direction='column'>
+                <Grid className='Grid-IconItem' item>
+                    <ErrorIcon className='Grid-IconItem-Icon' />
                 </Grid>
 
-                <Grid className='ErrorPanel-Grid-LabelItem' item>
-                    <Typography className='ErrorPanel-Grid-LabelItem-Label' variant='h6'>Chargement</Typography>
+                <Grid className='Grid-LabelItem' item>
+                    <Typography className='Grid-LabelItem-Label' variant='h6'>Erreur</Typography>
                 </Grid>
             </Grid>
-        </StyledErrorPanel>
+        </Paper>
     );
 }
 

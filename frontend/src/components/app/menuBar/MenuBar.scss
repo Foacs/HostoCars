@@ -1,0 +1,45 @@
+@import '../../../resources/colors';
+
+#MenuBar {
+    & > :first-child {
+        background: linear-gradient(60deg, $primary-light-color 15%, $primary-dark-color 75%);
+        overflow: hidden;
+        width: 256px;
+    }
+
+    & .Logo {
+        animation: rotation infinite 10s linear;
+        padding-bottom: 50px;
+        padding-top: 50px;
+    }
+
+    & .MenuList {
+        &-MenuItem {
+            &-Icon {
+                color: $white;
+                margin-left: 24px;
+            }
+
+            &-Label {
+                color: $white;
+            }
+        }
+    }
+
+    & .Footer {
+        bottom: 12px;
+        color: $white;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+    }
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}

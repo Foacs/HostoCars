@@ -5,7 +5,9 @@ import { Redirect, Route, Router, Switch } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import { ThemeProvider } from '@material-ui/styles';
-import { CssBaseline } from '@material-ui/core';
+import { Box, CssBaseline } from '@material-ui/core';
+
+import 'simplebar';
 
 import { AppBar, MenuBar } from 'components';
 import { CarsPage, NotFoundPage } from 'pages';
@@ -13,6 +15,7 @@ import { CarsPage, NotFoundPage } from 'pages';
 import { store } from 'store';
 import { theme } from 'resources';
 
+import 'simplebar/dist/simplebar.min.css';
 import './index.scss';
 
 function unregister() {
@@ -29,17 +32,19 @@ ReactDOM.render(
             <Router history={createBrowserHistory()}>
                 <CssBaseline />
 
-                <AppBar />
+                <main data-simplebar>
+                    <AppBar />
 
-                <main>
-                    <Switch>
-                        <Route exact path='/cars' component={CarsPage} />
-                        <Redirect exact from='/' to='/cars' />
-                        <Route exact push component={NotFoundPage} />
-                    </Switch>
+                    <Box className='Page'>
+                        <Switch>
+                            <Redirect exact from='/' to='/cars' />
+                            <Route exact path='/cars' component={CarsPage} />
+                            <Route exact push component={NotFoundPage} />
+                        </Switch>
+                    </Box>
+
+                    <MenuBar />
                 </main>
-
-                <MenuBar />
             </Router>
         </Provider>
     </ThemeProvider>,

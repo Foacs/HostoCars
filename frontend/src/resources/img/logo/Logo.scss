@@ -1,0 +1,7 @@
+@import '../../colors';
+
+#Logo {
+    & .Circle, & .Figure {
+        fill: $white;
+    }
+}

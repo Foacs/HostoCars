@@ -3,7 +3,8 @@ import { carsActionTypes as types } from 'actions';
 const initialState = {
     cars: [],
     isLoading: false,
-    isInError: false
+    isInError: false,
+    sortedBy: 'registration'
 };
 
 const testReducer = (state = initialState, action) => {
@@ -28,6 +29,11 @@ const testReducer = (state = initialState, action) => {
                 cars: [],
                 isLoading: false,
                 isInError: true
+            };
+        case types.CHANGE_CARS_SORT_ORDER:
+            return {
+                ...state,
+                sortedBy: action.sortedBy
             };
         default:
             return state;

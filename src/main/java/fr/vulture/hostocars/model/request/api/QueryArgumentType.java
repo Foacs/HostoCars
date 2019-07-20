@@ -1,10 +1,13 @@
 package fr.vulture.hostocars.model.request.api;
 
 import java.sql.Types;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Container for the SQL types.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class QueryArgumentType {
 
     /**
@@ -28,13 +31,6 @@ public class QueryArgumentType {
     public static final int BLOB = Types.BLOB;
 
     /**
-     * Default constructor.
-     */
-    private QueryArgumentType() {
-        super();
-    }
-
-    /**
      * Returns the string representation of a type.
      *
      * @param type
@@ -42,7 +38,7 @@ public class QueryArgumentType {
      *
      * @return a string
      */
-    public static String toString(int type) {
+    static String toString(int type) {
         switch (type) {
             case INTEGER:
                 return "Integer";

@@ -5,18 +5,14 @@ import static java.util.Objects.nonNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class to manage files.
  */
-public class FileUtils {
-
-    /**
-     * Default constructor.
-     */
-    private FileUtils() {
-        super();
-    }
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+class FileUtils {
 
     /**
      * Returns a BLOB from a file by its URL.

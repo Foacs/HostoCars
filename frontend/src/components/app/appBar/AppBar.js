@@ -1,21 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Toolbar } from '@material-ui/core';
+import { AppBar as MaterialAppBar, Toolbar } from '@material-ui/core';
 
 import { Breadcrumbs } from 'components';
 
-import StyledAppBar from './StyledAppBar';
+import './AppBar.scss';
 
 function AppBar({ className }) {
-    const componentClassName = `AppBar ${className}`;
-
     return (
-        <StyledAppBar className={componentClassName} position='fixed'>
-            <Toolbar className='AppBar-Toolbar'>
-                <Breadcrumbs className='AppBar-Toolbar-Breadcrumbs' />
+        <MaterialAppBar className={className} id='AppBar' position='fixed'>
+            <Toolbar className='Toolbar'>
+                <Breadcrumbs className='Toolbar-Breadcrumbs' />
             </Toolbar>
-        </StyledAppBar>
+        </MaterialAppBar>
     );
 }
 

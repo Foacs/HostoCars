@@ -1,8 +1,8 @@
 package fr.vulture.hostocars.controller;
 
 import static fr.vulture.hostocars.model.request.api.QueryArgumentType.INTEGER;
-import static fr.vulture.hostocars.util.SQLUtils.MINIMUM_ID;
-import static java.util.Objects.*;
+import static fr.vulture.hostocars.util.SQLUtils.*;
+import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.*;
 
 import fr.vulture.hostocars.database.DatabaseConnection;
@@ -59,9 +59,12 @@ public class CarController {
     /**
      * Retrieves the list of all the cars from the database.
      *
+     * @param sortedBy
+     *     Optional sorting clause field
+     *
      * @return an HTTP response
      */
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<?> getCars(@RequestParam(required = false) String sortedBy) {
         logger.debug("[getCars <= Calling]");
 
@@ -69,44 +72,29 @@ public class CarController {
             // Prepares the statement
             PreparedStatement statement;
             if (nonNull(sortedBy)) {
-                // If the sorting field is missing or empty, throws a functional exception
+                // If the sorting field is empty, throws a functional exception
                 if (sortedBy.isEmpty()) {
                     throw new FunctionalException("Empty sorting field name");
                 }
 
                 // If the sorting field is inexistant in the Cars table or irrelevant for the query, throws a functional exception
-                if (!CarRequestBody.hasRelevantField(sortedBy)) {
+                if (CarRequestBody.isIrrelevantField(sortedBy)) {
                     throw new FunctionalException("Inexistant or irrelevant sorting field in the Cars table");
                 }
 
-                statement = connection.prepareStatement(GET_CARS_SORTED_BY_QUERY.replace("?", sortedBy));
+                statement = connection.prepareStatement(GET_CARS_SORTED_BY_QUERY.replace(QUERY_PARAMETER_SYMBOL, sortedBy));
             } else {
                 statement = connection.prepareStatement(GET_CARS_QUERY);
             }
 
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
-
             // Executes the query
             final ResultSet result = statement.executeQuery();
-
-            // If the result is null, throws a technical exception
-            if (isNull(result)) {
-                throw new TechnicalException("The query execution failed");
-            }
 
             // Retrieves the resultant cars
             final List<Car> cars = new ArrayList<>();
             while (result.next()) {
                 // Converts the current query result to a car entity
                 final Car car = CarConverter.from(result);
-
-                // If the car entity is null, throws a technical exception
-                if (isNull(car)) {
-                    throw new TechnicalException("The query returned a null element");
-                }
 
                 // Adds the car entity to the result list
                 cars.add(car);
@@ -130,7 +118,7 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (SQLException e) {
             logger.error("[getCars => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
@@ -149,12 +137,7 @@ public class CarController {
         logger.debug("[getCarByID <= Calling] With ID = {}", id);
 
         try {
-            // If the ID is missing, throws a functional exception
-            if (isNull(id)) {
-                throw new FunctionalException("Missing car ID");
-            }
-
-            // If the ID is negative or zero, throws a functional exception
+            // If the ID is less than 1, throws a functional exception
             if (MINIMUM_ID.compareTo(id) > 0) {
                 throw new FunctionalException("The ID can not be negative or zero");
             }
@@ -162,37 +145,17 @@ public class CarController {
             // Prepares the statement
             final PreparedStatement statement = connection.prepareStatement(GET_CAR_BY_ID_QUERY);
 
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
-
             // Sets the query's arguments
             statement.setInt(1, id);
 
             // Executes the query
             final ResultSet result = statement.executeQuery();
 
-            // If the result is null, throws a technical exception
-            if (isNull(result)) {
-                throw new TechnicalException("The query execution failed");
-            }
-
             // Retrieves the resultant car
             if (result.next()) {
-                // Converts the query result to a car entity
-                final Car car = CarConverter.from(result);
-
-                // If there is more than one result, throws a technical exception
-                if (result.next()) {
-                    throw new TechnicalException("More than one car found for ID = {} in the database", id);
-                }
-
-                // If the found car entity is not null, returns it with a 200 status
-                if (nonNull(car)) {
-                    logger.debug("[getCarByID => {}] Car found for ID = {}", OK.value(), id);
-                    return ResponseEntity.ok(car);
-                }
+                // Converts the query result to a car entity and returns it with a 200 status
+                logger.debug("[getCarByID => {}] Car found for ID = {}", OK.value(), id);
+                return ResponseEntity.ok(CarConverter.from(result));
             }
 
             // Returns a 204 status
@@ -207,7 +170,7 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (SQLException e) {
             logger.error("[getCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
@@ -221,36 +184,21 @@ public class CarController {
      *
      * @return the distinct values of the given field from the database
      */
-    @GetMapping(value = "/field/{field}")
+    @GetMapping(value = "/{field}/values")
     public ResponseEntity<?> getDistinctFieldValues(@PathVariable final String field) {
         logger.debug("[getDistinctFieldValues <= Calling] With field = {}", field);
 
         try {
-            // If the field is missing or empty, throws a functional exception
-            if (isNull(field) || field.isEmpty()) {
-                throw new FunctionalException("Missing or empty field name");
-            }
-
             // If the field is inexistant in the Cars table or irrelevant for the query, throws a functional exception
-            if (!CarRequestBody.hasRelevantField(field)) {
+            if (CarRequestBody.isIrrelevantField(field)) {
                 throw new FunctionalException("Inexistant or irrelevant field in the Cars table");
             }
 
             // Prepares the statement
-            final PreparedStatement statement = connection.prepareStatement(GET_DISTINCT_FIELD_VALUES_QUERY.replace("?", field));
-
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
+            final PreparedStatement statement = connection.prepareStatement(GET_DISTINCT_FIELD_VALUES_QUERY.replace(QUERY_PARAMETER_SYMBOL, field));
 
             // Executes the query
             final ResultSet result = statement.executeQuery();
-
-            // If the result is null, throws a technical exception
-            if (isNull(result)) {
-                throw new TechnicalException("The query execution failed");
-            }
 
             // Retrieves the resultant values
             final List<Object> values = new ArrayList<>();
@@ -287,7 +235,7 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (SQLException e) {
             logger.error("[getDistinctFieldValues => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
@@ -312,21 +260,11 @@ public class CarController {
             // Executes the query
             final ResultSet result = statement.executeQuery();
 
-            // If the result is null, throws a technical exception
-            if (isNull(result)) {
-                throw new TechnicalException("The query execution failed");
-            }
-
             // Retrieves the resultant cars
             final List<Car> cars = new ArrayList<>();
             while (result.next()) {
                 // Converts the current query result to a car entity
                 final Car car = CarConverter.from(result);
-
-                // If the car entity is null, throws a technical exception
-                if (isNull(car)) {
-                    throw new TechnicalException("The query returned a null element");
-                }
 
                 // Adds the car entity to the result list
                 cars.add(car);
@@ -341,12 +279,6 @@ public class CarController {
             // Returns the list of found cars with a 200 status
             logger.debug("[searchCars => {}] {} car(s) found", OK.value(), cars.size());
             return ResponseEntity.ok(cars);
-        }
-
-        // If a functional exception has been thrown, returns a 400 status
-        catch (FunctionalException e) {
-            logger.error("[searchCars => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
         }
 
         // If a technical exception has been thrown, returns a 500 status
@@ -369,32 +301,24 @@ public class CarController {
         logger.debug("[saveCar <= Calling] With body = {}", body);
 
         try {
+            // If any of the mandatory fields are missing from the body, throws a functional exception
+            if (body.hasMissingMandatoryFields()) {
+                throw new FunctionalException("Missing mandatory field(s) in save body");
+            }
+
             // Prepares the statement
             final PreparedStatement statement = SQLUtils.generateStatementWithInsertClause(connection, SAVE_CAR_QUERY, body);
 
-            // Executes the query and retrieves the generated keys
+            // Executes the query
             statement.executeUpdate();
-            ResultSet result = statement.getGeneratedKeys();
 
-            // If the result is null, throws a technical exception
-            if (isNull(result)) {
-                throw new TechnicalException("The query execution failed");
-            }
+            // Retrieves the generated keys
+            ResultSet result = statement.getGeneratedKeys();
 
             // Retrieves the generated entity ID
             if (result.next()) {
                 // Retrieves the generated key
                 final int generatedID = result.getInt(1);
-
-                // If the generated ID is 0, throws a technical exception
-                if (MINIMUM_ID.compareTo(generatedID) > 0) {
-                    throw new TechnicalException("The new car has not been saved");
-                }
-
-                // If there is more than one generated key, throws a technical exception
-                if (result.next()) {
-                    throw new TechnicalException("More than one car has been saved in the database");
-                }
 
                 // Returns the generated key with a 200 status
                 logger.debug("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedID);
@@ -433,14 +357,14 @@ public class CarController {
         logger.debug("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
 
         try {
-            // If the ID is missing, throws a functional exception
-            if (isNull(id)) {
-                throw new FunctionalException("Missing car ID");
-            }
-
-            // If the ID is negative or zero, throws a functional exception
+            // If the ID is less than 1, throws a functional exception
             if (MINIMUM_ID.compareTo(id) > 0) {
                 throw new FunctionalException("The car ID can not be negative or zero");
+            }
+
+            // If the update body has not any non null value, throws a functional exception
+            if (!body.hasNonNullUpdateFields()) {
+                throw new FunctionalException("No value to update");
             }
 
             // Prepares the statement
@@ -450,18 +374,14 @@ public class CarController {
             // Executes the query and retrieves the number of updated cars
             int result = statement.executeUpdate();
 
-            switch (result) {
-                case 0:
-                    // If no car has been updated, returns a 204 status
-                    logger.debug("[updateCarByID => {}] No car found to update", NO_CONTENT.value());
-                    return ResponseEntity.noContent().build();
-                case 1:
-                    // If exactly one car has been updated, returns a 200 status
-                    logger.debug("[updateCarByID => {}] Car updated", OK.value());
-                    return ResponseEntity.ok().build();
-                default:
-                    // If there more than one cars have been updated, throws a technical exception
-                    throw new TechnicalException("More than one car has been updated in the database");
+            if (result == 0) {
+                // If no car has been updated, returns a 204 status
+                logger.debug("[updateCarByID => {}] No car found to update", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            } else {
+                // Else, returns a 200 status
+                logger.debug("[updateCarByID => {}] Car updated", OK.value());
+                return ResponseEntity.ok().build();
             }
         }
 
@@ -472,7 +392,7 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (IOException | SQLException | TechnicalException e) {
+        catch (IOException | SQLException e) {
             logger.error("[updateCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
@@ -491,12 +411,7 @@ public class CarController {
         logger.debug("[deleteCarByID <= Calling] With ID = {}", id);
 
         try {
-            // If the ID is missing, throws a functional exception
-            if (isNull(id)) {
-                throw new FunctionalException("Missing car ID");
-            }
-
-            // If the ID is negative or zero, throws a functional exception
+            // If the ID is less than 1, throws a functional exception
             if (MINIMUM_ID.compareTo(id) > 0) {
                 throw new FunctionalException("The car ID can not be negative or zero");
             }
@@ -504,29 +419,20 @@ public class CarController {
             // Prepares the statement
             final PreparedStatement statement = connection.prepareStatement(DELETE_CAR_BY_ID_QUERY);
 
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
-
             // Sets the query's arguments
             statement.setInt(1, id);
 
             // Executes the query and retrieves the number of updated cars
             int result = statement.executeUpdate();
 
-            switch (result) {
-                case 0:
-                    // If no car has been deleted, returns a 204 status
-                    logger.debug("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
-                    return ResponseEntity.noContent().build();
-                case 1:
-                    // If exactly one car has been deleted, returns a 200 status
-                    logger.debug("[deleteCarByID => {}] Car deleted", OK.value());
-                    return ResponseEntity.ok().build();
-                default:
-                    // If there more than one cars have been deleted, throws a technical exception
-                    throw new TechnicalException("More than one car has been deleted from the database");
+            if (result == 0) {
+                // If no car has been deleted, returns a 204 status
+                logger.debug("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            } else {
+                // Else, returns a 200 status
+                logger.debug("[deleteCarByID => {}] Car deleted", OK.value());
+                return ResponseEntity.ok().build();
             }
         }
 
@@ -537,7 +443,7 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (SQLException e) {
             logger.error("[deleteCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }

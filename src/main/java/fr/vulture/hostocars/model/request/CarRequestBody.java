@@ -33,21 +33,21 @@ public class CarRequestBody implements SearchRequestBody, UpdateRequestBody {
     private Optional<String> picture;
 
     /**
-     * Returns true if the given field name exists in the Car table and is relevant.
+     * Returns true if the given field name doesn't exist in the Car table or is irrelevant.
      *
      * @param fieldName
      *     The field name
      *
-     * @return true if the given field name exists in the Car table and is relevant
+     * @return true if the given field name doesn't exist in the Car table or is irrelevant
      */
-    public static boolean hasRelevantField(final String fieldName) {
+    public static boolean isIrrelevantField(final String fieldName) {
         if (isNull(fieldName) || fieldName.isEmpty()) {
-            return false;
+            return true;
         }
 
         final List<String> fieldNames = Arrays.asList("owner", "registration", "brand", "model", "motorization", "releaseDate");
 
-        return fieldNames.contains(fieldName);
+        return !fieldNames.contains(fieldName);
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CarRequestBody implements SearchRequestBody, UpdateRequestBody {
 
     @Override
     public boolean hasNonNullSearchFields() {
-        return ObjectUtils.isAnyNonNull(owner, registration, brand, model, motorization, releaseDate);
+        return ObjectUtils.areNonNull(false, owner, registration, brand, model, motorization, releaseDate);
     }
 
     @Override
@@ -121,12 +121,12 @@ public class CarRequestBody implements SearchRequestBody, UpdateRequestBody {
 
     @Override
     public boolean hasNonNullUpdateFields() {
-        return ObjectUtils.isAnyNonNull(owner, registration, brand, model, motorization, releaseDate, certificate, comments, picture);
+        return ObjectUtils.areNonNull(false, owner, registration, brand, model, motorization, releaseDate, certificate, comments, picture);
     }
 
     @Override
     public boolean hasMissingMandatoryFields() {
-        return ObjectUtils.isAnyNull(owner, registration);
+        return ObjectUtils.areNull(false, owner, registration);
     }
 
     @Override

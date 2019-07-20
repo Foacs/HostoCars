@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import { List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
 import { DirectionsCarRounded as CarsIcon, ListAltRounded as InterventionsIcon, } from '@material-ui/icons';
-
-import StyledMenuBar from './StyledMenuBar';
 
 import { changeSelectedMenuIndexAction } from 'actions';
 
 import { Logo } from 'resources';
+
+import './MenuBar.scss';
 
 const menuItems = [
     { label: 'Voitures', link: '/cars', icon: <CarsIcon /> },
@@ -19,37 +19,35 @@ const menuItems = [
 ];
 
 function MenuBar({ changeSelectedMenuIndex, className, selectedMenuIndex }) {
-    const componentClassName = `MenuBar ${className}`;
-
     const footerText = `${process.env.REACT_APP_NAME} v${process.env.REACT_APP_VERSION}`;
 
     return (
-        <StyledMenuBar anchor='left' className={componentClassName} variant='permanent'>
-            <Logo className='MenuBar-Logo' />
+        <Drawer anchor='left' className={className} id='MenuBar' variant='permanent'>
+            <Logo className='Logo' />
 
-            <List className='MenuBar-MenuList'>
+            <List className='MenuList'>
                 {menuItems.map((menuItem, index) => (
                     <ListItem
                         button
-                        className='MenuBar-MenuList-MenuItem'
+                        className='MenuList-MenuItem'
                         component={Link}
                         key={menuItem.label}
                         onClick={() => changeSelectedMenuIndex(index)}
                         selected={index === selectedMenuIndex}
                         to={menuItem.link}>
-                        <ListItemIcon className='MenuBar-MenuList-MenuItem-Icon'>
+                        <ListItemIcon className='MenuList-MenuItem-Icon'>
                             {menuItem.icon}
                         </ListItemIcon>
 
-                        <ListItemText className='MenuBar-MenuList-MenuItem-Label' primary={menuItem.label} />
+                        <ListItemText className='MenuList-MenuItem-Label' primary={menuItem.label} />
                     </ListItem>
                 ))}
             </List>
 
-            <Typography className='MenuBar-Footer'>
+            <Typography className='Footer non-selectable'>
                 {footerText}
             </Typography>
-        </StyledMenuBar>
+        </Drawer>
     );
 }
 

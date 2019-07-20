@@ -1,6 +1,7 @@
 package fr.vulture.hostocars.configuration;
 
 import java.io.IOException;
+import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
         logger.debug("Adding resources to registry");
 
         registry.addResourceHandler("/**/*")
@@ -27,8 +28,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
             .resourceChain(true)
             .addResolver(new PathResourceResolver() {
                 @Override
-                protected Resource getResource(String resourcePath,
-                    Resource location) throws IOException {
+                protected Resource getResource(String resourcePath, Resource location) throws IOException {
                     Resource requestedResource = location.createRelative(resourcePath);
                     return requestedResource.exists() && requestedResource.isReadable()
                         ? requestedResource

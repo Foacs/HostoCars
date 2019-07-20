@@ -1,0 +1,19 @@
+@import '../../../resources/colors';
+
+#Breadcrumbs {
+    & .HomeLink {
+        color: $primary-color;
+    }
+
+    & .Link {
+        color: $gray;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
+
+    & .CurrentPageLabel {
+        color: $primary-color;
+    }
+}

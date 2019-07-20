@@ -1,5 +1,6 @@
 package fr.vulture.hostocars.error;
 
+import javax.validation.constraints.NotNull;
 import org.slf4j.helpers.MessageFormatter;
 
 /**
@@ -15,7 +16,7 @@ public class TechnicalException extends Exception {
      * @param args
      *     The messages arguments
      */
-    public TechnicalException(String message, Object... args) {
+    public TechnicalException(@NotNull final String message, @NotNull final Object... args) {
         super(MessageFormatter.format(message, args).getMessage());
     }
 

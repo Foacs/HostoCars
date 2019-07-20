@@ -13,23 +13,25 @@ import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
+import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
 /**
  * Utility class to manipulate SQL queries.
  */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SQLUtils {
+
+    /**
+     * The symbol designating a parameter in an SQL query.
+     */
+    public static final String QUERY_PARAMETER_SYMBOL = "?";
 
     /**
      * The minimum value an ID can have in the database.
      */
     public static final Integer MINIMUM_ID = 1;
-
-    /**
-     * Default constructor.
-     */
-    private SQLUtils() {
-        super();
-    }
 
     /**
      * Generates a prepared statement from a basic query and a request body with a 'WHERE' clause.
@@ -47,21 +49,9 @@ public class SQLUtils {
      *     if the statement generation failed
      * @throws TechnicalException
      *     if a technical error occurs
-     * @throws FunctionalException
-     *     if a functional error occurs
      */
-    public static PreparedStatement generateStatementWithWhereClause(final DatabaseConnection connection, final String query,
-        final SearchRequestBody requestBody) throws SQLException, TechnicalException, FunctionalException {
-        // If the initial query is missing, throws a technical exception
-        if (isNull(query)) {
-            throw new TechnicalException("Missing initial query");
-        }
-
-        // If the body is missing, throws a functional exception
-        if (isNull(requestBody)) {
-            throw new FunctionalException("Missing request body");
-        }
-
+    public static PreparedStatement generateStatementWithWhereClause(@NotNull final DatabaseConnection connection, @NotNull final String query,
+        @NotNull final SearchRequestBody requestBody) throws SQLException, TechnicalException {
         // Gets the query arguments from the request body
         final Iterable<QueryArgument> queryArguments = requestBody.getSearchQueryArguments();
 
@@ -97,11 +87,6 @@ public class SQLUtils {
             // Generates the statement
             final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
 
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
-
             // Sets the query arguments to the statement
             int index = 1;
             for (final QueryArgument argument : queryArguments) {
@@ -134,23 +119,11 @@ public class SQLUtils {
      *     *     if a file fails to be read
      * @throws SQLException
      *     if the statement generation failed
-     * @throws TechnicalException
-     *     if a technical error occurs
      * @throws FunctionalException
      *     if a functional error occurs
      */
-    public static PreparedStatement generateStatementWithInsertClause(final DatabaseConnection connection, final String query,
-        final UpdateRequestBody requestBody) throws IOException, SQLException, TechnicalException, FunctionalException {
-        // If the initial query is missing, throws a technical exception
-        if (isNull(query)) {
-            throw new TechnicalException("Missing initial query");
-        }
-
-        // If the body is missing, throws a functional exception
-        if (isNull(requestBody)) {
-            throw new FunctionalException("Missing request body");
-        }
-
+    public static PreparedStatement generateStatementWithInsertClause(@NotNull final DatabaseConnection connection, @NotNull final String query,
+        @NotNull final UpdateRequestBody requestBody) throws IOException, SQLException, FunctionalException {
         // If any of the mandatory fields are missing from the body, throws a functional exception
         if (requestBody.hasMissingMandatoryFields()) {
             throw new FunctionalException("Missing mandatory field(s) in request body");
@@ -184,11 +157,6 @@ public class SQLUtils {
 
             // Generates the statement
             final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
-
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
 
             // Sets the query arguments to the statement
             int index = 1;
@@ -234,23 +202,11 @@ public class SQLUtils {
      *     if a file fails to be read
      * @throws SQLException
      *     if the statement generation failed
-     * @throws TechnicalException
-     *     if a technical error occurs
      * @throws FunctionalException
      *     if a functional error occurs
      */
-    public static PreparedStatement generateStatementWithUpdateClause(final DatabaseConnection connection, final String query,
-        final UpdateRequestBody requestBody, final QueryArgument id) throws IOException, SQLException, TechnicalException, FunctionalException {
-        // If the initial query is missing, throws a technical exception
-        if (isNull(query)) {
-            throw new TechnicalException("Missing initial query");
-        }
-
-        // If the body is missing, throws a functional exception
-        if (isNull(requestBody)) {
-            throw new FunctionalException("Missing request body");
-        }
-
+    public static PreparedStatement generateStatementWithUpdateClause(@NotNull final DatabaseConnection connection, @NotNull final String query,
+        @NotNull final UpdateRequestBody requestBody, @NotNull final QueryArgument id) throws IOException, SQLException, FunctionalException {
         // If the body has not any non null value, throws a functional exception
         if (!requestBody.hasNonNullUpdateFields()) {
             throw new FunctionalException("No value to update");
@@ -280,11 +236,6 @@ public class SQLUtils {
 
             // Generates the statement
             final PreparedStatement statement = connection.prepareStatement(queryBuilder.toString());
-
-            // If the statement is null, throws a technical exception
-            if (isNull(statement)) {
-                throw new TechnicalException("Failed to generate the SQL statement");
-            }
 
             // Sets the query arguments to the statement
             int index = 1;
@@ -351,7 +302,7 @@ public class SQLUtils {
      * @throws TechnicalException
      *     if the query argument type is prohibited or unknown
      */
-    private static String getArgumentTypeSearchValue(QueryArgument argument) throws TechnicalException {
+    private static String getArgumentTypeSearchValue(@NotNull QueryArgument argument) throws TechnicalException {
         switch (argument.getType()) {
             case QueryArgumentType.INTEGER:
             case QueryArgumentType.TEXT:

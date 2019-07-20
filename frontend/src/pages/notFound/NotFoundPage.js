@@ -3,12 +3,12 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import { Typography } from '@material-ui/core';
+import { Box, Typography } from '@material-ui/core';
 import { SentimentDissatisfiedRounded as SmileyIcon } from '@material-ui/icons';
 
-import StyledNotFoundPage from './StyledNotFoundPage';
-
 import { changeCurrentPageAction, changeSelectedMenuIndexAction } from 'actions';
+
+import './NotFoundPage.scss';
 
 class NotFoundPage extends PureComponent {
     componentDidMount() {
@@ -21,11 +21,11 @@ class NotFoundPage extends PureComponent {
 
     render() {
         return (
-            <StyledNotFoundPage className='NotFoundPage'>
-                <SmileyIcon className='NotFoundPage-SmileyIcon' />
+            <Box id='NotFoundPage'>
+                <SmileyIcon className='SmileyIcon' />
 
-                <Typography className='NotFoundPage-Label' variant='h1'>Page introuvable</Typography>
-            </StyledNotFoundPage>
+                <Typography className='Label' variant='h1'>Page introuvable</Typography>
+            </Box>
         );
     }
 }
