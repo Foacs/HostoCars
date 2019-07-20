@@ -23,7 +23,7 @@ function MenuBar({ changeSelectedMenuIndex, className, selectedMenuIndex }) {
 
     return (
         <Drawer anchor='left' className={className} id='MenuBar' variant='permanent'>
-            <Logo className='Logo' />
+            <Logo className='Logo non-selectable' />
 
             <List className='MenuList'>
                 {menuItems.map((menuItem, index) => (

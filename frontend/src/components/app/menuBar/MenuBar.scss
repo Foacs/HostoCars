@@ -8,9 +8,7 @@
     }
 
     & .Logo {
-        animation: rotation infinite 10s linear;
-        padding-bottom: 50px;
-        padding-top: 50px;
+        padding: 64px 16px;
     }
 
     & .MenuList {
@@ -32,14 +30,5 @@
         position: absolute;
         text-align: center;
         width: 100%;
-    }
-}
-
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
     }
 }
