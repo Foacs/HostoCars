@@ -1,7 +1,7 @@
 @import '../../../resources/colors';
 
 #CarCard {
-    & .ActionArea {
+    .ActionArea {
         &-PictureBox {
             overflow: hidden;
             padding-top: 56.25%;

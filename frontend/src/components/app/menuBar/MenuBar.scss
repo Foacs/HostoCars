@@ -7,11 +7,11 @@
         width: 256px;
     }
 
-    & .Logo {
+    .Logo {
         padding: 64px 16px;
     }
 
-    & .MenuList {
+    .MenuList {
         &-MenuItem {
             &-Icon {
                 color: $white;
@@ -24,7 +24,7 @@
         }
     }
 
-    & .Footer {
+    .Footer {
         bottom: 12px;
         color: $white;
         position: absolute;

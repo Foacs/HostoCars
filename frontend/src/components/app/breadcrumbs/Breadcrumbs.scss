@@ -1,11 +1,11 @@
 @import '../../../resources/colors';
 
 #Breadcrumbs {
-    & .HomeLink {
+    .HomeLink {
         color: $primary-color;
     }
 
-    & .Link {
+    .Link {
         color: $gray;
 
         &:hover {
@@ -13,7 +13,7 @@
         }
     }
 
-    & .CurrentPageLabel {
+    .CurrentPageLabel {
         color: $primary-color;
     }
 }
