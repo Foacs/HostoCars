@@ -1,45 +1,35 @@
-package fr.vulture.hostocars.util;
+package fr.vulture.hostocars.comparator;
 
 import java.util.Comparator;
 import javax.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
- * Utility class to manipulate Strings.
+ * Custom comparator for versions.
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class StringUtils {
-
-    public static final String VERSION_STRING_REGEX = "[0-9]+\\.[0-9]+\\.[0-9]+";
-
-    public static final Comparator<String> versionComparator = StringUtils::compareVersions;
+@Component("versionComparator")
+public class VersionComparator implements Comparator<String> {
 
     /**
-     * Compares 2 versions as strings. Returns a negative integer, zero, or a positive integer as the first version is less than, equal to, or greater
-     * than the second.
-     *
-     * @param version1
-     *     The first version to be compared
-     * @param version2
-     *     The second version to be compared
-     *
-     * @return a negative integer, zero, or a positive integer as the first version is less than, equal to, or greater than the second
+     * Regex for versions.
      */
-    private static int compareVersions(@NotNull final String version1, @NotNull final String version2) {
+    public static final String VERSION_STRING_REGEX = "[0-9]+\\.[0-9]+\\.[0-9]+";
+
+    @Override
+    public int compare(@NotNull final String o1, @NotNull final String o2) {
         // Checks that the first argument is a version
-        if (!version1.matches(VERSION_STRING_REGEX)) {
+        if (!o1.matches(VERSION_STRING_REGEX)) {
             throw new IllegalStateException("First argument is not a version");
         }
 
         // Checks that the second argument is a version
-        if (!version2.matches(VERSION_STRING_REGEX)) {
+        if (!o2.matches(VERSION_STRING_REGEX)) {
             throw new IllegalStateException("Second argument is not a version");
         }
 
         // Splits the versions
-        final String[] versionNumbers1 = version1.split("\\.");
-        final String[] versionNumbers2 = version2.split("\\.");
+        final String[] versionNumbers1 = o1.split("\\.");
+        final String[] versionNumbers2 = o2.split("\\.");
 
         // Gets the major versions of both arguments
         final Integer majorVersion1 = Integer.valueOf(versionNumbers1[0]);
