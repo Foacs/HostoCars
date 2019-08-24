@@ -61,6 +61,12 @@
             <artifactId>sqlite-jdbc</artifactId>
             <version>3.27.2.1</version>
         </dependency>
+        <!-- Apache library to manage GZIP files compression -->
+        <dependency>
+            <artifactId>commons-compress</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <version>1.14</version>
+        </dependency>
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>

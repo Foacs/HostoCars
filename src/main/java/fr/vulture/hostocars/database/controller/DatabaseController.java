@@ -59,20 +59,27 @@ public class DatabaseController implements InitializingBean {
     private static final String EMPTY_STRING = "";
     private static final String MULTIPLE_BLANK_REGEX = "\\p{Blank}+";
     private static final String SINGLE_SPACE = " ";
+
     private final SQLResourceExtractor sqlResourceExtractor;
+    private final DatabaseBackupManager databaseBackupManager;
+
     @NotNull
     @Value("${database.location}")
     private String databaseLocation;
+
     @NotNull
     @Value("${database.path}")
     private String databasePath;
+
     @NotNull
     @Value("${database.url}")
     private String databaseUrl;
+
     @NotNull
     @Pattern(regexp = VERSION_STRING_REGEX)
     @Value("${project.version}")
     private String projectVersion;
+
     private Connection connection;
 
     /**
@@ -80,10 +87,13 @@ public class DatabaseController implements InitializingBean {
      *
      * @param sqlResourceExtractor
      *     The autowired {@link SQLResourceExtractor} component
+     * @param databaseBackupManager
+     *     The autowired {@link DatabaseBackupManager} component
      */
     @Autowired
-    public DatabaseController(@NotNull final SQLResourceExtractor sqlResourceExtractor) {
+    public DatabaseController(@NotNull final SQLResourceExtractor sqlResourceExtractor, @NotNull final DatabaseBackupManager databaseBackupManager) {
         this.sqlResourceExtractor = sqlResourceExtractor;
+        this.databaseBackupManager = databaseBackupManager;
     }
 
     @Override

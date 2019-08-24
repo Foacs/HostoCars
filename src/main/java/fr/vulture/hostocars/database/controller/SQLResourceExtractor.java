@@ -31,11 +31,14 @@ import org.springframework.stereotype.Component;
 public class SQLResourceExtractor {
 
     private static final String EXECUTABLE_SQL_SCRIPT_EXTENSION = ".sql";
+
     private final ResourceComparator resourceComparator;
     private final VersionComparator versionComparator;
+
     @NotNull
     @Value("${spring.profiles.active}")
     private String profile;
+
     @NotNull
     @Value("${sql.scripts.resources.location}")
     private String sqlScriptsResourcesLocation;
