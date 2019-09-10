@@ -7,5 +7,4 @@ CREATE TABLE IF NOT EXISTS DatabaseInfo (
 
 -- Setting Database version to 1.0.0
 INSERT INTO DatabaseInfo(key, value) VALUES ('version', '1.0.0');
-INSERT INTO DatabaseInfo(key, value)
-VALUES ('lastUpdate', date('YYYY-MM-DD'));
+INSERT INTO DatabaseInfo(key, value) VALUES ('lastUpdate', date('YYYY-MM-DD'));

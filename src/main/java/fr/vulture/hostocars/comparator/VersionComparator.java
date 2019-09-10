@@ -17,14 +17,9 @@ public class VersionComparator implements Comparator<String> {
 
     @Override
     public int compare(@NotNull final String o1, @NotNull final String o2) {
-        // Checks that the first argument is a version
-        if (!o1.matches(VERSION_STRING_REGEX)) {
-            throw new IllegalStateException("First argument is not a version");
-        }
-
-        // Checks that the second argument is a version
-        if (!o2.matches(VERSION_STRING_REGEX)) {
-            throw new IllegalStateException("Second argument is not a version");
+        // Checks that both arguments are versions
+        if (!o1.matches(VERSION_STRING_REGEX) || !o2.matches(VERSION_STRING_REGEX)) {
+            throw new IllegalArgumentException("The compared arguments have to be versions");
         }
 
         // Splits the versions

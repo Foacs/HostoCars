@@ -15,11 +15,14 @@ public class ResourceComparator implements Comparator<Resource> {
 
     @Override
     public int compare(@NotNull final Resource o1, @NotNull final Resource o2) {
-        if (isNull(o1.getFilename()) || isNull(o2.getFilename())) {
+        final String fileName1 = o1.getFilename();
+        final String fileName2 = o2.getFilename();
+
+        if (isNull(fileName1) || isNull(fileName2)) {
             throw new IllegalArgumentException("The compared resources have to have a file name");
         }
 
-        return o1.getFilename().compareTo(o2.getFilename());
+        return fileName1.compareTo(fileName2);
     }
 
 }

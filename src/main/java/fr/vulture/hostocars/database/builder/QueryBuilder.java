@@ -339,7 +339,7 @@ public class QueryBuilder {
      * @throws TechnicalException
      *     if the argument type is prohibited or unknown
      */
-    private String getWhereClauseOperator(@NotNull final QueryArgument argument) throws TechnicalException {
+    String getWhereClauseOperator(@NotNull final QueryArgument argument) throws TechnicalException {
         switch (argument.getType()) {
             case INTEGER:
             case DATE:
@@ -364,7 +364,7 @@ public class QueryBuilder {
      * @throws TechnicalException
      *     if the argument type is prohibited or unknown
      */
-    private Object getWhereClauseValue(@NotNull final QueryArgument argument) throws TechnicalException {
+    Object getWhereClauseValue(@NotNull final QueryArgument argument) throws TechnicalException {
         switch (argument.getType()) {
             case INTEGER:
             case DATE:

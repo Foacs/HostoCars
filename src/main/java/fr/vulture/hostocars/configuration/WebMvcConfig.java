@@ -1,6 +1,9 @@
 package fr.vulture.hostocars.configuration;
 
+import static java.util.Objects.nonNull;
+
 import java.io.IOException;
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,23 +23,34 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
 
     @Override
-    public void addResourceHandlers(@NotNull ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@NotNull final ResourceHandlerRegistry registry) {
         logger.debug("Adding resources to registry");
 
         registry.addResourceHandler("/**/*")
             .addResourceLocations("classpath:/static/")
             .resourceChain(true)
-            .addResolver(new PathResourceResolver() {
-                @Override
-                protected Resource getResource(String resourcePath, Resource location) throws IOException {
-                    Resource requestedResource = location.createRelative(resourcePath);
-                    return requestedResource.exists() && requestedResource.isReadable()
-                        ? requestedResource
-                        : new ClassPathResource("/static/index.html");
-                }
-            });
+            .addResolver(new CustomPathResourceResolver());
 
         logger.debug("Resources added to registry");
+    }
+
+    /**
+     * Custom implementation of the {@link CustomPathResourceResolver} class.
+     */
+    static class CustomPathResourceResolver extends PathResourceResolver {
+
+        @Override
+        public Resource getResource(@Nullable final String resourcePath, @NotNull final Resource location) throws IOException {
+            if (nonNull(resourcePath)) {
+                final Resource requestedResource = location.createRelative(resourcePath);
+                return requestedResource.exists() && requestedResource.isReadable()
+                    ? requestedResource
+                    : new ClassPathResource("static/index.html");
+            }
+
+            return new ClassPathResource("static/index.html");
+        }
+
     }
 
 }

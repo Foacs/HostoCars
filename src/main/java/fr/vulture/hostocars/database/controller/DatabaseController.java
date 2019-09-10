@@ -129,6 +129,9 @@ public class DatabaseController implements InitializingBean {
             } else if (databaseVersion.compareTo(projectVersion) < 0) {
                 // If the database version is lower than the project version, updates the database to the project version
                 updateDatabaseToCurrentVersion(databaseVersion);
+            } else {
+                // Backups the database
+                databaseBackupManager.backupDatabase(false);
             }
         }
 
@@ -226,6 +229,9 @@ public class DatabaseController implements InitializingBean {
      */
     private void updateDatabaseToCurrentVersion(@NotNull final String databaseVersion) throws IOException, SQLException, TechnicalException {
         logger.debug("Updating the database from version {} to version {}", databaseVersion, projectVersion);
+
+        // Backups the database
+        databaseBackupManager.backupDatabase(true);
 
         // Extracts the SQL resources
         final SortedMap<String, SortedSet<Resource>> resources = sqlResourceExtractor.extractSQLResources(databaseVersion, projectVersion);

@@ -17,7 +17,7 @@ public class FunctionalException extends Exception {
      *     The messages arguments
      */
     public FunctionalException(@NotNull final String message, @NotNull final Object... args) {
-        super(MessageFormatter.format(message, args).getMessage());
+        super(MessageFormatter.arrayFormat(message, args).getMessage());
     }
 
 }

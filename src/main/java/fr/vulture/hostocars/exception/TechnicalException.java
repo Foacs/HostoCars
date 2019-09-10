@@ -17,7 +17,7 @@ public class TechnicalException extends Exception {
      *     The messages arguments
      */
     public TechnicalException(@NotNull final String message, @NotNull final Object... args) {
-        super(MessageFormatter.format(message, args).getMessage());
+        super(MessageFormatter.arrayFormat(message, args).getMessage());
     }
 
     /**
@@ -31,7 +31,7 @@ public class TechnicalException extends Exception {
      *     The messages arguments
      */
     public TechnicalException(@NotNull final Throwable cause, @NotNull final String message, @NotNull final Object... args) {
-        super(MessageFormatter.format(message, args).getMessage(), cause);
+        super(MessageFormatter.arrayFormat(message, args).getMessage(), cause);
     }
 
 }
