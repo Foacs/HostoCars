@@ -8,6 +8,8 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class TechnicalException extends Exception {
 
+    private static final long serialVersionUID = -6234245210996098925L;
+
     /**
      * Constructor with a message and its arguments.
      *

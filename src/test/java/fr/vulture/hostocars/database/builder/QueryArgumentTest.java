@@ -15,7 +15,7 @@ class QueryArgumentTest {
      */
     @Test
     @DisplayName("Validating the bean")
-    void testBeanValidation() {
+    final void testBeanValidation() {
         TestHelper.validateBean(QueryArgument.class);
     }
 

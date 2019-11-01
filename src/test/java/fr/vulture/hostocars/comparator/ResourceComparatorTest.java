@@ -32,7 +32,7 @@ class ResourceComparatorTest {
      */
     @Test
     @DisplayName("Comparison with invalid first argument")
-    void testWithInvalidFirstArgument() {
+    final void testWithInvalidFirstArgument() {
         final Resource firstResource = Mockito.mock(Resource.class);
         final Resource secondResource = Mockito.mock(Resource.class);
 
@@ -51,7 +51,7 @@ class ResourceComparatorTest {
      */
     @Test
     @DisplayName("Comparison with invalid second argument")
-    void testWithInvalidSecondArgument() {
+    final void testWithInvalidSecondArgument() {
         final Resource firstResource = Mockito.mock(Resource.class);
         final Resource secondResource = Mockito.mock(Resource.class);
 
@@ -72,7 +72,7 @@ class ResourceComparatorTest {
      */
     @Test
     @DisplayName("Comparison with different filenames")
-    void testWithDifferentFilenames() {
+    final void testWithDifferentFilenames() {
         final Resource firstResource = Mockito.mock(Resource.class);
         final Resource secondResource = Mockito.mock(Resource.class);
 
@@ -80,8 +80,8 @@ class ResourceComparatorTest {
         Mockito.when(secondResource.getFilename()).thenReturn("B");
 
         assertAll("Asserting both ways comparisons",
-            () -> assertTrue(resourceComparator.compare(firstResource, secondResource) < 0, "Result different from expected"),
-            () -> assertTrue(resourceComparator.compare(secondResource, firstResource) > 0, "Result different from expected")
+            () -> assertTrue(0 > resourceComparator.compare(firstResource, secondResource), "Result different from expected"),
+            () -> assertTrue(0 < resourceComparator.compare(secondResource, firstResource), "Result different from expected")
         );
 
         Mockito.verify(firstResource, Mockito.times(2)).getFilename();
@@ -93,7 +93,7 @@ class ResourceComparatorTest {
      */
     @Test
     @DisplayName("Comparison with equal filenames")
-    void testWithEqualFilenames() {
+    final void testWithEqualFilenames() {
         final Resource firstResource = Mockito.mock(Resource.class);
         final Resource secondResource = Mockito.mock(Resource.class);
 

@@ -8,6 +8,8 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class FunctionalException extends Exception {
 
+    private static final long serialVersionUID = 4046565845906424362L;
+
     /**
      * Constructor with a message and its arguments.
      *

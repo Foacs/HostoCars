@@ -1,13 +1,13 @@
 @import '../../resources/colors';
 
 #NotFoundPage {
-    color: $primary-color;
-    left: calc(50% - 128px);
-    overflow: hidden;
+    color:          $primary-color;
+    left:           calc(50% - 128px);
+    overflow:       hidden;
     pointer-events: none;
-    position: absolute;
-    text-align: center;
-    top: 20%;
+    position:       absolute;
+    text-align:     center;
+    top:            20%;
 
     .SmileyIcon {
         animation: pendulum infinite 3s ease-in-out 1s both;

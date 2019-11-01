@@ -1,12 +1,12 @@
 @import '../../../resources/colors';
 
 #ErrorPanel {
-    left: 50%;
+    left:         50%;
     margin-right: -50%;
-    padding: 24px 48px;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
+    padding:      24px 48px;
+    position:     absolute;
+    top:          50%;
+    transform:    translate(-50%, -50%);
 
     &.transparent {
         background: $transparent;
@@ -16,18 +16,18 @@
     .Grid {
         &-IconItem {
             &-Icon {
-                color: $error-color;
+                color:  $error-color;
                 height: 80px;
-                width: 80px;
+                width:  80px;
             }
         }
 
         &-LabelItem {
             &-Label {
-                color: $error-dark-color;
-                padding-top: 12px;
+                color:               $error-dark-color;
+                padding-top:         12px;
+                -moz-user-select:    none;
                 -webkit-user-select: none;
-                -moz-user-select: none;
             }
         }
     }

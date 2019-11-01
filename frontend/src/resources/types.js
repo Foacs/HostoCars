@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 
 // Breadcrumbs' navigation path prop type
-export const NavigationPathPropType = PropTypes.arrayOf(
-    PropTypes.shape({
-        label: PropTypes.string.isRequired,
-        link: PropTypes.string.isRequired
-    })
-);
+export const NavigationPathPropType = PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    link: PropTypes.string.isRequired
+}));
 
 // Car prop type
 export const CarPropType = PropTypes.shape({

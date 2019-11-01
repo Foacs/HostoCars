@@ -97,41 +97,41 @@ public class DatabaseController implements InitializingBean {
     }
 
     @Override
-    public void afterPropertiesSet() throws TechnicalException, SQLException, IOException {
+    public final void afterPropertiesSet() throws TechnicalException, SQLException, IOException {
         logger.debug("Initializing the database connection");
 
         // If the folder doesn't exist, creates it
-        final File dataFolder = new File(databaseLocation);
+        final File dataFolder = new File(this.databaseLocation);
         if (!dataFolder.exists() || !dataFolder.isDirectory()) {
             dataFolder.mkdir();
-            logger.debug("Database folder created with name {}", databaseLocation);
+            logger.debug("Database folder created with name {}", this.databaseLocation);
         }
 
         // If the database file doesn't exist yet, an initialization is needed
-        final boolean isInitializationNeeded = !new File(databasePath).exists();
+        final boolean isInitializationNeeded = !new File(this.databasePath).exists();
 
         // Connects to the database
-        connection = DriverManager.getConnection(databaseUrl);
+        this.connection = DriverManager.getConnection(this.databaseUrl);
 
         if (isInitializationNeeded) {
             // Initializes the database to current version
-            updateDatabaseToCurrentVersion(DATABASE_INITIAL_VERSION);
+            this.updateDatabaseToCurrentVersion(DATABASE_INITIAL_VERSION);
         } else {
             // Retrieves the database version
-            final String databaseVersion = getCurrentDatabaseVersion();
+            final String databaseVersion = this.getCurrentDatabaseVersion();
 
             if (isNull(databaseVersion)) {
                 // If no version in available in the database, throws an exception
                 throw new TechnicalException("Unable to retrieve the database version");
-            } else if (databaseVersion.compareTo(projectVersion) > 0) {
+            } else if (0 < databaseVersion.compareTo(this.projectVersion)) {
                 // If the database version is higher than the project version, throws an exception
                 throw new TechnicalException("The database version is higher than the project one");
-            } else if (databaseVersion.compareTo(projectVersion) < 0) {
+            } else if (0 > databaseVersion.compareTo(this.projectVersion)) {
                 // If the database version is lower than the project version, updates the database to the project version
-                updateDatabaseToCurrentVersion(databaseVersion);
+                this.updateDatabaseToCurrentVersion(databaseVersion);
             } else {
                 // Backups the database
-                databaseBackupManager.backupDatabase(false);
+                this.databaseBackupManager.backupDatabase(false);
             }
         }
 
@@ -139,44 +139,36 @@ public class DatabaseController implements InitializingBean {
     }
 
     /**
-     * Generates a {@link PreparedStatement} from the database connection and the input {@link Query}, and set the query's arguments.
+     * Updates the database from its current version to the project one by executing the executable SQL resources.
      *
-     * @param query
-     *     The {@link Query} from which to create the {@link PreparedStatement}
-     * @param withGeneratedKeys
-     *     If the {@link PreparedStatement} has to return the eventual generated keys
+     * @param databaseVersion
+     *     The current database version
      *
-     * @return a {@link PreparedStatement}
-     *
+     * @throws IOException
+     *     if an I/O error occurs while extracting the resources or while executing a script
+     * @throws SQLException
+     *     if an SQL error occurs while executing a script
      * @throws TechnicalException
-     *     if an error occurs while reading a file or generating the statement
+     *     if a technical error occurs while executing a script
      */
-    public PreparedStatement prepareStatement(@NotNull @Valid final Query query, final boolean withGeneratedKeys) throws TechnicalException {
-        // Creates the statement from the query
-        final PreparedStatement statement;
-        try {
-            statement = connection.prepareStatement(query.getQuery(), withGeneratedKeys ? RETURN_GENERATED_KEYS : NO_GENERATED_KEYS);
+    private void updateDatabaseToCurrentVersion(@NotNull final String databaseVersion) throws IOException, SQLException, TechnicalException {
+        logger.debug("Updating the database from version {} to version {}", databaseVersion, this.projectVersion);
 
-            // For each query argument, set its value to the statement depending on its type
-            int index = 1;
-            for (final QueryArgument argument : query.getArguments()) {
-                // The case of a BLOB query argument needs to be treated apart from the others, as it has to be read from the input URL
-                if (argument.getType() == BLOB && nonNull(argument.getValue())) {
-                    try {
-                        statement.setBytes(index++, Files.readAllBytes(Paths.get((String) argument.getValue())));
-                    } catch (IOException e) {
-                        throw new TechnicalException(e, "Error while reading the file \"{}\"", argument.getValue());
-                    }
-                } else {
-                    statement.setObject(index++, argument.getValue(), argument.getType());
-                }
+        // Backups the database
+        this.databaseBackupManager.backupDatabase(true);
+
+        // Extracts the SQL resources
+        final SortedMap<String, SortedSet<Resource>> resources = this.sqlResourceExtractor.extractSQLResources(databaseVersion, this.projectVersion);
+
+        for (final String version : resources.keySet()) {
+            for (final Resource resource : resources.get(version)) {
+                this.executeScript(resource);
             }
-        } catch (SQLException e) {
-            throw new TechnicalException(e, "Error while generating the SQL statement");
+
+            logger.debug("Database successfully updated to version {}", version);
         }
 
-        // Returns the now fully prepared statement
-        return statement;
+        logger.info("Database successfully updated from version {} to version {}", databaseVersion, this.projectVersion);
     }
 
     /**
@@ -198,7 +190,7 @@ public class DatabaseController implements InitializingBean {
         final Query query = new QueryBuilder().buildSelectQuery(DATABASE_INFO_TABLE_NAME, columnNames, false).addWhereClause(arguments).getQuery();
 
         // Prepares the statement
-        final PreparedStatement statement = prepareStatement(query, false);
+        final PreparedStatement statement = this.prepareStatement(query, false);
 
         // Executes the statement
         final ResultSet result = statement.executeQuery();
@@ -212,39 +204,6 @@ public class DatabaseController implements InitializingBean {
         }
 
         return null;
-    }
-
-    /**
-     * Updates the database from its current version to the project one by executing the executable SQL resources.
-     *
-     * @param databaseVersion
-     *     The current database version
-     *
-     * @throws IOException
-     *     if an I/O error occurs while extracting the resources or while executing a script
-     * @throws SQLException
-     *     if an SQL error occurs while executing a script
-     * @throws TechnicalException
-     *     if a technical error occurs while executing a script
-     */
-    private void updateDatabaseToCurrentVersion(@NotNull final String databaseVersion) throws IOException, SQLException, TechnicalException {
-        logger.debug("Updating the database from version {} to version {}", databaseVersion, projectVersion);
-
-        // Backups the database
-        databaseBackupManager.backupDatabase(true);
-
-        // Extracts the SQL resources
-        final SortedMap<String, SortedSet<Resource>> resources = sqlResourceExtractor.extractSQLResources(databaseVersion, projectVersion);
-
-        for (final String version : resources.keySet()) {
-            for (final Resource resource : resources.get(version)) {
-                executeScript(resource);
-            }
-
-            logger.debug("Database successfully updated to version {}", version);
-        }
-
-        logger.info("Database successfully updated from version {} to version {}", databaseVersion, projectVersion);
     }
 
     /**
@@ -288,7 +247,7 @@ public class DatabaseController implements InitializingBean {
                     // Creates the current query statement
                     final Query query = new Query();
                     query.setQuery(queryString);
-                    final PreparedStatement statement = prepareStatement(query, false);
+                    final PreparedStatement statement = this.prepareStatement(query, false);
 
                     // Executes the statement
                     statement.execute();
@@ -302,6 +261,49 @@ public class DatabaseController implements InitializingBean {
         }
 
         logger.debug("Script file {} successfully executed", resource.getFilename());
+    }
+
+    /**
+     * Generates a {@link PreparedStatement} from the database connection and the input {@link Query}, and set the query's arguments.
+     *
+     * @param query
+     *     The {@link Query} from which to create the {@link PreparedStatement}
+     * @param withGeneratedKeys
+     *     If the {@link PreparedStatement} has to return the eventual generated keys
+     *
+     * @return a {@link PreparedStatement}
+     *
+     * @throws TechnicalException
+     *     if an error occurs while reading a file or generating the statement
+     */
+    public final PreparedStatement prepareStatement(@NotNull @Valid final Query query, final boolean withGeneratedKeys) throws TechnicalException {
+        // Creates the statement from the query
+        final PreparedStatement statement;
+        try {
+            statement = this.connection.prepareStatement(query.getQuery(), withGeneratedKeys ? RETURN_GENERATED_KEYS : NO_GENERATED_KEYS);
+
+            // For each query argument, set its value to the statement depending on its type
+            int index = 1;
+            for (final QueryArgument argument : query.getArguments()) {
+                // The case of a BLOB query argument needs to be treated apart from the others, as it has to be read from the input URL
+                if (BLOB == argument.getType() && nonNull(argument.getValue())) {
+                    try {
+                        statement.setBytes(index, Files.readAllBytes(Paths.get((String) argument.getValue())));
+                        index++;
+                    } catch (final IOException e) {
+                        throw new TechnicalException(e, "Error while reading the file \"{}\"", argument.getValue());
+                    }
+                } else {
+                    statement.setObject(index, argument.getValue(), argument.getType());
+                    index++;
+                }
+            }
+        } catch (final SQLException e) {
+            throw new TechnicalException(e, "Error while generating the SQL statement");
+        }
+
+        // Returns the now fully prepared statement
+        return statement;
     }
 
 }

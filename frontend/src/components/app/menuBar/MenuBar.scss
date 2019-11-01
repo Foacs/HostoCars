@@ -3,8 +3,8 @@
 #MenuBar {
     & > :first-child {
         background: linear-gradient(60deg, $primary-light-color 15%, $primary-dark-color 75%);
-        overflow: hidden;
-        width: 256px;
+        overflow:   hidden;
+        width:      256px;
     }
 
     .Logo {
@@ -14,7 +14,7 @@
     .MenuList {
         &-MenuItem {
             &-Icon {
-                color: $white;
+                color:       $white;
                 margin-left: 24px;
             }
 
@@ -25,10 +25,10 @@
     }
 
     .Footer {
-        bottom: 12px;
-        color: $white;
-        position: absolute;
+        bottom:     12px;
+        color:      $white;
+        position:   absolute;
         text-align: center;
-        width: 100%;
+        width:      100%;
     }
 }

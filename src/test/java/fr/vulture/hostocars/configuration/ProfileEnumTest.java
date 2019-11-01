@@ -18,7 +18,7 @@ class ProfileEnumTest {
      */
     @Test
     @DisplayName("Testing the enum values")
-    void testProfileEnumValues() {
+    final void testProfileEnumValues() {
         assertAll("Asserting all profiles values",
             () -> assertNotNull(ProfileEnum.valueOf("PROD"), "Enum value not found"),
             () -> assertNotNull(ProfileEnum.valueOf("DEV"), "Enum value not found"),

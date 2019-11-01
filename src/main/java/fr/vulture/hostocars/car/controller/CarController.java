@@ -49,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for the {@code Cars} table.
  */
 @RestController
-@RequestMapping(value = "/cars")
+@RequestMapping("/cars")
 @CrossOrigin(origins = "*")
 public class CarController {
 
@@ -89,7 +89,7 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getCars(@RequestParam(required = false) final String sortingField) {
+    public final ResponseEntity<?> getCars(@RequestParam(required = false) final String sortingField) {
         logger.debug("[getCars <= Calling] With sorting field = {}", sortingField);
 
         try {
@@ -106,13 +106,13 @@ public class CarController {
             final Query query = queryBuilder.getQuery();
 
             // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, false);
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
 
             // Executes the statement
             final ResultSet result = statement.executeQuery();
 
             // Retrieves the resultant entities
-            final List<Car> cars = new ArrayList<>();
+            final List<Car> cars = new ArrayList<>(0);
             while (result.next()) {
                 // Extracts the next entity from the result set
                 final Car car = extractEntityFromResultSet(result);
@@ -133,10 +133,46 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (final SQLException | TechnicalException e) {
             logger.error("[getCars => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Extracts a {@link Car} entity from a {@link ResultSet}.
+     *
+     * @param resultSet
+     *     The result set to extract the {@link Car} entity from
+     *
+     * @return the extracted {@link Car} entity
+     *
+     * @throws SQLException
+     *     if the extraction fails
+     */
+    private static Car extractEntityFromResultSet(@NotNull final ResultSet resultSet) throws SQLException {
+        final Car car = new Car();
+
+        // Extracts the integers
+        car.setId(resultSet.getInt(ID_COLUMN_NAME));
+
+        // Extracts the strings
+        car.setOwner(resultSet.getString(OWNER_COLUMN_NAME));
+        car.setRegistration(resultSet.getString(REGISTRATION_COLUMN_NAME));
+        car.setBrand(resultSet.getString(BRAND_COLUMN_NAME));
+        car.setModel(resultSet.getString(MODEL_COLUMN_NAME));
+        car.setMotorization(resultSet.getString(MOTORIZATION_COLUMN_NAME));
+        car.setComments(resultSet.getString(COMMENTS_COLUMN_NAME));
+
+        // Extracts the dates
+        final String releaseDateString = resultSet.getString(RELEASE_DATE_COLUMN_NAME);
+        car.setReleaseDate(nonNull(releaseDateString) ? LocalDate.parse(releaseDateString) : null);
+
+        // Extracts the BLOBs
+        car.setCertificate(resultSet.getBytes(CERTIFICATE_COLUMN_NAME));
+        car.setPicture(resultSet.getBytes(PICTURE_COLUMN_NAME));
+
+        return car;
     }
 
     /**
@@ -147,8 +183,8 @@ public class CarController {
      *
      * @return an HTTP response
      */
-    @GetMapping(value = "/{id}")
-    public ResponseEntity<?> getCarByID(@PathVariable @NotNull @Min(value = 1) final Integer id) {
+    @GetMapping("/{id}")
+    public final ResponseEntity<?> getCarByID(@PathVariable @NotNull @Min(1) final Integer id) {
         logger.debug("[getCarByID <= Calling] With ID = {}", id);
 
         try {
@@ -160,7 +196,7 @@ public class CarController {
                 .getQuery();
 
             // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, false);
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
 
             // Executes the statement
             final ResultSet result = statement.executeQuery();
@@ -178,7 +214,7 @@ public class CarController {
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (final SQLException | TechnicalException e) {
             logger.error("[getCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
@@ -192,8 +228,8 @@ public class CarController {
      *
      * @return an HTTP response
      */
-    @GetMapping(value = "/{field}/values")
-    public ResponseEntity<?> getDistinctFieldValues(@PathVariable @NotNull final String field) {
+    @GetMapping("/{field}/values")
+    public final ResponseEntity<?> getDistinctFieldValues(@PathVariable @NotNull final String field) {
         logger.debug("[getDistinctFieldValues <= Calling] With field = {}", field);
 
         try {
@@ -207,13 +243,13 @@ public class CarController {
             final Query query = new QueryBuilder().buildSelectQuery(TABLE_NAME, fields, true).addOrderByClause(fields, false).getQuery();
 
             // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, false);
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
 
             // Executes the statement
             final ResultSet result = statement.executeQuery();
 
             // Retrieves the resultant entities
-            final List<Object> values = new ArrayList<>();
+            final List<Object> values = new ArrayList<>(0);
             while (result.next()) {
                 final Object value = result.getObject(1);
 
@@ -235,16 +271,29 @@ public class CarController {
         }
 
         // If a functional exception has been thrown, returns a 400 status
-        catch (FunctionalException e) {
+        catch (final FunctionalException e) {
             logger.error("[getDistinctFieldValues => {}] {}", BAD_REQUEST.value(), e.getMessage());
             return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (final SQLException | TechnicalException e) {
             logger.error("[getDistinctFieldValues => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
+    }
+
+    /**
+     * Returns whether or not the input field exists and is relevant for searching over the {@link Car} entities.
+     *
+     * @param field
+     *     The field name
+     *
+     * @return if the field exists and is relevant or not
+     */
+    private static boolean isFieldIrrelevant(@NotNull final String field) {
+        return !Arrays.asList(OWNER_COLUMN_NAME, REGISTRATION_COLUMN_NAME, BRAND_COLUMN_NAME, MODEL_COLUMN_NAME, MOTORIZATION_COLUMN_NAME,
+            RELEASE_DATE_COLUMN_NAME).contains(field);
     }
 
     /**
@@ -255,8 +304,8 @@ public class CarController {
      *
      * @return an HTTP response
      */
-    @GetMapping(value = "/search")
-    public ResponseEntity<?> searchCars(@RequestBody @NotNull final CarRequestBody body) {
+    @GetMapping("/search")
+    public final ResponseEntity<?> searchCars(@RequestBody @NotNull final CarRequestBody body) {
         logger.debug("[searchCars <= Calling] With body = {}", body);
 
         try {
@@ -272,13 +321,13 @@ public class CarController {
             final Query query = new QueryBuilder().buildSelectQuery(TABLE_NAME, false).addWhereClause(arguments).getQuery();
 
             // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, false);
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
 
             // Executes the statement
             final ResultSet result = statement.executeQuery();
 
             // Retrieves the resultant entities
-            final List<Car> cars = new ArrayList<>();
+            final List<Car> cars = new ArrayList<>(0);
             while (result.next()) {
                 // Extracts the next entity from the result set
                 final Car car = extractEntityFromResultSet(result);
@@ -299,199 +348,16 @@ public class CarController {
         }
 
         // If a functional exception has been thrown, returns a 400 status
-        catch (FunctionalException e) {
+        catch (final FunctionalException e) {
             logger.error("[searchCars => {}] {}", BAD_REQUEST.value(), e.getMessage());
             return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
+        catch (final SQLException | TechnicalException e) {
             logger.error("[searchCars => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
         }
-    }
-
-    /**
-     * Inserts a new {@link Car} entity in the database, generated from the input body.
-     *
-     * @param body
-     *     The body
-     *
-     * @return an HTTP response
-     */
-    @PostMapping(value = "/save")
-    public ResponseEntity<?> saveCar(@RequestBody @NotNull final CarRequestBody body) {
-        logger.debug("[saveCar <= Calling] With body = {}", body);
-
-        try {
-            // If any mandatory field is missing from the body, throws an exception
-            if (isAnyMandatoryFieldMissing(body)) {
-                throw new FunctionalException("Missing mandatory field(s)");
-            }
-
-            // Gets the query arguments
-            final List<QueryArgument> arguments = getUpdateRelevantFields(body);
-
-            // Builds the query
-            final Query query = new QueryBuilder().buildInsertQuery(TABLE_NAME, arguments).getQuery();
-
-            // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, true);
-
-            // Executes the statement
-            statement.executeUpdate();
-
-            // Gets the generated keys
-            final ResultSet result = statement.getGeneratedKeys();
-
-            // If there is a generated key, retrieves it
-            if (result.next()) {
-                // Retrieves the generated key
-                final int generatedID = result.getInt(1);
-
-                // Returns the generated key with a 200 status
-                logger.debug("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedID);
-                return ResponseEntity.ok(generatedID);
-            }
-
-            // If there is no generated key, throws a technical exception
-            throw new TechnicalException("The new car has not been saved");
-        }
-
-        // If a functional exception has been thrown, returns a 400 status
-        catch (FunctionalException e) {
-            logger.error("[saveCar => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
-        }
-
-        // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
-            logger.error("[saveCar => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Updates a {@link Car} entity with the input body in the database by its ID.
-     *
-     * @param id
-     *     The {@link Car} ID
-     * @param body
-     *     The body
-     *
-     * @return an HTTP response
-     */
-    @PutMapping(value = "/{id}/update")
-    public ResponseEntity<?> updateCarByID(@PathVariable @NotNull @Min(value = 1) final Integer id, @RequestBody final CarRequestBody body) {
-        logger.debug("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
-
-        try {
-            // Gets the query arguments
-            final List<QueryArgument> updateArguments = getUpdateRelevantFields(body);
-            final List<QueryArgument> whereArguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
-
-            // If there is no query argument, throw an exception
-            if (updateArguments.isEmpty()) {
-                throw new FunctionalException("No update value has been provided");
-            }
-
-            // Builds the query
-            final Query query = new QueryBuilder().buildUpdateQuery(TABLE_NAME, updateArguments, whereArguments).getQuery();
-
-            // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, false);
-
-            // Executes the statement and retrieves the number of updated lines
-            int result = statement.executeUpdate();
-
-            if (result == 0) {
-                // If no line has been updated, returns a 204 status
-                logger.debug("[updateCarByID => {}] No car found to update", NO_CONTENT.value());
-                return ResponseEntity.noContent().build();
-            } else {
-                // If a line has been updated, returns a 200 status
-                logger.debug("[updateCarByID => {}] Car updated", OK.value());
-                return ResponseEntity.ok().build();
-            }
-        }
-
-        // If a functional exception has been thrown, returns a 400 status
-        catch (FunctionalException e) {
-            logger.error("[updateCarByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
-        }
-
-        // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
-            logger.error("[updateCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Deletes a {@link Car} entity in the database by its ID.
-     *
-     * @param id
-     *     The {@link Car} ID
-     *
-     * @return an HTTP response
-     */
-    @DeleteMapping(value = "/{id}/delete")
-    public ResponseEntity<?> deleteCarByID(@PathVariable @NotNull @Min(value = 1) final Integer id) {
-        logger.debug("[deleteCarByID <= Calling] With ID = {}", id);
-
-        try {
-            // Builds the query
-            final List<QueryArgument> arguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
-            final Query query = new QueryBuilder().buildDeleteQuery(TABLE_NAME, arguments).getQuery();
-
-            // Prepares the statement
-            final PreparedStatement statement = databaseController.prepareStatement(query, false);
-
-            // Executes the statement and retrieves the number of updated lines
-            int result = statement.executeUpdate();
-
-            if (result == 0) {
-                // If no line has been deleted, returns a 204 status
-                logger.debug("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
-                return ResponseEntity.noContent().build();
-            } else {
-                // If a line has been deleted, returns a 200 status
-                logger.debug("[deleteCarByID => {}] Car deleted", OK.value());
-                return ResponseEntity.ok().build();
-            }
-        }
-
-        // If a technical exception has been thrown, returns a 500 status
-        catch (SQLException | TechnicalException e) {
-            logger.error("[deleteCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
-        }
-    }
-
-    /**
-     * Returns whether or not the input field exists and is relevant for searching over the {@link Car} entities.
-     *
-     * @param field
-     *     The field name
-     *
-     * @return if the field exists and is relevant or not
-     */
-    private boolean isFieldIrrelevant(@NotNull final String field) {
-        return !Arrays.asList(OWNER_COLUMN_NAME, REGISTRATION_COLUMN_NAME, BRAND_COLUMN_NAME, MODEL_COLUMN_NAME, MOTORIZATION_COLUMN_NAME,
-            RELEASE_DATE_COLUMN_NAME).contains(field);
-    }
-
-    /**
-     * Returns whether or not the input body misses a mandatory field for creating a new {@link Car} entity.
-     *
-     * @param body
-     *     The body to check
-     *
-     * @return whether or not the input body misses a mandatory field
-     */
-    private boolean isAnyMandatoryFieldMissing(@NotNull final CarRequestBody body) {
-        return isNull(body.getOwner()) || !body.getOwner().isPresent() || isNull(body.getRegistration()) || !body.getRegistration().isPresent();
     }
 
     /**
@@ -502,8 +368,8 @@ public class CarController {
      *
      * @return a list of {@link QueryArgument}
      */
-    private List<QueryArgument> getSearchRelevantFields(@NotNull final CarRequestBody body) {
-        final List<QueryArgument> result = new ArrayList<>();
+    private static List<QueryArgument> getSearchRelevantFields(@NotNull final CarRequestBody body) {
+        final List<QueryArgument> result = new ArrayList<>(0);
 
         if (nonNull(body.getOwner())) {
             result.add(new QueryArgument(OWNER_COLUMN_NAME, body.getOwner().orElse(null), VARCHAR));
@@ -533,6 +399,78 @@ public class CarController {
     }
 
     /**
+     * Inserts a new {@link Car} entity in the database, generated from the input body.
+     *
+     * @param body
+     *     The body
+     *
+     * @return an HTTP response
+     */
+    @PostMapping("/save")
+    public final ResponseEntity<?> saveCar(@RequestBody @NotNull final CarRequestBody body) {
+        logger.debug("[saveCar <= Calling] With body = {}", body);
+
+        try {
+            // If any mandatory field is missing from the body, throws an exception
+            if (isAnyMandatoryFieldMissing(body)) {
+                throw new FunctionalException("Missing mandatory field(s)");
+            }
+
+            // Gets the query arguments
+            final List<QueryArgument> arguments = getUpdateRelevantFields(body);
+
+            // Builds the query
+            final Query query = new QueryBuilder().buildInsertQuery(TABLE_NAME, arguments).getQuery();
+
+            // Prepares the statement
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, true);
+
+            // Executes the statement
+            statement.executeUpdate();
+
+            // Gets the generated keys
+            final ResultSet result = statement.getGeneratedKeys();
+
+            // If there is a generated key, retrieves it
+            if (result.next()) {
+                // Retrieves the generated key
+                final int generatedID = result.getInt(1);
+
+                // Returns the generated key with a 200 status
+                logger.debug("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedID);
+                return ResponseEntity.ok(generatedID);
+            }
+
+            // If there is no generated key, throws a technical exception
+            throw new TechnicalException("The new car has not been saved");
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (final FunctionalException e) {
+            logger.error("[saveCar => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (final SQLException | TechnicalException e) {
+            logger.error("[saveCar => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Returns whether or not the input body misses a mandatory field for creating a new {@link Car} entity.
+     *
+     * @param body
+     *     The body to check
+     *
+     * @return whether or not the input body misses a mandatory field
+     */
+    private static boolean isAnyMandatoryFieldMissing(@NotNull final CarRequestBody body) {
+        return isNull(body.getOwner()) || !body.getOwner().isPresent() || isNull(body.getRegistration()) || !body.getRegistration().isPresent();
+    }
+
+    /**
      * Returns the list of {@link QueryArgument} relevant for creating or updating from the input {@link CarRequestBody}.
      *
      * @param body
@@ -540,7 +478,7 @@ public class CarController {
      *
      * @return a list of {@link QueryArgument}
      */
-    private List<QueryArgument> getUpdateRelevantFields(@NotNull final CarRequestBody body) {
+    private static List<QueryArgument> getUpdateRelevantFields(@NotNull final CarRequestBody body) {
         final List<QueryArgument> result = getSearchRelevantFields(body);
 
         if (nonNull(body.getCertificate())) {
@@ -559,39 +497,101 @@ public class CarController {
     }
 
     /**
-     * Extracts a {@link Car} entity from a {@link ResultSet}.
+     * Updates a {@link Car} entity with the input body in the database by its ID.
      *
-     * @param resultSet
-     *     The result set to extract the {@link Car} entity from
+     * @param id
+     *     The {@link Car} ID
+     * @param body
+     *     The body
      *
-     * @return the extracted {@link Car} entity
-     *
-     * @throws SQLException
-     *     if the extraction fails
+     * @return an HTTP response
      */
-    private Car extractEntityFromResultSet(@NotNull final ResultSet resultSet) throws SQLException {
-        final Car car = new Car();
+    @PutMapping("/{id}/update")
+    public final ResponseEntity<?> updateCarByID(@PathVariable @NotNull @Min(1) final Integer id, @RequestBody final CarRequestBody body) {
+        logger.debug("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
 
-        // Extracts the integers
-        car.setId(resultSet.getInt(ID_COLUMN_NAME));
+        try {
+            // Gets the query arguments
+            final List<QueryArgument> updateArguments = getUpdateRelevantFields(body);
+            final List<QueryArgument> whereArguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
 
-        // Extracts the strings
-        car.setOwner(resultSet.getString(OWNER_COLUMN_NAME));
-        car.setRegistration(resultSet.getString(REGISTRATION_COLUMN_NAME));
-        car.setBrand(resultSet.getString(BRAND_COLUMN_NAME));
-        car.setModel(resultSet.getString(MODEL_COLUMN_NAME));
-        car.setMotorization(resultSet.getString(MOTORIZATION_COLUMN_NAME));
-        car.setComments(resultSet.getString(COMMENTS_COLUMN_NAME));
+            // If there is no query argument, throw an exception
+            if (updateArguments.isEmpty()) {
+                throw new FunctionalException("No update value has been provided");
+            }
 
-        // Extracts the dates
-        final String releaseDateString = resultSet.getString(RELEASE_DATE_COLUMN_NAME);
-        car.setReleaseDate(nonNull(releaseDateString) ? LocalDate.parse(releaseDateString) : null);
+            // Builds the query
+            final Query query = new QueryBuilder().buildUpdateQuery(TABLE_NAME, updateArguments, whereArguments).getQuery();
 
-        // Extracts the BLOBs
-        car.setCertificate(resultSet.getBytes(CERTIFICATE_COLUMN_NAME));
-        car.setPicture(resultSet.getBytes(PICTURE_COLUMN_NAME));
+            // Prepares the statement
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
 
-        return car;
+            // Executes the statement and retrieves the number of updated lines
+            final int result = statement.executeUpdate();
+
+            if (0 == result) {
+                // If no line has been updated, returns a 204 status
+                logger.debug("[updateCarByID => {}] No car found to update", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            } else {
+                // If a line has been updated, returns a 200 status
+                logger.debug("[updateCarByID => {}] Car updated", OK.value());
+                return ResponseEntity.ok().build();
+            }
+        }
+
+        // If a functional exception has been thrown, returns a 400 status
+        catch (final FunctionalException e) {
+            logger.error("[updateCarByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
+            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (final SQLException | TechnicalException e) {
+            logger.error("[updateCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Deletes a {@link Car} entity in the database by its ID.
+     *
+     * @param id
+     *     The {@link Car} ID
+     *
+     * @return an HTTP response
+     */
+    @DeleteMapping("/{id}/delete")
+    public final ResponseEntity<?> deleteCarByID(@PathVariable @NotNull @Min(1) final Integer id) {
+        logger.debug("[deleteCarByID <= Calling] With ID = {}", id);
+
+        try {
+            // Builds the query
+            final List<QueryArgument> arguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
+            final Query query = new QueryBuilder().buildDeleteQuery(TABLE_NAME, arguments).getQuery();
+
+            // Prepares the statement
+            final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
+
+            // Executes the statement and retrieves the number of updated lines
+            final int result = statement.executeUpdate();
+
+            if (0 == result) {
+                // If no line has been deleted, returns a 204 status
+                logger.debug("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            } else {
+                // If a line has been deleted, returns a 200 status
+                logger.debug("[deleteCarByID => {}] Car deleted", OK.value());
+                return ResponseEntity.ok().build();
+            }
+        }
+
+        // If a technical exception has been thrown, returns a 500 status
+        catch (final SQLException | TechnicalException e) {
+            logger.error("[deleteCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        }
     }
 
     /**

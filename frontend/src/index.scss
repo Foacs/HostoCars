@@ -2,21 +2,21 @@
 
 // Makes the application take exactly the size of the screen (no overflow)
 main {
-    height: 100vh;
     display: flex;
+    height:  100vh;
 }
 
 // Translates the page next to the menu bar and under the app bar
 .Page {
     background-color: $background-color;
-    margin-top: 60px;
-    margin-left: 256px;
+    margin-left:      256px;
+    margin-top:       60px;
 }
 
 // Makes an element impossible to select
 .non-selectable {
+    -moz-user-select:    none;
     -webkit-user-select: none;
-    -moz-user-select: none;
 }
 
 // Hides the scrollbar

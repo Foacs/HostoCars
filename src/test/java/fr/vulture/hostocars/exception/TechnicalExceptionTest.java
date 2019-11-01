@@ -18,7 +18,7 @@ class TechnicalExceptionTest {
      */
     @Test
     @DisplayName("Constructing a technical exception with a message")
-    void testConstructorWithMessage() {
+    final void testConstructorWithMessage() {
         final String message = "message";
 
         final TechnicalException result = new TechnicalException(message);
@@ -33,7 +33,7 @@ class TechnicalExceptionTest {
      */
     @Test
     @DisplayName("Constructing a technical exception with a message and arguments")
-    void testConstructorWithMessageAndArguments() {
+    final void testConstructorWithMessageAndArguments() {
         final String message = "message with args : {}, {}, {}";
         final String arg1 = "arg1", arg2 = "arg2", arg3 = "arg3";
 
@@ -51,7 +51,7 @@ class TechnicalExceptionTest {
      */
     @Test
     @DisplayName("Constructing a technical exception with a cause and a message")
-    void testConstructorWithCauseAndMessage() {
+    final void testConstructorWithCauseAndMessage() {
         final Throwable cause = new Throwable();
         final String message = "message";
 
@@ -67,7 +67,7 @@ class TechnicalExceptionTest {
      */
     @Test
     @DisplayName("Constructing a technical exception with a cause, a message and arguments")
-    void testConstructorWithCauseAndMessageAndArguments() {
+    final void testConstructorWithCauseAndMessageAndArguments() {
         final Throwable cause = new Throwable();
         final String message = "message with args : {}, {}, {}";
         final String arg1 = "arg1", arg2 = "arg2", arg3 = "arg3";

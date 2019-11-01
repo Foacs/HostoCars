@@ -4,37 +4,37 @@
     padding: 12px 32px 32px 32px;
 
     .SortSection {
-        align-content: center;
-        align-items: baseline;
-        display: flex;
+        align-content:   center;
+        align-items:     baseline;
+        display:         flex;
         justify-content: flex-end;
-        padding-bottom: 12px;
-        width: 100%;
+        padding-bottom:  12px;
+        width:           100%;
 
         &-RegistrationButton, &-OwnerButton {
             &:hover {
                 background-color: $transparent;
 
                 &:before {
-                    visibility: visible;
                     -webkit-transform: scaleX(1);
-                    transform: scaleX(1);
+                    transform:         scaleX(1);
+                    visibility:        visible;
                 }
             }
 
             &:before {
-                content: "";
-                position: absolute;
-                width: 80%;
-                height: 1px;
-                bottom: 10px;
-                left: 10%;
-                background-color: $primary-color;
-                visibility: hidden;
-                -webkit-transform: scaleX(0);
-                transform: scaleX(0);
+                background-color:   $primary-color;
+                bottom:             10px;
+                content:            "";
+                height:             1px;
+                left:               10%;
+                position:           absolute;
+                -webkit-transform:  scaleX(0);
+                transform:          scaleX(0);
                 -webkit-transition: all 0.3s ease-in-out 0s;
-                transition: all 0.3s ease-in-out 0s;
+                transition:         all 0.3s ease-in-out 0s;
+                visibility:         hidden;
+                width:              80%;
             }
 
             &_selected {

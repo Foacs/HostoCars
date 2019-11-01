@@ -30,7 +30,7 @@ class VersionComparatorTest {
      */
     @Test
     @DisplayName("Comparison with invalid first argument")
-    void testWithInvalidFirstArgument() {
+    final void testWithInvalidFirstArgument() {
         final IllegalArgumentException exception =
             assertThrows(IllegalArgumentException.class, () -> versionComparator.compare("Not a version", "1.0.0"),
                 "Expected exception has not been thrown");
@@ -42,7 +42,7 @@ class VersionComparatorTest {
      */
     @Test
     @DisplayName("Comparison with invalid second argument")
-    void testWithInvalidSecondArgument() {
+    final void testWithInvalidSecondArgument() {
         final IllegalArgumentException exception =
             assertThrows(IllegalArgumentException.class, () -> versionComparator.compare("1.0.0", "Not a version"),
                 "Expected exception has not been thrown");
@@ -54,10 +54,10 @@ class VersionComparatorTest {
      */
     @Test
     @DisplayName("Comparison with different major versions")
-    void testWithDifferentMajorVersions() {
+    final void testWithDifferentMajorVersions() {
         assertAll("Asserting both ways comparisons",
-            () -> assertTrue(versionComparator.compare("0.0.0", "1.0.0") < 0, "Result different from expected"),
-            () -> assertTrue(versionComparator.compare("1.0.0", "0.0.0") > 0, "Result different from expected")
+            () -> assertTrue(0 > versionComparator.compare("0.0.0", "1.0.0"), "Result different from expected"),
+            () -> assertTrue(0 < versionComparator.compare("1.0.0", "0.0.0"), "Result different from expected")
         );
     }
 
@@ -66,10 +66,10 @@ class VersionComparatorTest {
      */
     @Test
     @DisplayName("Comparison with different medium versions")
-    void testWithDifferentMediumVersions() {
+    final void testWithDifferentMediumVersions() {
         assertAll("Asserting both ways comparisons",
-            () -> assertTrue(versionComparator.compare("0.0.0", "0.1.0") < 0, "Result different from expected"),
-            () -> assertTrue(versionComparator.compare("0.1.0", "0.0.0") > 0, "Result different from expected")
+            () -> assertTrue(0 > versionComparator.compare("0.0.0", "0.1.0"), "Result different from expected"),
+            () -> assertTrue(0 < versionComparator.compare("0.1.0", "0.0.0"), "Result different from expected")
         );
     }
 
@@ -78,10 +78,10 @@ class VersionComparatorTest {
      */
     @Test
     @DisplayName("Comparison with different minor versions")
-    void testWithDifferentMinorVersions() {
+    final void testWithDifferentMinorVersions() {
         assertAll("Asserting both ways comparisons",
-            () -> assertTrue(versionComparator.compare("0.0.0", "0.0.1") < 0, "Result different from expected"),
-            () -> assertTrue(versionComparator.compare("0.0.1", "0.0.0") > 0, "Result different from expected")
+            () -> assertTrue(0 > versionComparator.compare("0.0.0", "0.0.1"), "Result different from expected"),
+            () -> assertTrue(0 < versionComparator.compare("0.0.1", "0.0.0"), "Result different from expected")
         );
     }
 
@@ -90,7 +90,7 @@ class VersionComparatorTest {
      */
     @Test
     @DisplayName("Comparison with equal versions")
-    void testWithEqualVersions() {
+    final void testWithEqualVersions() {
         assertEquals(0, versionComparator.compare("1.2.3", "1.2.3"), "Result different from expected");
     }
 

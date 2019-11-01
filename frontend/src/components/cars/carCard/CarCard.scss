@@ -3,26 +3,26 @@
 #CarCard {
     .ActionArea {
         &-PictureBox {
-            overflow: hidden;
+            overflow:    hidden;
             padding-top: 56.25%;
-            position: relative;
-            width: 100%;
+            position:    relative;
+            width:       100%;
 
             &-Picture {
-                bottom: 0;
-                height: 100%;
-                left: 0;
-                margin: auto;
+                bottom:     0;
+                height:     100%;
+                left:       0;
+                margin:     auto;
                 object-fit: cover;
-                position: absolute;
-                right: 0;
-                top: 0;
-                width: 100%;
+                position:   absolute;
+                right:      0;
+                top:        0;
+                width:      100%;
 
                 &_default {
-                    height: 80%;
+                    height:     80%;
                     object-fit: none;
-                    width: 80%;
+                    width:      80%;
                 }
             }
         }
@@ -35,19 +35,19 @@
             }
 
             &-RegistrationTitle {
-                font-size: calc(16px + 10 * ((100vw - 280px) / (1600 - 280)));
+                font-size:   calc(16px + 10 * ((100vw - 280px) / (1600 - 280)));
                 line-height: 1.2;
             }
 
             &-OwnerSubTitle {
-                font-size: calc(12px + 8 * ((100vw - 280px) / (1600 - 280)));
+                font-size:   calc(12px + 8 * ((100vw - 280px) / (1600 - 280)));
                 line-height: 1;
             }
 
             &-ModelSubTitle {
-                color: $gray;
-                font-size: calc(10px + 6 * ((100vw - 280px) / (1600 - 280)));
-                font-style: italic;
+                color:       $gray;
+                font-size:   calc(10px + 6 * ((100vw - 280px) / (1600 - 280)));
+                font-style:  italic;
                 line-height: 1.4;
 
                 &_missing {

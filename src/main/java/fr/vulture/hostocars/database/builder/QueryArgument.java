@@ -23,8 +23,8 @@ public class QueryArgument {
 
     private Object value;
 
-    @Min(value = LONGNVARCHAR)
-    @Max(value = TIMESTAMP_WITH_TIMEZONE)
+    @Min(LONGNVARCHAR)
+    @Max(TIMESTAMP_WITH_TIMEZONE)
     private int type;
 
 }

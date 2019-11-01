@@ -18,7 +18,7 @@ class FunctionalExceptionTest {
      */
     @Test
     @DisplayName("Constructing a functional exception with a message")
-    void testConstructorWithMessage() {
+    final void testConstructorWithMessage() {
         final String message = "message";
 
         final FunctionalException result = new FunctionalException(message);
@@ -33,7 +33,7 @@ class FunctionalExceptionTest {
      */
     @Test
     @DisplayName("Constructing a functional exception with a message and arguments")
-    void testConstructorWithMessageAndArguments() {
+    final void testConstructorWithMessageAndArguments() {
         final String message = "message with args : {}, {}, {}";
         final String arg1 = "arg1", arg2 = "arg2", arg3 = "arg3";
 

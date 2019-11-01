@@ -70,27 +70,28 @@ public class DatabaseBackupManager {
      * @throws TechnicalException
      *     if no file is found in the database folder
      */
-    void backupDatabase(final boolean isUpdateBackup) throws IOException, TechnicalException {
-        if (isUpdateBackup || isBackupNeeded()) {
-            final String n = getNextBackupFileIndex(isUpdateBackup);
+    final void backupDatabase(final boolean isUpdateBackup) throws IOException, TechnicalException {
+        if (isUpdateBackup || this.isBackupNeeded()) {
+            final String next = this.getNextBackupFileIndex(isUpdateBackup);
 
-            for (long m = countExistingBackups(isUpdateBackup); m >= (isUpdateBackup ? databaseUpdateBackupNumber : databaseBackupNumber); m--) {
-                deleteOldestBackupFile(isUpdateBackup);
+            final long maxCount = isUpdateBackup ? this.databaseUpdateBackupNumber : this.databaseBackupNumber;
+            for (long count = this.countExistingBackups(isUpdateBackup); count >= maxCount; count--) {
+                this.deleteOldestBackupFile(isUpdateBackup);
             }
 
-            final String backupFilePath = databaseLocation
+            final String backupFilePath = this.databaseLocation
                 .concat(BACKUP_FILE_PATH_SEPARATOR)
                 .concat(isUpdateBackup ? BACKUP_FILE_NAME_UPDATE_PREFIX : BACKUP_FILE_NAME_PREFIX)
                 .concat(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
                 .concat(BACKUP_FILE_NAME_SEPARATOR)
-                .concat(n)
+                .concat(next)
                 .concat(BACKUP_FILE_NAME_SUFFIX)
                 .concat(BACKUP_FILE_EXTENSION);
 
-            final File databaseFile = new File(databasePath);
+            final File databaseFile = new File(this.databasePath);
             final File backupFile = new File(backupFilePath);
 
-            try (GzipCompressorOutputStream out = new GzipCompressorOutputStream(new FileOutputStream(backupFile))) {
+            try (final GzipCompressorOutputStream out = new GzipCompressorOutputStream(new FileOutputStream(backupFile))) {
                 IOUtils.copy(new FileInputStream(databaseFile), out);
             }
         }
@@ -105,7 +106,7 @@ public class DatabaseBackupManager {
      *     if no file is found in the database folder
      */
     private boolean isBackupNeeded() throws TechnicalException {
-        final File[] backupFiles = new File(databaseLocation).listFiles();
+        final File[] backupFiles = new File(this.databaseLocation).listFiles();
 
         if (isNull(backupFiles)) {
             throw new TechnicalException("No file found in database location");
@@ -120,31 +121,7 @@ public class DatabaseBackupManager {
         }
 
         final LocalDate oldestBackupDate = Instant.ofEpochMilli(oldestBackupFile.get().lastModified()).atZone(ZoneId.systemDefault()).toLocalDate();
-        return ChronoUnit.DAYS.between(oldestBackupDate, LocalDate.now()) >= databaseBackupDelay;
-    }
-
-    /**
-     * Returns the number of existing backup files.
-     *
-     * @param isUpdateBackup
-     *     If the backup is for a database update
-     *
-     * @return the number of existing backup files
-     *
-     * @throws TechnicalException
-     *     if no file is found in the database folder
-     */
-    private long countExistingBackups(final boolean isUpdateBackup) throws TechnicalException {
-        final File[] backupFiles = new File(databaseLocation).listFiles();
-
-        if (isNull(backupFiles)) {
-            throw new TechnicalException("No file found in database location");
-        }
-
-        return Stream.of(backupFiles)
-            .map(File::getName)
-            .filter(fileName -> fileName.startsWith(isUpdateBackup ? BACKUP_FILE_NAME_UPDATE_PREFIX : BACKUP_FILE_NAME_PREFIX))
-            .count();
+        return ChronoUnit.DAYS.between(oldestBackupDate, LocalDate.now()) >= this.databaseBackupDelay;
     }
 
     /**
@@ -163,7 +140,7 @@ public class DatabaseBackupManager {
             .concat(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
             .concat(BACKUP_FILE_NAME_SEPARATOR);
 
-        final File[] backupFiles = new File(databaseLocation).listFiles();
+        final File[] backupFiles = new File(this.databaseLocation).listFiles();
 
         if (isNull(backupFiles)) {
             throw new TechnicalException("No file found in database location");
@@ -178,6 +155,30 @@ public class DatabaseBackupManager {
     }
 
     /**
+     * Returns the number of existing backup files.
+     *
+     * @param isUpdateBackup
+     *     If the backup is for a database update
+     *
+     * @return the number of existing backup files
+     *
+     * @throws TechnicalException
+     *     if no file is found in the database folder
+     */
+    private long countExistingBackups(final boolean isUpdateBackup) throws TechnicalException {
+        final File[] backupFiles = new File(this.databaseLocation).listFiles();
+
+        if (isNull(backupFiles)) {
+            throw new TechnicalException("No file found in database location");
+        }
+
+        return Stream.of(backupFiles)
+            .map(File::getName)
+            .filter(fileName -> fileName.startsWith(isUpdateBackup ? BACKUP_FILE_NAME_UPDATE_PREFIX : BACKUP_FILE_NAME_PREFIX))
+            .count();
+    }
+
+    /**
      * Delete the oldest backup file.
      *
      * @param isUpdateBackup
@@ -187,7 +188,7 @@ public class DatabaseBackupManager {
      *     if no file is found in the database folder
      */
     private void deleteOldestBackupFile(final boolean isUpdateBackup) throws TechnicalException {
-        final File[] backupFiles = new File(databaseLocation).listFiles();
+        final File[] backupFiles = new File(this.databaseLocation).listFiles();
 
         if (isNull(backupFiles)) {
             throw new TechnicalException("No file found in database location");

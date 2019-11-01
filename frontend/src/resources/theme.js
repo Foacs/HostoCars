@@ -1,8 +1,8 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-import 'typeface-roboto';
-
 import { backgroundColor } from 'resources';
+
+import 'typeface-roboto';
 
 export const theme = createMuiTheme({
     palette: {

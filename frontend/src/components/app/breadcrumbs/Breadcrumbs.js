@@ -1,10 +1,9 @@
+import { Breadcrumbs as MuiBreadcrumbs, Link, Typography } from '@material-ui/core';
+import { HomeRounded as HomeIcon, NavigateNextRounded as NextIcon } from '@material-ui/icons';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
-import PropTypes from 'prop-types';
-
-import { Breadcrumbs as MuiBreadcrumbs, Link, Typography } from '@material-ui/core';
-import { HomeRounded as HomeIcon, NavigateNextRounded as NextIcon } from '@material-ui/icons';
 
 import { NavigationPathPropType } from 'resources';
 
@@ -13,21 +12,17 @@ import './Breadcrumbs.scss';
 const separator = <NextIcon fontSize='small' className='Separator' />;
 
 function Breadcrumbs({ className, currentNavigationPath, currentPageName }) {
-    return (
-        <MuiBreadcrumbs className={className} id='Breadcrumbs' separator={separator}>
-            <Link className='HomeLink' component={RouterLink} to='/cars'>
-                <HomeIcon />
-            </Link>
+    return <MuiBreadcrumbs className={className} id='Breadcrumbs' separator={separator}>
+        <Link className='HomeLink' component={RouterLink} to='/cars'>
+            <HomeIcon />
+        </Link>
 
-            {currentNavigationPath.map(element => (
-                <Link className='Link' component={RouterLink} key={element.label} to={element.link}>
-                    <Typography className='Link-Label'>{element.label}</Typography>
-                </Link>
-            ))}
+        {currentNavigationPath.map(element => (<Link className='Link' component={RouterLink} key={element.label} to={element.link}>
+            <Typography className='Link-Label'>{element.label}</Typography>
+        </Link>))}
 
-            <Typography className='CurrentPageLabel'>{currentPageName}</Typography>
-        </MuiBreadcrumbs>
-    );
+        <Typography className='CurrentPageLabel'>{currentPageName}</Typography>
+    </MuiBreadcrumbs>;
 }
 
 const mapStateToProps = state => ({
@@ -45,7 +40,4 @@ Breadcrumbs.defaultProps = {
     className: ''
 };
 
-export default connect(
-    mapStateToProps,
-    null
-)(Breadcrumbs);
+export default connect(mapStateToProps, null)(Breadcrumbs);

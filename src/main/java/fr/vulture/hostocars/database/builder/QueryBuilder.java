@@ -61,7 +61,7 @@ public class QueryBuilder {
      *
      * @return the current instance of {@link QueryBuilder}
      */
-    public QueryBuilder buildSelectQuery(@NotNull final String tableName, final boolean distinct) {
+    public final QueryBuilder buildSelectQuery(@NotNull final String tableName, final boolean distinct) {
         // Initializes the query with a SELECT clause
         final StringBuilder queryBuilder = new StringBuilder(SELECT_CLAUSE);
 
@@ -76,7 +76,7 @@ public class QueryBuilder {
             .append(tableName);
 
         // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
+        this.query.setQuery(queryBuilder.toString());
 
         // Returns the builder
         return this;
@@ -94,7 +94,8 @@ public class QueryBuilder {
      *
      * @return the current instance of {@link QueryBuilder}
      */
-    public QueryBuilder buildSelectQuery(@NotNull final String tableName, @NotNull @NotEmpty final List<String> columnNames, final boolean distinct) {
+    public final QueryBuilder buildSelectQuery(@NotNull final String tableName, @NotNull @NotEmpty final Iterable<String> columnNames,
+        final boolean distinct) {
         // Initializes the query with a SELECT clause
         final StringBuilder queryBuilder = new StringBuilder(SELECT_CLAUSE);
 
@@ -121,7 +122,7 @@ public class QueryBuilder {
         queryBuilder.append(FROM_CLAUSE).append(tableName);
 
         // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
+        this.query.setQuery(queryBuilder.toString());
 
         // Returns the builder
         return this;
@@ -137,7 +138,7 @@ public class QueryBuilder {
      *
      * @return the current instance of {@link QueryBuilder}
      */
-    public QueryBuilder buildInsertQuery(@NotNull final String tableName, @NotNull @NotEmpty final List<QueryArgument> arguments) {
+    public final QueryBuilder buildInsertQuery(@NotNull final String tableName, @NotNull @NotEmpty final List<QueryArgument> arguments) {
         // Initializes the query with an INSERT INTO clause, the table name and an opening parenthesis
         final StringBuilder queryBuilder = new StringBuilder(INSERT_INTO_CLAUSE).append(tableName).append(OPENING_PARENTHESIS);
 
@@ -159,7 +160,8 @@ public class QueryBuilder {
         queryBuilder.append(CLOSING_PARENTHESIS).append(VALUES_CLAUSE).append(OPENING_PARENTHESIS);
 
         // Adds the parameters symbols for the VALUES clause
-        for (int i = 1; i <= arguments.size(); i++) {
+        final int size = arguments.size();
+        for (int i = 1; i <= size; i++) {
             // Adds a parameter symbol
             queryBuilder.append(PARAMETER_SYMBOL);
 
@@ -173,10 +175,10 @@ public class QueryBuilder {
         queryBuilder.append(CLOSING_PARENTHESIS);
 
         // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
+        this.query.setQuery(queryBuilder.toString());
 
         // Sets the query arguments
-        query.setArguments(arguments);
+        this.query.setArguments(arguments);
 
         return this;
     }
@@ -196,8 +198,8 @@ public class QueryBuilder {
      * @throws TechnicalException
      *     if a {@link QueryArgument} for the WHERE clause is of prohibited or unknown type
      */
-    public QueryBuilder buildUpdateQuery(@NotNull final String tableName, @NotNull @NotEmpty final List<QueryArgument> updateArguments,
-        @NotNull @NotEmpty List<QueryArgument> whereArguments) throws TechnicalException {
+    public final QueryBuilder buildUpdateQuery(@NotNull final String tableName, @NotNull @NotEmpty final List<QueryArgument> updateArguments,
+        @NotNull @NotEmpty final Iterable<QueryArgument> whereArguments) throws TechnicalException {
         // Initializes the query with an UPDATE clause, the table name and a SET clause
         final StringBuilder queryBuilder = new StringBuilder(UPDATE_CLAUSE).append(tableName).append(SET_CLAUSE);
 
@@ -216,36 +218,12 @@ public class QueryBuilder {
         }
 
         // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
+        this.query.setQuery(queryBuilder.toString());
 
         // Sets the query arguments
-        query.setArguments(updateArguments);
+        this.query.setArguments(updateArguments);
 
-        return addWhereClause(whereArguments);
-    }
-
-    /**
-     * Builds a DELETE query from the {@code tableName} table with the input list of {@link QueryArgument}.
-     *
-     * @param tableName
-     *     The table name
-     * @param arguments
-     *     The query arguments for the WHERE clause
-     *
-     * @return the current instance of {@link QueryBuilder}
-     *
-     * @throws TechnicalException
-     *     if a {@link QueryArgument} for the WHERE clause is of prohibited or unknown type
-     */
-    public QueryBuilder buildDeleteQuery(@NotNull final String tableName, @NotNull @NotEmpty final List<QueryArgument> arguments)
-        throws TechnicalException {
-        // Initializes the query with a DELETE clause, a FROM clause and the table name
-        final StringBuilder queryBuilder = new StringBuilder(DELETE_CLAUSE).append(FROM_CLAUSE).append(tableName);
-
-        // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
-
-        return addWhereClause(arguments);
+        return this.addWhereClause(whereArguments);
     }
 
     /**
@@ -259,9 +237,9 @@ public class QueryBuilder {
      * @throws TechnicalException
      *     if a {@link QueryArgument} is of prohibited or unknown type
      */
-    public QueryBuilder addWhereClause(@NotNull @NotEmpty final List<QueryArgument> arguments) throws TechnicalException {
+    public final QueryBuilder addWhereClause(@NotNull @NotEmpty final Iterable<QueryArgument> arguments) throws TechnicalException {
         // Adds the WHERE clause to the current query
-        final StringBuilder queryBuilder = new StringBuilder(query.getQuery()).append(WHERE_CLAUSE);
+        final StringBuilder queryBuilder = new StringBuilder(this.query.getQuery()).append(WHERE_CLAUSE);
 
         // For each query argument, adds it to the query and its arguments list
         final Iterator<QueryArgument> iterator = arguments.iterator();
@@ -280,49 +258,11 @@ public class QueryBuilder {
 
             // Transforms the argument value according to its type for the WHERE clause
             argument.setValue(getWhereClauseValue(argument));
-            query.getArguments().add(argument);
+            this.query.getArguments().add(argument);
         }
 
         // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
-
-        // Returns the builder
-        return this;
-    }
-
-    /**
-     * Adds an ORDER BY clause to the current query with the input column names, and which order can be inverted with the {@code invertOrder} flag.
-     *
-     * @param columnNames
-     *     The column names used for the ORDER BY clause
-     * @param invertOrder
-     *     Flag allowing to invert the natural order of the ORDER BY clause (setting it at true implies a descending order)
-     *
-     * @return the current instance of {@link QueryBuilder}
-     */
-    public QueryBuilder addOrderByClause(@NotNull @NotEmpty final List<String> columnNames, final boolean invertOrder) {
-        // Adds the ORDER BY clause to the current query
-        final StringBuilder queryBuilder = new StringBuilder(query.getQuery()).append(ORDER_BY_CLAUSE);
-
-        // For each column name, adds it to the query
-        final Iterator<String> iterator = columnNames.iterator();
-        while (iterator.hasNext()) {
-            final String columnName = iterator.next();
-
-            // Adds the column name to the ORDER BY clause
-            queryBuilder.append(columnName);
-
-            // If there is a next column name, adds a comma separator
-            if (iterator.hasNext()) {
-                queryBuilder.append(COMMA_SEPARATOR);
-            }
-        }
-
-        // Adds the ASC or DESC clause depending on the invertOrder flag
-        queryBuilder.append(invertOrder ? DESCENDING_CLAUSE : ASCENDING_CLAUSE);
-
-        // Updates the query of the builder
-        query.setQuery(queryBuilder.toString());
+        this.query.setQuery(queryBuilder.toString());
 
         // Returns the builder
         return this;
@@ -339,7 +279,7 @@ public class QueryBuilder {
      * @throws TechnicalException
      *     if the argument type is prohibited or unknown
      */
-    String getWhereClauseOperator(@NotNull final QueryArgument argument) throws TechnicalException {
+    static String getWhereClauseOperator(@NotNull final QueryArgument argument) throws TechnicalException {
         switch (argument.getType()) {
             case INTEGER:
             case DATE:
@@ -364,7 +304,7 @@ public class QueryBuilder {
      * @throws TechnicalException
      *     if the argument type is prohibited or unknown
      */
-    Object getWhereClauseValue(@NotNull final QueryArgument argument) throws TechnicalException {
+    static Object getWhereClauseValue(@NotNull final QueryArgument argument) throws TechnicalException {
         switch (argument.getType()) {
             case INTEGER:
             case DATE:
@@ -376,6 +316,68 @@ public class QueryBuilder {
             default:
                 throw new TechnicalException("Unknown query argument type");
         }
+    }
+
+    /**
+     * Builds a DELETE query from the {@code tableName} table with the input list of {@link QueryArgument}.
+     *
+     * @param tableName
+     *     The table name
+     * @param arguments
+     *     The query arguments for the WHERE clause
+     *
+     * @return the current instance of {@link QueryBuilder}
+     *
+     * @throws TechnicalException
+     *     if a {@link QueryArgument} for the WHERE clause is of prohibited or unknown type
+     */
+    public final QueryBuilder buildDeleteQuery(@NotNull final String tableName, @NotNull @NotEmpty final Iterable<QueryArgument> arguments)
+        throws TechnicalException {
+        // Initializes the query with a DELETE clause, a FROM clause and the table name
+        final StringBuilder queryBuilder = new StringBuilder(DELETE_CLAUSE).append(FROM_CLAUSE).append(tableName);
+
+        // Updates the query of the builder
+        this.query.setQuery(queryBuilder.toString());
+
+        return this.addWhereClause(arguments);
+    }
+
+    /**
+     * Adds an ORDER BY clause to the current query with the input column names, and which order can be inverted with the {@code invertOrder} flag.
+     *
+     * @param columnNames
+     *     The column names used for the ORDER BY clause
+     * @param invertOrder
+     *     Flag allowing to invert the natural order of the ORDER BY clause (setting it at true implies a descending order)
+     *
+     * @return the current instance of {@link QueryBuilder}
+     */
+    public final QueryBuilder addOrderByClause(@NotNull @NotEmpty final Iterable<String> columnNames, final boolean invertOrder) {
+        // Adds the ORDER BY clause to the current query
+        final StringBuilder queryBuilder = new StringBuilder(this.query.getQuery()).append(ORDER_BY_CLAUSE);
+
+        // For each column name, adds it to the query
+        final Iterator<String> iterator = columnNames.iterator();
+        while (iterator.hasNext()) {
+            final String columnName = iterator.next();
+
+            // Adds the column name to the ORDER BY clause
+            queryBuilder.append(columnName);
+
+            // If there is a next column name, adds a comma separator
+            if (iterator.hasNext()) {
+                queryBuilder.append(COMMA_SEPARATOR);
+            }
+        }
+
+        // Adds the ASC or DESC clause depending on the invertOrder flag
+        queryBuilder.append(invertOrder ? DESCENDING_CLAUSE : ASCENDING_CLAUSE);
+
+        // Updates the query of the builder
+        this.query.setQuery(queryBuilder.toString());
+
+        // Returns the builder
+        return this;
     }
 
 }

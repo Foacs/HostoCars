@@ -2,6 +2,7 @@ package fr.vulture.hostocars.configuration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import fr.vulture.hostocars.configuration.WebMvcConfig.CustomPathResourceResolver;
 import java.io.IOException;
@@ -40,7 +41,7 @@ class WebMvcConfigTest {
      */
     @Test
     @DisplayName("Adding a new resource handler")
-    void testAddResourceHandlers() {
+    final void testAddResourceHandlers() {
         final ResourceHandlerRegistry registry = Mockito.mock(ResourceHandlerRegistry.class);
         final ResourceHandlerRegistration registryRegistration = Mockito.mock(ResourceHandlerRegistration.class);
         final ResourceChainRegistration chainRegistration = Mockito.mock(ResourceChainRegistration.class);
@@ -57,7 +58,7 @@ class WebMvcConfigTest {
         final ResourceResolver resourceResolver = argumentCaptor.getValue();
 
         assertNotNull(resourceResolver, "Added resource resolver unexpectedly null");
-        assertEquals(CustomPathResourceResolver.class, resourceResolver.getClass(),
+        assertSame(CustomPathResourceResolver.class, resourceResolver.getClass(),
             "Added resource resolver class different from expected");
 
         Mockito.verify(registry, Mockito.times(1)).addResourceHandler("/**/*");
@@ -74,12 +75,12 @@ class WebMvcConfigTest {
      */
     @Test
     @DisplayName("Getting a resource with a null resource path")
-    void testGetResourceWithNullResourcePath() throws IOException {
+    final void testGetResourceWithNullResourcePath() throws IOException {
         final Resource resource = Mockito.mock(Resource.class);
 
         final Resource result = customPathResourceResolver.getResource(null, resource);
         assertNotNull(result, "Result object unexpectedly null");
-        assertEquals(ClassPathResource.class, result.getClass(), "Result object class different from expected");
+        assertSame(ClassPathResource.class, result.getClass(), "Result object class different from expected");
         assertEquals("static/index.html", ((ClassPathResource) result).getPath(), "Path different from expected");
     }
 
@@ -91,7 +92,7 @@ class WebMvcConfigTest {
      */
     @Test
     @DisplayName("Getting a resource with an inexistant requested resource")
-    void testGetResourceWithInexistantRequestedResource() throws IOException {
+    final void testGetResourceWithInexistantRequestedResource() throws IOException {
         final String resourcePath = "";
         final Resource resource = Mockito.mock(Resource.class);
         final Resource requestedResource = Mockito.mock(Resource.class);
@@ -101,7 +102,7 @@ class WebMvcConfigTest {
 
         final Resource result = customPathResourceResolver.getResource(resourcePath, resource);
         assertNotNull(result, "Result object unexpectedly null");
-        assertEquals(ClassPathResource.class, result.getClass(), "Result object class different from expected");
+        assertSame(ClassPathResource.class, result.getClass(), "Result object class different from expected");
         assertEquals("static/index.html", ((ClassPathResource) result).getPath(), "Path different from expected");
 
         Mockito.verify(resource, Mockito.times(1)).createRelative(resourcePath);
@@ -116,7 +117,7 @@ class WebMvcConfigTest {
      */
     @Test
     @DisplayName("Getting a resource with an unreadable requested resource")
-    void testGetResourceWithUnreadableRequestedResource() throws IOException {
+    final void testGetResourceWithUnreadableRequestedResource() throws IOException {
         final String resourcePath = "";
         final Resource resource = Mockito.mock(Resource.class);
         final Resource requestedResource = Mockito.mock(Resource.class);
@@ -127,7 +128,7 @@ class WebMvcConfigTest {
 
         final Resource result = customPathResourceResolver.getResource(resourcePath, resource);
         assertNotNull(result, "Result object unexpectedly null");
-        assertEquals(ClassPathResource.class, result.getClass(), "Result object class different from expected");
+        assertSame(ClassPathResource.class, result.getClass(), "Result object class different from expected");
         assertEquals("static/index.html", ((ClassPathResource) result).getPath(), "Path different from expected");
 
         Mockito.verify(resource, Mockito.times(1)).createRelative(resourcePath);
@@ -143,7 +144,7 @@ class WebMvcConfigTest {
      */
     @Test
     @DisplayName("Getting a resource with an existent and readable requested resource")
-    void testGetResourceWithExistentAndReadableRequestedResource() throws IOException {
+    final void testGetResourceWithExistentAndReadableRequestedResource() throws IOException {
         final String resourcePath = "";
         final Resource resource = Mockito.mock(Resource.class);
         final Resource requestedResource = Mockito.mock(Resource.class);

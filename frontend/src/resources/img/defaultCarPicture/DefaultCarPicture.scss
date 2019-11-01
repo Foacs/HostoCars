@@ -6,18 +6,18 @@
     }
 
     .Outline, .Windshield, .Headlight, .Smile {
-        stroke-linecap: round;
+        stroke-linecap:  round;
         stroke-linejoin: round;
-        stroke-width: 2px;
+        stroke-width:    2px;
     }
 
     .Outline, .Smile {
-        fill: none;
+        fill:   none;
         stroke: $default-car-picture-stroke-color;
     }
 
     .Windshield, .Headlight {
-        fill: $white;
+        fill:   $white;
         stroke: $default-car-picture-stroke-color;
     }
 }

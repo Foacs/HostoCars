@@ -9,12 +9,14 @@ import fr.vulture.hostocars.comparator.VersionComparator;
 import fr.vulture.hostocars.configuration.ProfileEnum;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,16 +73,16 @@ public class SQLResourceExtractor {
      * @throws IOException
      *     if an I/O error occurs while extracting the resources
      */
-    SortedMap<String, SortedSet<Resource>> extractSQLResources(@NotNull final String currentVersion, @NotNull final String targetVersion)
+    final SortedMap<String, SortedSet<Resource>> extractSQLResources(@NotNull final String currentVersion, @NotNull final String targetVersion)
         throws IOException {
         // Extracts the resources from the classpath
-        final Resource[] resources = new PathMatchingResourcePatternResolver().getResources("classpath:" + sqlScriptsResourcesLocation + "/**");
+        final Resource[] resources = new PathMatchingResourcePatternResolver().getResources("classpath:" + this.sqlScriptsResourcesLocation + "/**");
 
         // Extracts the SQL resources paths depending on the active profile
-        final Map<String, Resource> resourcesPaths = extractResourcePaths(resources);
+        final Map<String, Resource> resourcesPaths = this.extractResourcePaths(resources);
 
         // Extracts the versions and groups the resources by their corresponding ones
-        return groupResourcesByVersions(resourcesPaths, currentVersion, targetVersion);
+        return this.groupResourcesByVersions(resourcesPaths, currentVersion, targetVersion);
     }
 
     /**
@@ -92,11 +94,11 @@ public class SQLResourceExtractor {
      * @return a map of resources by their corresponding paths
      */
     private Map<String, Resource> extractResourcePaths(@NotNull final Resource[] resources) {
-        final ProfileEnum activeProfile = ProfileEnum.valueOf(profile.toUpperCase());
+        final ProfileEnum activeProfile = ProfileEnum.valueOf(this.profile.toUpperCase(Locale.ENGLISH));
 
         // Extracts the SQL resources paths depending on the active profile
-        final Map<String, Resource> result = new HashMap<>();
-        if (PROD.equals(activeProfile)) {
+        final Map<String, Resource> result = new HashMap<>(0);
+        if (PROD == activeProfile) {
             for (final Resource resource : resources) {
                 final String resourcePath = ((ClassPathResource) resource).getPath();
 
@@ -105,7 +107,7 @@ public class SQLResourceExtractor {
                     result.put(resourcePath, resource);
                 }
             }
-        } else if (DEV.equals(activeProfile)) {
+        } else if (DEV == activeProfile) {
             for (final Resource resource : resources) {
                 final String resourcePath = ((FileSystemResource) resource).getPath();
 
@@ -132,22 +134,22 @@ public class SQLResourceExtractor {
      *
      * @return a sorted map of the sorted resources by their corresponding versions
      */
-    private SortedMap<String, SortedSet<Resource>> groupResourcesByVersions(@NotNull final Map<String, Resource> resourcesPaths,
+    private SortedMap<String, SortedSet<Resource>> groupResourcesByVersions(final @NotNull Map<String, ? extends Resource> resourcesPaths,
         @NotNull final String currentVersion, @NotNull final String targetVersion) {
-        final SortedMap<String, SortedSet<Resource>> result = new TreeMap<>(versionComparator);
+        final SortedMap<String, SortedSet<Resource>> result = new TreeMap<>(this.versionComparator);
         for (final String resourcePath : resourcesPaths.keySet()) {
             // Tries to find a version in the current path
-            final Matcher matcher = java.util.regex.Pattern.compile(VERSION_STRING_REGEX).matcher(resourcePath);
+            final Matcher matcher = Pattern.compile(VERSION_STRING_REGEX).matcher(resourcePath);
 
             // If a version has been found, tries to add the current resource to the result
             if (matcher.find()) {
                 final String version = matcher.group(0);
 
                 // Adds the current resource only if the corresponding version is higher than the current one and lower or equal to the target one
-                if (versionComparator.compare(version, currentVersion) > 0 || versionComparator.compare(version, targetVersion) <= 0) {
+                if (0 < this.versionComparator.compare(version, currentVersion) || 0 >= this.versionComparator.compare(version, targetVersion)) {
                     // If no previous script has been added to the current version, initialize the set of resources
                     if (!result.containsKey(version)) {
-                        result.put(version, new TreeSet<>(resourceComparator));
+                        result.put(version, new TreeSet<>(this.resourceComparator));
                     }
 
                     result.get(version).add(resourcesPaths.get(resourcePath));

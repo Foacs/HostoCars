@@ -23,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     private static final Logger logger = LoggerFactory.getLogger(WebMvcConfig.class);
 
     @Override
-    public void addResourceHandlers(@NotNull final ResourceHandlerRegistry registry) {
+    public final void addResourceHandlers(@NotNull final ResourceHandlerRegistry registry) {
         logger.debug("Adding resources to registry");
 
         registry.addResourceHandler("/**/*")
@@ -40,7 +40,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     static class CustomPathResourceResolver extends PathResourceResolver {
 
         @Override
-        public Resource getResource(@Nullable final String resourcePath, @NotNull final Resource location) throws IOException {
+        public final Resource getResource(@Nullable final String resourcePath, @NotNull final Resource location) throws IOException {
             if (nonNull(resourcePath)) {
                 final Resource requestedResource = location.createRelative(resourcePath);
                 return requestedResource.exists() && requestedResource.isReadable()

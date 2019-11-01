@@ -1,7 +1,6 @@
 package fr.vulture.hostocars.car.entity;
 
 import fr.vulture.hostocars.TestHelper;
-import fr.vulture.hostocars.car.entity.Car;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ class CarTest {
      */
     @Test
     @DisplayName("Validating the bean")
-    void testBeanValidation() {
+    final void testBeanValidation() {
         TestHelper.validateBean(Car.class);
     }
 

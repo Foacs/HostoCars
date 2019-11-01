@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import fr.vulture.hostocars.exception.TechnicalException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,13 +26,15 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Query builder")
 class QueryBuilderTest {
 
+    private static final byte[] EMPTY_BLOB = {};
+    private static final int UNKNOWN_TYPE = 999;
     private static QueryBuilder queryBuilder;
 
     /**
      * Initializes the {@link QueryBuilder}.
      */
     @BeforeEach
-    void init() {
+    final void init() {
         queryBuilder = new QueryBuilder();
     }
 
@@ -40,7 +43,7 @@ class QueryBuilderTest {
      */
     @Test
     @DisplayName("Building a SELECT ALL query without DISTINCT clause")
-    void testBuildSelectAllQueryWithoutDistinctClause() {
+    final void testBuildSelectAllQueryWithoutDistinctClause() {
         final String tableName = "tableName";
 
         final String expectedQuery = "SELECT * FROM " + tableName;
@@ -58,7 +61,7 @@ class QueryBuilderTest {
      */
     @Test
     @DisplayName("Building a SELECT ALL query with a DISTINCT clause")
-    void testBuildSelectAllQueryWithDistinctClause() {
+    final void testBuildSelectAllQueryWithDistinctClause() {
         final String tableName = "tableName";
 
         final String expectedQuery = "SELECT DISTINCT * FROM " + tableName;
@@ -72,11 +75,11 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#buildSelectQuery(String, List, boolean)} method without DISTINCT clause.
+     * Tests the {@link QueryBuilder#buildSelectQuery(String, Iterable, boolean)} method without DISTINCT clause.
      */
     @Test
     @DisplayName("Building a SELECT query without DISTINCT clause")
-    void testBuildSelectQueryWithoutDistinctClause() {
+    final void testBuildSelectQueryWithoutDistinctClause() {
         final String tableName = "tableName";
         final List<String> columnNames = Lists.newArrayList(
             "column1", "column2", "column3"
@@ -93,11 +96,11 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#buildSelectQuery(String, List, boolean)} method with a DISTINCT clause.
+     * Tests the {@link QueryBuilder#buildSelectQuery(String, Iterable, boolean)} method with a DISTINCT clause.
      */
     @Test
     @DisplayName("Building a SELECT query with a DISTINCT clause")
-    void testBuildSelectQueryWithDistinctClause() {
+    final void testBuildSelectQueryWithDistinctClause() {
         final String tableName = "tableName";
         final List<String> columnNames = Lists.newArrayList(
             "column1", "column2", "column3"
@@ -119,14 +122,14 @@ class QueryBuilderTest {
      */
     @Test
     @DisplayName("Building an INSERT INTO query")
-    void testBuildInsertIntoQuery() {
+    final void testBuildInsertIntoQuery() {
         final String tableName = "tableName";
         final String[] columnNames = { "column1", "column2", "column3", "column4" };
         final List<QueryArgument> queryArguments = Lists.newArrayList(
             new QueryArgument(columnNames[0], 1, INTEGER),
             new QueryArgument(columnNames[1], LocalDate.now(), DATE),
             new QueryArgument(columnNames[2], "", VARCHAR),
-            new QueryArgument(columnNames[3], new byte[] {}, BLOB)
+            new QueryArgument(columnNames[3], EMPTY_BLOB, BLOB)
         );
 
         final String expectedQuery =
@@ -142,23 +145,23 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#buildUpdateQuery(String, List, List)} method.
+     * Tests the {@link QueryBuilder#buildUpdateQuery(String, List, Iterable)} method.
      *
      * @throws TechnicalException
-     *     see {@link QueryBuilder#buildUpdateQuery(String, List, List)}
+     *     see {@link QueryBuilder#buildUpdateQuery(String, List, Iterable)}
      */
     @Test
     @DisplayName("Building an UPDATE query")
-    void testBuildUpdateQuery() throws TechnicalException {
+    final void testBuildUpdateQuery() throws TechnicalException {
         final String tableName = "tableName";
         final String[] updateNames = { "updateColumn1", "updateColumn2", "updateColumn3", "updateColumn4" };
         final List<QueryArgument> updateArguments = Lists.newArrayList(
             new QueryArgument(updateNames[0], 1, INTEGER),
             new QueryArgument(updateNames[1], LocalDate.now(), DATE),
             new QueryArgument(updateNames[2], "", VARCHAR),
-            new QueryArgument(updateNames[3], new byte[] {}, BLOB)
+            new QueryArgument(updateNames[3], EMPTY_BLOB, BLOB)
         );
-        final List<QueryArgument> queryArguments = new ArrayList<>(updateArguments);
+        final Collection<QueryArgument> queryArguments = new ArrayList<>(updateArguments);
         final String[] whereNames = { "whereColumn1", "whereColumn2", "whereColumn3" };
         final List<QueryArgument> whereArguments = Lists.newArrayList(
             new QueryArgument(whereNames[0], 1, INTEGER),
@@ -180,14 +183,14 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#buildDeleteQuery(String, List)} method.
+     * Tests the {@link QueryBuilder#buildDeleteQuery(String, Iterable)} method.
      *
      * @throws TechnicalException
-     *     see {@link QueryBuilder#buildDeleteQuery(String, List)}
+     *     see {@link QueryBuilder#buildDeleteQuery(String, Iterable)}
      */
     @Test
     @DisplayName("Building a DELETE query")
-    void testBuildDeleteQuery() throws TechnicalException {
+    final void testBuildDeleteQuery() throws TechnicalException {
         final String tableName = "tableName";
         final String[] columnNames = { "column1", "column2", "column3" };
         final List<QueryArgument> queryArguments = Lists.newArrayList(
@@ -208,14 +211,14 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#addWhereClause(List)} method.
+     * Tests the {@link QueryBuilder#addWhereClause(Iterable)} method.
      *
      * @throws TechnicalException
-     *     see {@link QueryBuilder#addWhereClause(List)}
+     *     see {@link QueryBuilder#addWhereClause(Iterable)}
      */
     @Test
     @DisplayName("Adding a WHERE clause")
-    void testAddWhereClause() throws TechnicalException {
+    final void testAddWhereClause() throws TechnicalException {
         final String tableName = "tableName";
         final String[] columnNames = { "column1", "column2", "column3" };
         final List<QueryArgument> queryArguments = Lists.newArrayList(
@@ -236,11 +239,11 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#addOrderByClause(List, boolean)} method with an ASC order.
+     * Tests the {@link QueryBuilder#addOrderByClause(Iterable, boolean)} method with an ASC order.
      */
     @Test
     @DisplayName("Adding an ORDER BY clause with an ASC order")
-    void testAddOrderByClauseWithAscOrder() {
+    final void testAddOrderByClauseWithAscOrder() {
         final String tableName = "tableName";
         final List<String> columnNames = Lists.newArrayList("column1", "column2", "column3");
 
@@ -256,11 +259,11 @@ class QueryBuilderTest {
     }
 
     /**
-     * Tests the {@link QueryBuilder#addOrderByClause(List, boolean)} method with a DESC order.
+     * Tests the {@link QueryBuilder#addOrderByClause(Iterable, boolean)} method with a DESC order.
      */
     @Test
     @DisplayName("Adding an ORDER BY clause with a DESC order")
-    void testAddOrderByClauseWithDescOrder() {
+    final void testAddOrderByClauseWithDescOrder() {
         final String tableName = "tableName";
         final List<String> columnNames = Lists.newArrayList("column1", "column2", "column3");
 
@@ -280,25 +283,25 @@ class QueryBuilderTest {
      */
     @Test
     @DisplayName("Get WHERE clause operators in all cases")
-    void testGetWhereClauseOperator() {
+    final void testGetWhereClauseOperator() {
         assertAll("Asserting all cases",
-            () -> assertEquals(" IS ", queryBuilder.getWhereClauseOperator(new QueryArgument("", null, INTEGER)),
+            () -> assertEquals(" IS ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, INTEGER)),
                 "Null INTEGER query argument should return \" IS \""),
-            () -> assertEquals(" = ", queryBuilder.getWhereClauseOperator(new QueryArgument("", 1, INTEGER)),
+            () -> assertEquals(" = ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", 1, INTEGER)),
                 "Non null INTEGER query argument should return \" = \""),
-            () -> assertEquals(" IS ", queryBuilder.getWhereClauseOperator(new QueryArgument("", null, DATE)),
+            () -> assertEquals(" IS ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, DATE)),
                 "Null DATE query argument should return \" IS \""),
-            () -> assertEquals(" = ", queryBuilder.getWhereClauseOperator(new QueryArgument("", LocalDate.now(), DATE)),
+            () -> assertEquals(" = ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", LocalDate.now(), DATE)),
                 "Non null DATE query argument should return \" = \""),
-            () -> assertEquals(" IS ", queryBuilder.getWhereClauseOperator(new QueryArgument("", null, VARCHAR)),
+            () -> assertEquals(" IS ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, VARCHAR)),
                 "Null VARCHAR query argument should return \" IS \""),
-            () -> assertEquals(" LIKE ", queryBuilder.getWhereClauseOperator(new QueryArgument("", "", VARCHAR)),
+            () -> assertEquals(" LIKE ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", "", VARCHAR)),
                 "Non null VARCHAR query argument should return \" LIKE \""),
             () -> assertEquals("Search over a BLOB element is prohibited",
-                assertThrows(TechnicalException.class, () -> queryBuilder.getWhereClauseOperator(new QueryArgument("", null, BLOB)),
+                assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, BLOB)),
                     "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected"),
             () -> assertEquals("Unknown query argument type",
-                assertThrows(TechnicalException.class, () -> queryBuilder.getWhereClauseOperator(new QueryArgument("", null, 999)),
+                assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, UNKNOWN_TYPE)),
                     "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected")
         );
     }
@@ -308,22 +311,22 @@ class QueryBuilderTest {
      */
     @Test
     @DisplayName("Get WHERE clause value in all cases")
-    void testGetWhereClauseValue() {
+    final void testGetWhereClauseValue() {
         final int integerValue = 1;
         final LocalDate dateValue = LocalDate.now();
         final String varcharValue = "varchar";
         assertAll("Asserting all cases",
-            () -> assertEquals(integerValue, queryBuilder.getWhereClauseValue(new QueryArgument("", integerValue, INTEGER)),
+            () -> assertEquals(integerValue, QueryBuilder.getWhereClauseValue(new QueryArgument("", integerValue, INTEGER)),
                 "Returned value different from expected"),
-            () -> assertEquals(dateValue, queryBuilder.getWhereClauseValue(new QueryArgument("", dateValue, DATE)),
+            () -> assertEquals(dateValue, QueryBuilder.getWhereClauseValue(new QueryArgument("", dateValue, DATE)),
                 "Returned value different from expected"),
-            () -> assertEquals("%" + varcharValue + "%", queryBuilder.getWhereClauseValue(new QueryArgument("", varcharValue, VARCHAR)),
+            () -> assertEquals("%" + varcharValue + "%", QueryBuilder.getWhereClauseValue(new QueryArgument("", varcharValue, VARCHAR)),
                 "Returned value different from expected"),
             () -> assertEquals("Search over a BLOB element is prohibited",
-                assertThrows(TechnicalException.class, () -> queryBuilder.getWhereClauseValue(new QueryArgument("", null, BLOB)),
+                assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseValue(new QueryArgument("", null, BLOB)),
                     "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected"),
             () -> assertEquals("Unknown query argument type",
-                assertThrows(TechnicalException.class, () -> queryBuilder.getWhereClauseValue(new QueryArgument("", null, 999)),
+                assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseValue(new QueryArgument("", null, UNKNOWN_TYPE)),
                     "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected")
         );
     }
