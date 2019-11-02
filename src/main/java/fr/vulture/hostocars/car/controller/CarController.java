@@ -606,9 +606,9 @@ public class CarController {
         private Optional<String> model;
         private Optional<String> motorization;
         private Optional<LocalDate> releaseDate;
-        private Optional<String> certificate;
+        private Optional<byte[]> certificate;
         private Optional<String> comments;
-        private Optional<String> picture;
+        private Optional<byte[]> picture;
 
     }
 

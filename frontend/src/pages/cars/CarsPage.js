@@ -1,8 +1,9 @@
 import { Box, Button, Grid, Typography } from '@material-ui/core';
 
-import { changeCarsSortOrderAction, changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from 'actions';
+import { addCarAction, changeCarsSortOrderAction, changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from 'actions';
 
 import { CarCard, ErrorPanel, LoadingPanel } from 'components';
+import { AddCarModal } from 'modals';
 import PropTypes from 'prop-types';
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
@@ -16,8 +17,13 @@ class CarsPage extends PureComponent {
     constructor(props) {
         super(props);
 
+        this.state = { isAddCarModalOpen: false };
+
         this.onRegistrationButtonClick = this.onRegistrationButtonClick.bind(this);
         this.onOwnerButtonClick = this.onOwnerButtonClick.bind(this);
+        this.onOpenAddCarModal = this.onOpenAddCarModal.bind(this);
+        this.onValidateAddCarModel = this.onValidateAddCarModel.bind(this);
+        this.onCloseAddCarModal = this.onCloseAddCarModal.bind(this);
     }
 
     componentDidMount() {
@@ -51,13 +57,28 @@ class CarsPage extends PureComponent {
         }
     }
 
+    onOpenAddCarModal() {
+        this.setState({ isAddCarModalOpen: true });
+    };
+
+    onValidateAddCarModel(car) {
+        const { addCar, sortedBy } = this.props;
+
+        addCar(car, sortedBy);
+    }
+
+    onCloseAddCarModal() {
+        this.setState({ isAddCarModalOpen: false });
+    };
+
     render() {
-        const { cars, isInError, isLoading, sortedBy } = this.props;
+        const { cars, isGetInError, isGetInProgress, sortedBy } = this.props;
+        const { isAddCarModalOpen } = this.state;
 
         let content;
-        if (isInError) {
+        if (isGetInError) {
             content = <ErrorPanel className='ErrorPanel' />;
-        } else if (isLoading) {
+        } else if (isGetInProgress) {
             content = <LoadingPanel className='LoadingPanel' />;
         } else {
             const registrationButtonClassName = `SortSection-RegistrationButton ${'registration' === sortedBy
@@ -87,6 +108,9 @@ class CarsPage extends PureComponent {
 
         return <Box id='CarsPage'>
             {content}
+
+            <AddCarModal open={isAddCarModalOpen} onClose={this.onCloseAddCarModal} onValidate={this.onValidateAddCarModel}
+                         registrations={cars.map(car => car.registration)} />
         </Box>;
     }
 }
@@ -94,11 +118,12 @@ class CarsPage extends PureComponent {
 const mapStateToProps = state => ({
     cars: state.cars.cars,
     sortedBy: state.cars.sortedBy,
-    isLoading: state.cars.isLoading,
-    isInError: state.cars.isInError
+    isGetInProgress: state.cars.isGetInProgress,
+    isGetInError: state.cars.isGetInError
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
+    addCar: addCarAction,
     changeCarsSortOrder: changeCarsSortOrderAction,
     changeCurrentPage: changeCurrentPageAction,
     changeSelectedMenuIndex: changeSelectedMenuIndexAction,
@@ -106,13 +131,14 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 }, dispatch);
 
 CarsPage.propTypes = {
+    addCar: PropTypes.func.isRequired,
     cars: PropTypes.arrayOf(CarPropType).isRequired,
     sortedBy: PropTypes.string.isRequired,
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
     getCars: PropTypes.func.isRequired,
-    isInError: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    isGetInError: PropTypes.bool.isRequired,
+    isGetInProgress: PropTypes.bool.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CarsPage);

@@ -3,7 +3,6 @@ package fr.vulture.hostocars.database.controller;
 import static fr.vulture.hostocars.comparator.VersionComparator.VERSION_STRING_REGEX;
 import static java.sql.Statement.NO_GENERATED_KEYS;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.BLOB;
 import static java.sql.Types.VARCHAR;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -16,8 +15,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -285,18 +282,8 @@ public class DatabaseController implements InitializingBean {
             // For each query argument, set its value to the statement depending on its type
             int index = 1;
             for (final QueryArgument argument : query.getArguments()) {
-                // The case of a BLOB query argument needs to be treated apart from the others, as it has to be read from the input URL
-                if (BLOB == argument.getType() && nonNull(argument.getValue())) {
-                    try {
-                        statement.setBytes(index, Files.readAllBytes(Paths.get((String) argument.getValue())));
-                        index++;
-                    } catch (final IOException e) {
-                        throw new TechnicalException(e, "Error while reading the file \"{}\"", argument.getValue());
-                    }
-                } else {
-                    statement.setObject(index, argument.getValue(), argument.getType());
-                    index++;
-                }
+                statement.setObject(index, argument.getValue(), argument.getType());
+                index++;
             }
         } catch (final SQLException e) {
             throw new TechnicalException(e, "Error while generating the SQL statement");

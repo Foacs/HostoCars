@@ -2,8 +2,10 @@ import { carsActionTypes as types } from 'actions';
 
 const initialState = {
     cars: [],
-    isLoading: false,
-    isInError: false,
+    isGetInProgress: false,
+    isGetInError: false,
+    isAddInProgress: false,
+    isAddInError: false,
     sortedBy: 'registration'
 };
 
@@ -13,22 +15,40 @@ const testReducer = (state = initialState, action) => {
             return {
                 ...state,
                 cars: [],
-                isLoading: true,
-                isInError: false
+                isGetInProgress: true,
+                isGetInError: false
             };
         case types.GET_CARS_OK:
             return {
                 ...state,
-                cars: action.data,
-                isLoading: false,
-                isInError: false
+                cars: action.cars,
+                isGetInProgress: false,
+                isGetInError: false
             };
         case types.GET_CARS_ERROR:
             return {
                 ...state,
                 cars: [],
-                isLoading: false,
-                isInError: true
+                isGetInProgress: false,
+                isGetInError: true
+            };
+        case types.ADD_CAR:
+            return {
+                ...state,
+                isAddInProgress: true,
+                isAddInError: false
+            };
+        case types.ADD_CAR_OK:
+            return {
+                ...state,
+                isAddInProgress: false,
+                isAddInError: false
+            };
+        case types.ADD_CAR_ERROR:
+            return {
+                ...state,
+                isAddInProgress: false,
+                isAddInError: true
             };
         case types.CHANGE_CARS_SORT_ORDER:
             return {

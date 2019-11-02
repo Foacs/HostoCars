@@ -1,12 +1,40 @@
 import { createMuiTheme } from '@material-ui/core/styles';
 
-import { backgroundColor } from 'resources';
+import {
+    backgroundColor,
+    backgroundLightColor,
+    errorColor,
+    errorDarkColor,
+    errorLightColor,
+    primaryColor,
+    primaryDarkColor,
+    primaryLightColor,
+    secondaryColor,
+    secondaryDarkColor,
+    secondaryLightColor
+} from 'resources';
 
 import 'typeface-roboto';
 
 export const theme = createMuiTheme({
     palette: {
+        primary: {
+            light: primaryLightColor,
+            main: primaryColor,
+            dark: primaryDarkColor
+        },
+        secondary: {
+            light: secondaryLightColor,
+            main: secondaryColor,
+            dark: secondaryDarkColor
+        },
+        error: {
+            light: errorLightColor,
+            main: errorColor,
+            dark: errorDarkColor
+        },
         background: {
+            paper: backgroundLightColor,
             default: backgroundColor
         }
     },
