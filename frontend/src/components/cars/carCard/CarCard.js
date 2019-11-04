@@ -1,6 +1,7 @@
 import { Box, Card, CardActionArea, Divider, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import { CarPropType, DefaultCarPicture } from 'resources';
 
@@ -16,7 +17,7 @@ function CarCard({ car, className }) {
     const modelTitleContent = (car.brand || car.model) ? `${car.brand ? car.brand : ''} ${car.model ? car.model : ''}` : '-';
 
     return <Card id='CarCard' className={className}>
-        <CardActionArea className='ActionArea'>
+        <CardActionArea className='ActionArea' component={Link} to={`/cars/${car.id}`}>
             <Box className='ActionArea-PictureBox'>
                 {picture}
             </Box>

@@ -7,7 +7,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { AppBar, MenuBar } from 'components';
 import frLocale from 'date-fns/locale/fr';
 import { createBrowserHistory } from 'history';
-import { CarsPage, NotFoundPage } from 'pages';
+import { CarPage, CarsOverviewPage, NotFoundPage } from 'pages';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
@@ -40,7 +40,8 @@ ReactDOM.render(<ThemeProvider theme={theme}>
                     <Box className='Page'>
                         <Switch>
                             <Redirect exact from='/' to='/cars' />
-                            <Route exact path='/cars' component={CarsPage} />
+                            <Route exact path='/cars' component={CarsOverviewPage} />
+                            <Route exact path='/cars/:id' render={props => <CarPage {...props} />} />
                             <Route exact push component={NotFoundPage} />
                         </Switch>
                     </Box>

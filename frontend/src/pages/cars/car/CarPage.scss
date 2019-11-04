@@ -1,0 +1,63 @@
+@import '../../../resources/colors';
+
+#CarPage {
+    padding: 32px;
+
+    .InfoPanel {
+        &-Content {
+            &-Table {
+                &-Body {
+                    &-Row {
+                        &:last-child > * {
+                            border-bottom: none;
+                        }
+
+                        &-Cell {
+                            &_certificate {
+                                padding-bottom: 2px;
+                                padding-right:  4px;
+                                padding-top:    2px;
+                            }
+
+                            &-Button {
+                                &:hover {
+                                    color: $primary-color;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &-CommentsSubtitle {
+                color: $gray;
+            }
+        }
+    }
+
+    .PicturePanel {
+        overflow:    hidden;
+        padding-top: 56.25%;
+        position:    relative;
+        width:       100%;
+
+        &-Picture {
+            bottom:     0;
+            height:     100%;
+            left:       0;
+            margin:     auto;
+            object-fit: cover;
+            position:   absolute;
+            right:      0;
+            top:        0;
+            width:      100%;
+
+            &_default {
+                height:     80%;
+                object-fit: none;
+                width:      80%;
+            }
+        }
+    }
+
+}

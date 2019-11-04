@@ -280,7 +280,7 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
             <Grid alignItems="center" container direction="column" justify="center">
                 <Grid alignItems="center" container justify="space-between" spacing={2}>
                     <Grid item xs>
-                        <TextField className={`Content-Field Content-Field-Text ${ownerRequired ? 'Content-Field_error' : ''}`}
+                        <TextField className={`Content-Field Content-Field-Text ${ownerRequired && 'Content-Field_error'}`}
                                    error={ownerRequired}
                                    fullWidth
                                    helperText={ownerRequired ? ownerRequiredHelperText : null}
@@ -293,7 +293,7 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
 
                     <Grid item xs>
                         <TextField
-                            className={`Content-Field Content-Field-Text ${registrationRequired || registrationUnique ? 'Content-Field_error' : ''}`}
+                            className={`Content-Field Content-Field-Text ${(registrationRequired || registrationUnique) && 'Content-Field_error'}`}
                             error={registrationRequired || registrationUnique}
                             fullWidth
                             helperText={registrationRequired ? registrationRequiredHelperText : registrationUnique ? registrationUniqueHelperText

@@ -20,7 +20,8 @@ export const extractFileNameFromURL = url => {
  * @returns {string} The formatted date
  */
 export const formatDateLabel = date => {
-    return null === date ? undefined : `${lodash.capitalize(date.toLocaleString('default', { month: 'long' }))} ${date.getFullYear()}`;
+    const dateObject = new Date(date);
+    return null === date ? undefined : `${lodash.capitalize(dateObject.toLocaleString('default', { month: 'long' }))} ${dateObject.getFullYear()}`;
 };
 
 /**

@@ -13,6 +13,11 @@ main {
     margin-top:       60px;
 }
 
+// Colors an element in the error color
+.error {
+    color: $error-color;
+}
+
 // Makes an element impossible to select
 .non-selectable {
     -moz-user-select:    none;

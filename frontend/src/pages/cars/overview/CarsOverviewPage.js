@@ -1,19 +1,17 @@
 import { Box, Button, Grid, Typography } from '@material-ui/core';
-
+import { AddCircleOutlineRounded as AddIcon } from '@material-ui/icons';
 import { addCarAction, changeCarsSortOrderAction, changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from 'actions';
-
 import { CarCard, ErrorPanel, LoadingPanel } from 'components';
 import { AddCarModal } from 'modals';
 import PropTypes from 'prop-types';
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-
 import { CarPropType } from 'resources';
 
-import './CarsPage.scss';
+import './CarsOverviewPage.scss';
 
-class CarsPage extends PureComponent {
+class CarsOverviewPage extends PureComponent {
     constructor(props) {
         super(props);
 
@@ -72,33 +70,41 @@ class CarsPage extends PureComponent {
     };
 
     render() {
-        const { cars, isGetInError, isGetInProgress, sortedBy } = this.props;
+        const { cars, isGetAllInError, isGetAllInProgress, sortedBy } = this.props;
         const { isAddCarModalOpen } = this.state;
 
         let content;
-        if (isGetInError) {
+        if (isGetAllInError) {
             content = <ErrorPanel className='ErrorPanel' />;
-        } else if (isGetInProgress) {
+        } else if (isGetAllInProgress) {
             content = <LoadingPanel className='LoadingPanel' />;
         } else {
-            const registrationButtonClassName = `SortSection-RegistrationButton ${'registration' === sortedBy
-            && 'SortSection-RegistrationButton_selected'}`;
-            const ownerButtonClassName = `SortSection-OwnerButton ${'owner' === sortedBy && 'SortSection-OwnerButton_selected'}`;
+            const registrationButtonClassName = `HeaderGrid-SortSection-RegistrationButton ${'registration' === sortedBy
+            && 'HeaderGrid-SortSection-RegistrationButton_selected'}`;
+            const ownerButtonClassName = `HeaderGrid-SortSection-OwnerButton ${'owner' === sortedBy
+            && 'HeaderGrid-SortSection-OwnerButton_selected'}`;
 
             content = (<Fragment>
-                <Box className='SortSection'>
-                    <Button className={registrationButtonClassName} disableRipple
-                            onClick={this.onRegistrationButtonClick}>Immatriculation</Button>
-                    <Typography className='SortSection-Separator non-selectable' variant='h6'>|</Typography>
-                    <Button className={ownerButtonClassName} disableRipple onClick={this.onOwnerButtonClick}>Propriétaire</Button>
-                </Box>
+                <Grid alignItems='center' className='HeaderGrid' container justify='space-between'>
+                    <Grid item>
+                        <Button className='HeaderGrid-AddCarButton' onClick={this.onOpenAddCarModal} variant='outlined'>
+                            Ajouter
 
-                <Grid
-                    className='CarsGrid'
-                    container
-                    justify='flex-start'
-                    alignItems='flex-start'
-                    spacing={4}>
+                            <AddIcon className='HeaderGrid-AddCarButton-Icon' />
+                        </Button>
+                    </Grid>
+
+                    <Grid item>
+                        <Box className='HeaderGrid-SortSection'>
+                            <Button className={registrationButtonClassName} disableRipple
+                                    onClick={this.onRegistrationButtonClick}>Immatriculation</Button>
+                            <Typography className='HeaderGrid-SortSection-Separator non-selectable' variant='h6'>|</Typography>
+                            <Button className={ownerButtonClassName} disableRipple onClick={this.onOwnerButtonClick}>Propriétaire</Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+
+                <Grid className='CarsGrid' container justify='flex-start' alignItems='flex-start' spacing={4}>
                     {cars.map(car => <Grid className='CarsGrid-Item' item key={car.registration} lg={4} md={6} sm={12} xl={3} xs={12}>
                         <CarCard car={car} className='CarsGrid-Item-CarCard' />
                     </Grid>)}
@@ -106,7 +112,7 @@ class CarsPage extends PureComponent {
             </Fragment>);
         }
 
-        return <Box id='CarsPage'>
+        return <Box id="CarsOverviewPage">
             {content}
 
             <AddCarModal open={isAddCarModalOpen} onClose={this.onCloseAddCarModal} onValidate={this.onValidateAddCarModel}
@@ -118,8 +124,8 @@ class CarsPage extends PureComponent {
 const mapStateToProps = state => ({
     cars: state.cars.cars,
     sortedBy: state.cars.sortedBy,
-    isGetInProgress: state.cars.isGetInProgress,
-    isGetInError: state.cars.isGetInError
+    isGetAllInProgress: state.cars.isGetAllInProgress,
+    isGetAllInError: state.cars.isGetAllInError
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -130,15 +136,15 @@ const mapDispatchToProps = dispatch => bindActionCreators({
     getCars: getCarsAction
 }, dispatch);
 
-CarsPage.propTypes = {
+CarsOverviewPage.propTypes = {
     addCar: PropTypes.func.isRequired,
     cars: PropTypes.arrayOf(CarPropType).isRequired,
     sortedBy: PropTypes.string.isRequired,
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
     getCars: PropTypes.func.isRequired,
-    isGetInError: PropTypes.bool.isRequired,
-    isGetInProgress: PropTypes.bool.isRequired
+    isGetAllInError: PropTypes.bool.isRequired,
+    isGetAllInProgress: PropTypes.bool.isRequired
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(CarsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(CarsOverviewPage);

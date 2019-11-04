@@ -9,15 +9,15 @@ export const getCarsAction = sortedBy => {
 
         return axios.get(`${WEB_SERVICE_BASE_URL}/cars/all?sortedBy=${sortedBy}`)
                     .then(res => {
-                        if (res.status === OK_STATUS) {
+                        if (OK_STATUS === res.status) {
                             dispatch(getCarsSuccess(res.data));
-                        } else if (res.status === NO_CONTENT_STATUS) {
+                        } else if (NO_CONTENT_STATUS === res.status) {
                             dispatch(getCarsSuccess([]));
                         }
                     })
                     .catch(() => {
                         dispatch(getCarsFailure());
-             });
+                    });
     };
 };
 
@@ -27,11 +27,43 @@ const getCarsStart = () => ({
 
 const getCarsSuccess = cars => ({
     type: types.GET_CARS_OK,
-    cars: cars
+    cars
 });
 
 const getCarsFailure = () => ({
     type: types.GET_CARS_ERROR
+});
+
+export const getCarAction = id => {
+    return dispatch => {
+        dispatch(getCarStart());
+
+        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/${id}`)
+                    .then(res => {
+                        if (OK_STATUS === res.status) {
+                            dispatch(getCarSuccess(id, res.data));
+                        } else if (NO_CONTENT_STATUS === res.status) {
+                            dispatch(getCarSuccess(id, null));
+                        }
+                    })
+                    .catch(() => {
+                        dispatch(getCarFailure());
+                    });
+    };
+};
+
+const getCarStart = () => ({
+    type: types.GET_CAR
+});
+
+const getCarSuccess = (id, car) => ({
+    type: types.GET_CAR_OK,
+    id,
+    car
+});
+
+const getCarFailure = () => ({
+    type: types.GET_CAR_ERROR
 });
 
 export const addCarAction = car => {
@@ -39,8 +71,10 @@ export const addCarAction = car => {
         dispatch(addCarStart());
 
         return axios.post(`${WEB_SERVICE_BASE_URL}/cars/save`, car)
-                    .then(() => {
-                        dispatch(addCarSuccess());
+                    .then(res => {
+                        if (OK_STATUS === res.status) {
+                            dispatch(addCarSuccess());
+                        }
 
                         return dispatch(getCarsAction(getState().cars.sortedBy));
                     })

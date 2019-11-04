@@ -21,7 +21,7 @@ function Breadcrumbs({ className, currentNavigationPath, currentPageName }) {
             <Typography className='Link-Label'>{element.label}</Typography>
         </Link>))}
 
-        <Typography className='CurrentPageLabel'>{currentPageName}</Typography>
+        <Typography className='CurrentPageLabel' component='div'>{currentPageName}</Typography>
     </MuiBreadcrumbs>;
 }
 
@@ -33,7 +33,7 @@ const mapStateToProps = state => ({
 Breadcrumbs.propTypes = {
     className: PropTypes.string,
     currentNavigationPath: NavigationPathPropType.isRequired,
-    currentPageName: PropTypes.string.isRequired
+    currentPageName: PropTypes.node.isRequired
 };
 
 Breadcrumbs.defaultProps = {
