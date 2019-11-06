@@ -34,38 +34,6 @@ const getCarsFailure = () => ({
     type: types.GET_CARS_ERROR
 });
 
-export const getCarAction = id => {
-    return dispatch => {
-        dispatch(getCarStart());
-
-        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/${id}`)
-                    .then(res => {
-                        if (OK_STATUS === res.status) {
-                            dispatch(getCarSuccess(id, res.data));
-                        } else if (NO_CONTENT_STATUS === res.status) {
-                            dispatch(getCarSuccess(id, null));
-                        }
-                    })
-                    .catch(() => {
-                        dispatch(getCarFailure());
-                    });
-    };
-};
-
-const getCarStart = () => ({
-    type: types.GET_CAR
-});
-
-const getCarSuccess = (id, car) => ({
-    type: types.GET_CAR_OK,
-    id,
-    car
-});
-
-const getCarFailure = () => ({
-    type: types.GET_CAR_ERROR
-});
-
 export const addCarAction = car => {
     return (dispatch, getState) => {
         dispatch(addCarStart());
@@ -94,6 +62,36 @@ const addCarSuccess = () => ({
 
 const addCarFailure = () => ({
     type: types.ADD_CAR_ERROR
+});
+
+export const editCarAction = car => {
+    return (dispatch, getState) => {
+        dispatch(editCarStart());
+
+        return axios.put(`${WEB_SERVICE_BASE_URL}/cars/${car.id}/update`, car)
+                    .then(res => {
+                        if (OK_STATUS === res.status) {
+                            dispatch(editCarSuccess());
+
+                            return dispatch(getCarsAction(getState().cars.sortedBy));
+                        }
+                    })
+                    .catch(() => {
+                        dispatch(editCarFailure());
+                    });
+    };
+};
+
+const editCarStart = () => ({
+    type: types.EDIT_CAR
+});
+
+const editCarSuccess = () => ({
+    type: types.EDIT_CAR_OK
+});
+
+const editCarFailure = () => ({
+    type: types.EDIT_CAR_ERROR
 });
 
 export const changeCarsSortOrderAction = sortedBy => {

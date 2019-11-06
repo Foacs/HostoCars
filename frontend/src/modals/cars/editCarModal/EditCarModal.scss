@@ -1,0 +1,48 @@
+@import '../../../resources/colors';
+
+#EditCarModal {
+    .Title {
+        color: $primary-color;
+
+        &-HelpButton {
+            color:    $primary-color;
+            position: absolute;
+            right:    12px;
+            top:      8px;
+        }
+    }
+
+    .Actions {
+        &-CancelButton {
+            color: $primary-color;
+        }
+
+        &-ValidateButton {
+            color: $primary-color;
+        }
+    }
+
+    .Content {
+        &-Instructions {
+            &_hidden {
+                display: none;
+            }
+        }
+
+        &-Field {
+            margin-bottom: 28px;
+
+            &_error {
+                margin-bottom: 8px;
+            }
+
+            &:nth-child(5) {
+                margin-bottom: 0;
+            }
+        }
+    }
+}
+
+#CertificateInput, #PictureInput {
+    display: none;
+}

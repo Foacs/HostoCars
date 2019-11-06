@@ -8,11 +8,14 @@ const initialState = {
     isGetInError: false,
     isAddInProgress: false,
     isAddInError: false,
-    sortedBy: 'registration',
-    currentCar: null
+    isEditInProgress: false,
+    isEditInError: false,
+    isLoadRegistrationsInProgress: false,
+    isLoadRegistrationsInError: false,
+    sortedBy: 'registration'
 };
 
-const testReducer = (state = initialState, action) => {
+const carsReducer = (state = initialState, action) => {
     switch (action.type) {
         case types.GET_CARS:
             return {
@@ -35,28 +38,6 @@ const testReducer = (state = initialState, action) => {
                 isGetAllInProgress: initialState.isGetAllInProgress,
                 isGetAllInError: true
             };
-        case types.GET_CAR:
-            return {
-                ...state,
-                isGetInProgress: true,
-                isGetInError: initialState.isGetInError,
-                currentCar: initialState.currentCar
-            };
-        case types.GET_CAR_OK:
-            return {
-                ...state,
-                cars: null === action.car ? state.cars.filter(car => action.id !== car.id) : state.cars.find(car => action.id === car.id)
-                    ? state.cars.map(car => action.id === car.id ? action.car : car) : state.cars.concat([ action.car ]),
-                isGetInProgress: initialState.isGetInProgress,
-                isGetInError: initialState.isGetInError,
-                currentCar: action.car
-            };
-        case types.GET_CAR_ERROR:
-            return {
-                ...state,
-                isGetInProgress: initialState.isGetInProgress,
-                isGetInError: true
-            };
         case types.ADD_CAR:
             return {
                 ...state,
@@ -75,19 +56,32 @@ const testReducer = (state = initialState, action) => {
                 isAddInProgress: initialState.isAddInProgress,
                 isAddInError: true
             };
+        case types.EDIT_CAR:
+            return {
+                ...state,
+                isEditInProgress: true,
+                isEditInError: initialState.isEditInError
+            };
+        case types.EDIT_CAR_OK:
+            return {
+                ...state,
+                isEditInProgress: initialState.isEditInProgress,
+                isEditInError: initialState.isEditInError
+            };
+        case types.EDIT_CAR_ERROR:
+            return {
+                ...state,
+                isEditInProgress: initialState.isEditInProgress,
+                isEditInError: true
+            };
         case types.CHANGE_CARS_SORT_ORDER:
             return {
                 ...state,
                 sortedBy: action.sortedBy
-            };
-        case types.CHANGE_CURRENT_CAR:
-            return {
-                ...state,
-                currentCar: action.car
             };
         default:
             return state;
     }
 };
 
-export default testReducer;
+export default carsReducer;

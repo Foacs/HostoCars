@@ -20,7 +20,7 @@ class CarsOverviewPage extends PureComponent {
         this.onRegistrationButtonClick = this.onRegistrationButtonClick.bind(this);
         this.onOwnerButtonClick = this.onOwnerButtonClick.bind(this);
         this.onOpenAddCarModal = this.onOpenAddCarModal.bind(this);
-        this.onValidateAddCarModel = this.onValidateAddCarModel.bind(this);
+        this.onValidateAddCarModal = this.onValidateAddCarModal.bind(this);
         this.onCloseAddCarModal = this.onCloseAddCarModal.bind(this);
     }
 
@@ -59,7 +59,7 @@ class CarsOverviewPage extends PureComponent {
         this.setState({ isAddCarModalOpen: true });
     };
 
-    onValidateAddCarModel(car) {
+    onValidateAddCarModal(car) {
         const { addCar, sortedBy } = this.props;
 
         addCar(car, sortedBy);
@@ -115,7 +115,7 @@ class CarsOverviewPage extends PureComponent {
         return <Box id="CarsOverviewPage">
             {content}
 
-            <AddCarModal open={isAddCarModalOpen} onClose={this.onCloseAddCarModal} onValidate={this.onValidateAddCarModel}
+            <AddCarModal open={isAddCarModalOpen} onClose={this.onCloseAddCarModal} onValidate={this.onValidateAddCarModal}
                          registrations={cars.map(car => car.registration)} />
         </Box>;
     }
