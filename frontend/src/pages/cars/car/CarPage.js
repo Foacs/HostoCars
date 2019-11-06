@@ -16,11 +16,12 @@ import {
     Typography
 } from '@material-ui/core';
 import { ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon } from '@material-ui/icons';
-import { changeCurrentPageAction, changeSelectedMenuIndexAction, editCarAction, getCarsAction } from 'actions';
-import { CertificateModal, EditCarModal } from 'modals';
+import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
+import { CertificateModal, DeleteCarModal, EditCarModal } from 'modals';
 import PropTypes from 'prop-types';
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
 
@@ -32,7 +33,9 @@ class CarPage extends PureComponent {
 
         this.state = {
             isCertificateModalOpen: false,
-            isEditModalOpen: false
+            isEditModalOpen: false,
+            isDeleteModalOpen: false,
+            redirect: false
         };
 
         this.updateComponent = this.updateComponent.bind(this);
@@ -41,6 +44,9 @@ class CarPage extends PureComponent {
         this.onOpenEditCarModal = this.onOpenEditCarModal.bind(this);
         this.onValidateEditCarModal = this.onValidateEditCarModal.bind(this);
         this.onCloseEditCarModal = this.onCloseEditCarModal.bind(this);
+        this.onOpenDeleteCarModal = this.onOpenDeleteCarModal.bind(this);
+        this.onValidateDeleteCarModal = this.onValidateDeleteCarModal.bind(this);
+        this.onCloseDeleteCarModal = this.onCloseDeleteCarModal.bind(this);
     }
 
     componentDidMount() {
@@ -111,11 +117,28 @@ class CarPage extends PureComponent {
 
     onCloseEditCarModal() {
         this.setState({ isEditModalOpen: false });
+    }
+
+    onOpenDeleteCarModal() {
+        this.setState({ isDeleteModalOpen: true });
     };
+
+    onValidateDeleteCarModal() {
+        const { deleteCar } = this.props;
+        const { car: { id } } = this.state;
+
+        deleteCar(id);
+
+        this.setState({ redirect: true });
+    }
+
+    onCloseDeleteCarModal() {
+        this.setState({ isDeleteModalOpen: false });
+    }
 
     render() {
         const { cars } = this.props;
-        const { car, isCertificateModalOpen, isEditModalOpen } = this.state;
+        const { car, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, redirect } = this.state;
 
         let content;
         if (car) {
@@ -249,6 +272,14 @@ class CarPage extends PureComponent {
                                 {picture}
                             </Paper>
                         </Grid>
+
+                        <Grid item xs={12}>
+                            <Paper className='DeletePanel'>
+                                <Button className='DeletePanel-DeleteButton' color='secondary' fullWidth onClick={this.onOpenDeleteCarModal}>
+                                    Supprimer
+                                </Button>
+                            </Paper>
+                        </Grid>
                     </Grid>
                 </Grid>
 
@@ -258,10 +289,20 @@ class CarPage extends PureComponent {
                 <EditCarModal car={car} open={isEditModalOpen} onClose={this.onCloseEditCarModal} onValidate={this.onValidateEditCarModal}
                               registrations={cars.filter(currentCar => currentCar.registration !== car.registration)
                                                  .map(currentCar => currentCar.registration)} />
+
+                <DeleteCarModal open={isDeleteModalOpen} onClose={this.onCloseDeleteCarModal} onValidate={this.onValidateDeleteCarModal} />
             </Fragment>;
+        } else {
+            content = <div className='NotFoundCar'>
+                <SmileyIcon className='NotFoundCar-SmileyIcon' />
+
+                <Typography className='NotFoundCar-Label' variant='h1'>Voiture introuvable</Typography>
+            </div>;
         }
 
         return <Box id="CarPage">
+            {redirect && <Redirect to="/cars" />}
+
             {content}
         </Box>;
     }
@@ -276,6 +317,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     changeCurrentPage: changeCurrentPageAction,
     changeSelectedMenuIndex: changeSelectedMenuIndexAction,
+    deleteCar: deleteCarAction,
     editCar: editCarAction,
     getCars: getCarsAction
 }, dispatch);

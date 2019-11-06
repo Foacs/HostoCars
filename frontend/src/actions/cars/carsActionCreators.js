@@ -94,6 +94,36 @@ const editCarFailure = () => ({
     type: types.EDIT_CAR_ERROR
 });
 
+export const deleteCarAction = (id, history) => {
+    return dispatch => {
+        dispatch(deleteCarStart());
+
+        return axios.delete(`${WEB_SERVICE_BASE_URL}/cars/${id}/delete`)
+                    .then(res => {
+                        if (OK_STATUS === res.status) {
+                            dispatch(deleteCarSuccess(id));
+                            history.push('/cars');
+                        }
+                    })
+                    .catch(() => {
+                        dispatch(deleteCarFailure());
+                    });
+    };
+};
+
+const deleteCarStart = () => ({
+    type: types.DELETE_CAR
+});
+
+const deleteCarSuccess = id => ({
+    id,
+    type: types.DELETE_CAR_OK
+});
+
+const deleteCarFailure = () => ({
+    type: types.DELETE_CAR_ERROR
+});
+
 export const changeCarsSortOrderAction = sortedBy => {
     return dispatch => {
         dispatch(changeCarsSortOrder(sortedBy));

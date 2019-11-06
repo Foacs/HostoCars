@@ -10,8 +10,8 @@ const initialState = {
     isAddInError: false,
     isEditInProgress: false,
     isEditInError: false,
-    isLoadRegistrationsInProgress: false,
-    isLoadRegistrationsInError: false,
+    isDeleteInProgress: false,
+    isDeleteInError: false,
     sortedBy: 'registration'
 };
 
@@ -73,6 +73,25 @@ const carsReducer = (state = initialState, action) => {
                 ...state,
                 isEditInProgress: initialState.isEditInProgress,
                 isEditInError: true
+            };
+        case types.DELETE_CAR:
+            return {
+                ...state,
+                isDeleteInProgress: true,
+                isDeleteInError: initialState.isDeleteInError
+            };
+        case types.DELETE_CAR_OK:
+            return {
+                ...state,
+                cars: state.cars.filter(car => action.id !== car.id),
+                isDeleteInProgress: initialState.isDeleteInProgress,
+                isDeleteInError: initialState.isDeleteInError
+            };
+        case types.DELETE_CAR_ERROR:
+            return {
+                ...state,
+                isDeleteInProgress: initialState.isDeleteInProgress,
+                isDeleteInError: true
             };
         case types.CHANGE_CARS_SORT_ORDER:
             return {
