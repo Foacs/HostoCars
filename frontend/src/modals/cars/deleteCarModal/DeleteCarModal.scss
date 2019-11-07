@@ -1,0 +1,13 @@
+@import '../../../resources/colors';
+
+#DeleteCarModal {
+    .Title {
+        color: $primary-color;
+    }
+
+    .Content {
+        &-Instructions {
+            color: $black;
+        }
+    }
+}

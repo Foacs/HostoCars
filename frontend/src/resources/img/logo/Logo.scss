@@ -1,41 +1,5 @@
 @import '../../colors';
 
 #Logo {
-    .Container {
-        .UpperLetters {
-            fill: $logo-upper-letters-color;
-        }
 
-        .LowerLetters {
-            &-Shadow {
-                opacity: 0.3;
-            }
-
-            &.C_Letter {
-                fill: url(#C_Letter_Gradient);
-            }
-
-            &.a_Letter {
-                fill: url(#a_Letter_Gradient);
-            }
-
-            &.r_Letter {
-                fill: url(#r_Letter_Gradient);
-            }
-
-            &.s_Letter {
-                fill: url(#s_Letter_Gradient);
-            }
-        }
-    }
-
-    .Gradient {
-        &-InnerStop {
-            stop-color: $white;
-        }
-
-        &-OuterStop {
-            stop-color: $logo-lower-letters-color;
-        }
-    }
 }
