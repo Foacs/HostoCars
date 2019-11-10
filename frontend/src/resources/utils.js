@@ -2,8 +2,11 @@ const lodash = require('lodash');
 
 /**
  * Extracts the file name from its URL.
- * @param url The file URL
- * @returns {string} The file name
+ *
+ * @param url
+ *     The file URL
+ *
+ * @returns {string} the file name
  */
 export const extractFileNameFromURL = url => {
     const startIndex = (0 <= url.indexOf('\\') ? url.lastIndexOf('\\') : url.lastIndexOf('/'));
@@ -16,8 +19,11 @@ export const extractFileNameFromURL = url => {
 
 /**
  * Formats a date to display the month as a string and the full year.
- * @param date The date to format
- * @returns {string} The formatted date
+ *
+ * @param date
+ *     The date to format
+ *
+ * @returns {string} the formatted date
  */
 export const formatDateLabel = date => {
     const dateObject = new Date(date);
@@ -26,8 +32,11 @@ export const formatDateLabel = date => {
 
 /**
  * Reads a file and converts it to a byte array.
- * @param file The file to read
- * @returns {[]} The result byte array
+ *
+ * @param file
+ *     The file to read
+ *
+ * @returns {[]} the result byte array
  */
 export const loadFileAsByteArray = file => {
     let result = [];

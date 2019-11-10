@@ -6,16 +6,11 @@ main {
     height:  100vh;
 }
 
-// Translates the page next to the menu bar and under the app bar
+// Translates the page next to the menu bar and under the app bar, and apply the background color
 .Page {
     background-color: $background-color;
     margin-left:      256px;
     margin-top:       60px;
-}
-
-// Colors an element in the error color
-.error {
-    color: $error-color;
 }
 
 // Makes an element impossible to select

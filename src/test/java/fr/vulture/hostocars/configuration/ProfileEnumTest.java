@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for the {@link ProfileEnum} enum.
+ * Test class for the {@link ProfileEnum} enumeration.
  */
 @DisplayName("Profile enum")
 class ProfileEnumTest {

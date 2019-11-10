@@ -3,35 +3,26 @@
 #CarPage {
     padding: 32px;
 
-    .InfoPanel {
-        &-Content {
-            &-Table {
-                &-Body {
-                    &-Row {
-                        &:last-child > * {
-                            border-bottom: none;
-                        }
+    .CommentsSubtitle {
+        color: $gray;
+    }
 
-                        &-Cell {
-                            &_certificate {
-                                padding-bottom: 2px;
-                                padding-right:  4px;
-                                padding-top:    2px;
-                            }
+    .NotFoundCar {
+        left:           calc(50% - 128px);
+        overflow:       hidden;
+        pointer-events: none;
+        position:       absolute;
+        text-align:     center;
+        top:            20%;
 
-                            &-Button {
-                                &:hover {
-                                    color: $primary-color;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        .Label {
+            font-weight: normal;
+            line-height: 1.25;
+        }
 
-            &-CommentsSubtitle {
-                color: $gray;
-            }
+        .SmileyIcon {
+            animation: pendulum infinite 3s ease-in-out 1s both;
+            font-size: 512px;
         }
     }
 
@@ -41,7 +32,7 @@
         position:    relative;
         width:       100%;
 
-        &-Picture {
+        .CarPicture {
             bottom:     0;
             height:     100%;
             left:       0;
@@ -60,23 +51,21 @@
         }
     }
 
-    .NotFoundCar {
-        color:          $primary-color;
-        left:           calc(50% - 128px);
-        overflow:       hidden;
-        pointer-events: none;
-        position:       absolute;
-        text-align:     center;
-        top:            20%;
-
-        &-SmileyIcon {
-            animation: pendulum infinite 3s ease-in-out 1s both;
-            font-size: 512px;
+    .TableRow {
+        &:last-child > * {
+            border-bottom: none;
         }
 
-        &-Label {
-            font-weight: normal;
-            line-height: 1.25;
+        .CertificateCell {
+            padding-bottom: 2px;
+            padding-right:  4px;
+            padding-top:    2px;
+
+            .CertificateButton {
+                &:hover {
+                    color: $primary-color;
+                }
+            }
         }
     }
 }

@@ -5,19 +5,19 @@
         fill: $default-car-picture-background-color;
     }
 
-    .Outline, .Windshield, .Headlight, .Smile {
+    .Headlight, .Outline, .Smile, .Windshield {
         stroke-linecap:  round;
         stroke-linejoin: round;
         stroke-width:    2px;
     }
 
-    .Outline, .Smile {
-        fill:   none;
+    .Headlight, .Windshield {
+        fill:   $white;
         stroke: $default-car-picture-stroke-color;
     }
 
-    .Windshield, .Headlight {
-        fill:   $white;
+    .Outline, .Smile {
+        fill:   none;
         stroke: $default-car-picture-stroke-color;
     }
 }

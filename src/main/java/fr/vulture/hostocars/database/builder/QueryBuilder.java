@@ -48,6 +48,56 @@ public class QueryBuilder {
     private static final String OPENING_PARENTHESIS = "(";
     private static final String CLOSING_PARENTHESIS = ")";
 
+    /**
+     * Returns the operator that corresponds to the input argument given its type (see {@link Types}) and value for a WHERE clause.
+     *
+     * @param argument
+     *     The query argument
+     *
+     * @return an SQL operator
+     *
+     * @throws TechnicalException
+     *     if the argument type is prohibited or unknown
+     */
+    static String getWhereClauseOperator(@NotNull final QueryArgument argument) throws TechnicalException {
+        switch (argument.getType()) {
+            case INTEGER:
+            case DATE:
+                return nonNull(argument.getValue()) ? EQUAL_OPERATOR : IS_OPERATOR;
+            case VARCHAR:
+                return nonNull(argument.getValue()) ? LIKE_OPERATOR : IS_OPERATOR;
+            case BLOB:
+                throw new TechnicalException("Search over a BLOB element is prohibited");
+            default:
+                throw new TechnicalException("Unknown query argument type");
+        }
+    }
+
+    /**
+     * Returns the value that corresponds to the input argument given its type (see {@link Types}) and value for a WHERE clause.
+     *
+     * @param argument
+     *     The query argument
+     *
+     * @return a value
+     *
+     * @throws TechnicalException
+     *     if the argument type is prohibited or unknown
+     */
+    static Object getWhereClauseValue(@NotNull final QueryArgument argument) throws TechnicalException {
+        switch (argument.getType()) {
+            case INTEGER:
+            case DATE:
+                return argument.getValue();
+            case VARCHAR:
+                return LIKE_SYMBOL + argument.getValue() + LIKE_SYMBOL;
+            case BLOB:
+                throw new TechnicalException("Search over a BLOB element is prohibited");
+            default:
+                throw new TechnicalException("Unknown query argument type");
+        }
+    }
+
     @Getter
     private final Query query = new Query();
 
@@ -266,56 +316,6 @@ public class QueryBuilder {
 
         // Returns the builder
         return this;
-    }
-
-    /**
-     * Returns the operator that corresponds to the input argument given its type (see {@link Types}) and value for a WHERE clause.
-     *
-     * @param argument
-     *     The query argument
-     *
-     * @return an SQL operator
-     *
-     * @throws TechnicalException
-     *     if the argument type is prohibited or unknown
-     */
-    static String getWhereClauseOperator(@NotNull final QueryArgument argument) throws TechnicalException {
-        switch (argument.getType()) {
-            case INTEGER:
-            case DATE:
-                return nonNull(argument.getValue()) ? EQUAL_OPERATOR : IS_OPERATOR;
-            case VARCHAR:
-                return nonNull(argument.getValue()) ? LIKE_OPERATOR : IS_OPERATOR;
-            case BLOB:
-                throw new TechnicalException("Search over a BLOB element is prohibited");
-            default:
-                throw new TechnicalException("Unknown query argument type");
-        }
-    }
-
-    /**
-     * Returns the value that corresponds to the input argument given its type (see {@link Types}) and value for a WHERE clause.
-     *
-     * @param argument
-     *     The query argument
-     *
-     * @return a value
-     *
-     * @throws TechnicalException
-     *     if the argument type is prohibited or unknown
-     */
-    static Object getWhereClauseValue(@NotNull final QueryArgument argument) throws TechnicalException {
-        switch (argument.getType()) {
-            case INTEGER:
-            case DATE:
-                return argument.getValue();
-            case VARCHAR:
-                return LIKE_SYMBOL + argument.getValue() + LIKE_SYMBOL;
-            case BLOB:
-                throw new TechnicalException("Search over a BLOB element is prohibited");
-            default:
-                throw new TechnicalException("Unknown query argument type");
-        }
     }
 
     /**

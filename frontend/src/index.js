@@ -1,25 +1,28 @@
-import DateFnsUtils from '@date-io/date-fns';
-import { Box, CssBaseline } from '@material-ui/core';
-import { MuiPickersUtilsProvider as DatePickerProvider } from '@material-ui/pickers';
-
-import { ThemeProvider } from '@material-ui/styles';
-
-import { AppBar, MenuBar } from 'components';
-import frLocale from 'date-fns/locale/fr';
-import { createBrowserHistory } from 'history';
-import { CarPage, CarsOverviewPage, NotFoundPage } from 'pages';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { Redirect, Route, Router, Switch } from 'react-router-dom';
+
+import DateFnsUtils from '@date-io/date-fns';
+import { Box, CssBaseline } from '@material-ui/core';
+import { MuiPickersUtilsProvider as DatePickerProvider } from '@material-ui/pickers';
+import { ThemeProvider } from '@material-ui/styles';
+
+import { AppBar, Menu } from 'components';
+import { createBrowserHistory } from 'history';
+import { CarPage, CarsOverviewPage, NotFoundPage } from 'pages';
 import { theme } from 'resources';
+import { store } from 'store';
+
+import frLocale from 'date-fns/locale/fr';
 import 'simplebar';
 
+import './index.scss';
 import 'simplebar/dist/simplebar.min.css';
 
-import { store } from 'store';
-import './index.scss';
-
+/**
+ * Unregister the navigator's service worker registration.
+ */
 function unregister() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.ready.then(registration => {
@@ -29,7 +32,7 @@ function unregister() {
 }
 
 ReactDOM.render(<ThemeProvider theme={theme}>
-    <DatePickerProvider utils={DateFnsUtils} locale={frLocale}>
+    <DatePickerProvider locale={frLocale} utils={DateFnsUtils}>
         <Provider store={store}>
             <Router history={createBrowserHistory()}>
                 <CssBaseline />
@@ -46,7 +49,7 @@ ReactDOM.render(<ThemeProvider theme={theme}>
                         </Switch>
                     </Box>
 
-                    <MenuBar />
+                    <Menu />
                 </main>
             </Router>
         </Provider>

@@ -1,17 +1,28 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
+
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 
 import './DeleteCarModal.scss';
 
-function DeleteCarModal({ className, open, onClose, onValidate }) {
-
+/**
+ * Modal to delete an existing car.
+ *
+ * @param className
+ *     The component class name
+ * @param onClose
+ *     The close event handler
+ * @param onValidate
+ *     The validate event handler
+ * @param open
+ *     If the modal is open
+ */
+function DeleteCarModal({ className, onClose, onValidate, open }) {
     /**
      * Handles the validate button click action.
      */
     const onValidateButtonClick = () => {
         onValidate();
-        onClose();
     };
 
     return <Dialog className={className} id='DeleteCarModal' onClose={onClose} open={open}>
@@ -19,18 +30,18 @@ function DeleteCarModal({ className, open, onClose, onValidate }) {
             Suppression d'une voiture
         </DialogTitle>
 
-        <DialogContent className='Content'>
-            <DialogContentText className='Content-Instructions'>
+        <DialogContent>
+            <DialogContentText className='Instructions'>
                 Êtes-vous sûr de vouloir supprimer cette voiture?
             </DialogContentText>
         </DialogContent>
 
-        <DialogActions className='Actions'>
-            <Button className='Actions-CancelButton' color='primary' onClick={onClose}>
+        <DialogActions>
+            <Button color='primary' onClick={onClose}>
                 Non
             </Button>
 
-            <Button className='Actions-ValidateButton' color='secondary' onClick={onValidateButtonClick} autoFocus>
+            <Button color='secondary' onClick={onValidateButtonClick} autoFocus>
                 Oui
             </Button>
         </DialogActions>

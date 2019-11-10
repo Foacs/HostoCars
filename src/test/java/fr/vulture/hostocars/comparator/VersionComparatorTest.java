@@ -26,7 +26,7 @@ class VersionComparatorTest {
     }
 
     /**
-     * Tests the {@link VersionComparator#compare(String, String)} method with the first argument invalid.
+     * Tests the {@link VersionComparator#compare(String, String)} method with an invalid first argument.
      */
     @Test
     @DisplayName("Comparison with invalid first argument")
@@ -38,7 +38,7 @@ class VersionComparatorTest {
     }
 
     /**
-     * Tests the {@link VersionComparator#compare(String, String)} method with the second argument invalid.
+     * Tests the {@link VersionComparator#compare(String, String)} method with an invalid second argument.
      */
     @Test
     @DisplayName("Comparison with invalid second argument")

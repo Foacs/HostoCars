@@ -1,8 +1,14 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './DefaultCarPicture.scss';
 
+/**
+ * The default image for a car.
+ *
+ * @param className
+ *     The component class name
+ */
 function DefaultCarPicture({ className }) {
     // noinspection LongLine
     return <svg className={className} id='DefaultCarPicture' viewBox='0 0 66.1 53.88'>

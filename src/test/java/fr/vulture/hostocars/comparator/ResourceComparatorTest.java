@@ -28,7 +28,7 @@ class ResourceComparatorTest {
     }
 
     /**
-     * Tests the {@link ResourceComparator#compare(Resource, Resource)} method with the first argument invalid.
+     * Tests the {@link ResourceComparator#compare(Resource, Resource)} method with an invalid first argument.
      */
     @Test
     @DisplayName("Comparison with invalid first argument")
@@ -47,7 +47,7 @@ class ResourceComparatorTest {
     }
 
     /**
-     * Tests the {@link ResourceComparator#compare(Resource, Resource)} method with the second argument invalid.
+     * Tests the {@link ResourceComparator#compare(Resource, Resource)} method with an invalid second argument.
      */
     @Test
     @DisplayName("Comparison with invalid second argument")

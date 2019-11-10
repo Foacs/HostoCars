@@ -1,3 +1,6 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import {
     Button,
     Dialog,
@@ -16,8 +19,7 @@ import {
 } from '@material-ui/core';
 import { CancelRounded as CancelIcon, FolderOpenRounded as BrowseIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 import { DatePicker } from '@material-ui/pickers';
-import PropTypes from 'prop-types';
-import React from 'react';
+
 import { extractFileNameFromURL, formatDateLabel, loadFileAsByteArray } from 'resources';
 
 import './AddCarModal.scss';
@@ -40,8 +42,21 @@ const registrationRequiredHelperText = 'Veuillez renseigner l\'immatriculation';
  */
 const registrationUniqueHelperText = 'Ce numéro d\'immatriculation existe déjà';
 
-function AddCarModal({ className, open, onClose, onValidate, registrations }) {
-
+/**
+ * Modal to add a new car.
+ *
+ * @param className
+ *     The component class name
+ * @param onClose
+ *     The close event handler
+ * @param onValidate
+ *     The validate event handler
+ * @param open
+ *     If the modal is open
+ * @param registrations
+ *     The list of existing registrations
+ */
+function AddCarModal({ className, onClose, onValidate, open, registrations }) {
     // Initializes the help flag
     const [ help, setHelp ] = React.useState(false);
 
@@ -66,36 +81,25 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
     const [ registrationUnique, setRegistrationUnique ] = React.useState(false);
 
     /**
-     * Handles the help button click action.
+     * Clears the form.
      */
-    const onHelpButtonClick = () => {
-        setHelp(!help);
-    };
+    const clearForm = () => {
+        setOwner('');
+        setRegistration('');
+        setBrand('');
+        setModel('');
+        setMotorization('');
+        setReleaseDate(null);
+        setCertificate(null);
+        setPicture(null);
+        setComments('');
 
-    /**
-     * Handles the validate button click action.
-     */
-    const onValidateButtonClick = () => {
-        const emptyValue = '';
+        setPictureFileName('');
+        setCertificateFileName('');
 
-        // Checks the form validation
-        if (validateForm()) {
-            const car = {
-                owner: emptyValue === owner ? null : owner,
-                registration: emptyValue === registration ? null : registration,
-                brand: emptyValue === brand ? null : brand,
-                model: emptyValue === model ? null : model,
-                motorization: emptyValue === motorization ? null : motorization,
-                releaseDate,
-                certificate,
-                picture,
-                comments: emptyValue === comments ? null : comments
-            };
-
-            onValidate(car);
-            onClose();
-            clearForm();
-        }
+        setOwnerRequired(false);
+        setRegistrationRequired(false);
+        setRegistrationUnique(false);
     };
 
     /**
@@ -107,9 +111,32 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
     };
 
     /**
+     * Handles the clear action for the given field.
+     * @param field
+     *     The field name
+     */
+    const onClearFieldAction = field => {
+        switch (field) {
+            case 'certificate':
+                setCertificate(null);
+                setCertificateFileName('');
+                break;
+            case 'picture':
+                setPicture(null);
+                setPictureFileName('');
+                break;
+            default:
+                console.error('Unknown field cleared');
+        }
+    };
+
+    /**
      * Handles the value changed event for the given field.
-     * @param e The event
-     * @param field The field name
+     *
+     * @param e
+     *     The event
+     * @param field
+     *     The field name
      */
     const onFieldValueChanged = (e, field) => {
         switch (field) {
@@ -161,50 +188,49 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
     };
 
     /**
-     * Handles the clear action for the given field.
-     * @param field The field name
+     * Handles the help button click action.
      */
-    const onClearFieldAction = field => {
-        switch (field) {
-            case 'certificate':
-                setCertificate(null);
-                setCertificateFileName('');
-                break;
-            case 'picture':
-                setPicture(null);
-                setPictureFileName('');
-                break;
-            default:
-                console.error('Unknown field cleared');
-        }
-
+    const onHelpButtonClick = () => {
+        setHelp(!help);
     };
 
     /**
-     * Clears the form.
+     * Handles the validate button click action.
      */
-    const clearForm = () => {
-        setOwner('');
-        setRegistration('');
-        setBrand('');
-        setModel('');
-        setMotorization('');
-        setReleaseDate(null);
-        setCertificate(null);
-        setPicture(null);
-        setComments('');
+    const onValidateButtonClick = () => {
+        // Checks the form validation
+        if (validateForm()) {
+            const car = {
+                owner: '' === owner ? null : owner,
+                registration: '' === registration ? null : registration,
+                brand: '' === brand ? null : brand,
+                model: '' === model ? null : model,
+                motorization: '' === motorization ? null : motorization,
+                releaseDate,
+                certificate,
+                picture,
+                comments: '' === comments ? null : comments
+            };
 
-        setPictureFileName('');
-        setCertificateFileName('');
-
-        setOwnerRequired(false);
-        setRegistrationRequired(false);
-        setRegistrationUnique(false);
+            onValidate(car);
+            onClose();
+            clearForm();
+        }
     };
+
+    /**
+     * Returns the text field props for the release date picker depending on the current release date value.
+     *
+     * @param props
+     *     The initial props
+     * @returns {*} the text field component with the final props
+     */
+    const releaseDateFieldProps = (props: TextFieldProps): any => <TextField InputProps={{ shrink: null !== releaseDate }} {...props} />;
 
     /**
      * Validates the form.
-     * @returns {boolean} If the form is valid
+     *
+     * @returns {boolean} if the form is valid
      */
     const validateForm = () => {
         let isValid = true;
@@ -228,62 +254,55 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
     };
 
     /**
-     * Returns the text field props for the release date picker depending on the current release date value.
-     * @param props The initial props
-     * @returns {*} The text field component with the final props
+     * Defines the adornment of the certificate field depending on the certificate being null or not.
      */
-    const releaseDateFieldProps = (props: TextFieldProps): any => <TextField InputProps={{ shrink: null !== releaseDate }} {...props} />;
-
-    const certificateFieldAdornment = certificate ? <InputAdornment position="end">
+    const certificateFieldAdornment = certificate ? (<InputAdornment position='end'>
         <IconButton onClick={() => onClearFieldAction('certificate')}>
             <CancelIcon />
         </IconButton>
-    </InputAdornment> : <InputAdornment position="end">
-        <IconButton component="label" variant="contained">
+    </InputAdornment>) : (<InputAdornment position='end'>
+        <IconButton component='label' variant='contained'>
             <BrowseIcon />
-
-            <input id='CertificateInput'
-                   onChange={e => onFieldValueChanged(e, 'certificate')}
-                   type="file" />
+            <input id='CertificateInput' onChange={e => onFieldValueChanged(e, 'certificate')} type='file' />
         </IconButton>
-    </InputAdornment>;
+    </InputAdornment>);
 
-    const pictureFieldAdornment = picture ? <InputAdornment position="end">
+    /**
+     * Defines the adornment of the image field depending on the certificate being null or not.
+     */
+    const pictureFieldAdornment = picture ? (<InputAdornment position='end'>
         <IconButton onClick={() => onClearFieldAction('picture')}>
             <CancelIcon />
         </IconButton>
-    </InputAdornment> : <InputAdornment position="end">
-        <IconButton component="label" variant="contained">
+    </InputAdornment>) : (<InputAdornment position='end'>
+        <IconButton component='label' variant='contained'>
             <BrowseIcon />
-
-            <input id='PictureInput'
-                   onChange={e => onFieldValueChanged(e, 'picture')}
-                   type="file" />
+            <input id='PictureInput' onChange={e => onFieldValueChanged(e, 'picture')} type='file' />
         </IconButton>
-    </InputAdornment>;
+    </InputAdornment>);
 
-    return <Dialog className={className} id='AddCarModal' onClose={onCancelAction} open={open}>
+    return (<Dialog className={className} id='AddCarModal' onClose={onCancelAction} open={open}>
         <DialogTitle className='Title'>
             Ajout d'une voiture
 
-            <IconButton className='Title-HelpButton' onClick={onHelpButtonClick}>
+            <IconButton className='HelpButton' color='primary' onClick={onHelpButtonClick}>
                 <HelpIcon />
             </IconButton>
         </DialogTitle>
 
-        <DialogContent className='Content'>
-            <DialogContentText className={`Content-Instructions ${help ? '' : 'Content-Instructions_hidden'}`}>
+        <DialogContent>
+            <DialogContentText className={!help && 'Instructions_hidden'}>
                 Veuillez remplir le formulaire ci-dessous puis cliquer sur 'Ajouter' afin d'ajouter une nouvelle voiture.
                 Les champs annotés du symbole * sont obligatoires.
             </DialogContentText>
 
-            <Grid alignItems="center" container direction="column" justify="center">
-                <Grid alignItems="center" container justify="space-between" spacing={2}>
+            <Grid alignItems='center' container direction='column' justify='center'>
+                <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
-                        <TextField className={`Content-Field Content-Field-Text ${ownerRequired && 'Content-Field_error'}`}
+                        <TextField className={`Field ${ownerRequired && 'Field_error'}`}
                                    error={ownerRequired}
                                    fullWidth
-                                   helperText={ownerRequired ? ownerRequiredHelperText : null}
+                                   helperText={ownerRequired && ownerRequiredHelperText}
                                    label='Propriétaire'
                                    onChange={e => onFieldValueChanged(e, 'owner')}
                                    required
@@ -292,49 +311,48 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
                     </Grid>
 
                     <Grid item xs>
-                        <TextField
-                            className={`Content-Field Content-Field-Text ${(registrationRequired || registrationUnique) && 'Content-Field_error'}`}
-                            error={registrationRequired || registrationUnique}
-                            fullWidth
-                            helperText={registrationRequired ? registrationRequiredHelperText : registrationUnique ? registrationUniqueHelperText
-                                : null}
-                            label="Numéro d'immatriculation"
-                            onChange={e => onFieldValueChanged(e, 'registration')}
-                            required
-                            value={registration}
-                            variant='outlined' />
+                        <TextField className={`Field ${(registrationRequired || registrationUnique) && 'Field_error'}`}
+                                   error={registrationRequired || registrationUnique}
+                                   fullWidth
+                                   helperText={registrationRequired ? registrationRequiredHelperText : registrationUnique
+                                       && registrationUniqueHelperText}
+                                   label="Numéro d'immatriculation"
+                                   onChange={e => onFieldValueChanged(e, 'registration')}
+                                   required
+                                   value={registration}
+                                   variant='outlined' />
                     </Grid>
                 </Grid>
 
-                <Grid alignItems="center" container justify="space-between" spacing={2}>
+                <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
-                        <TextField className='Content-Field Content-Field-Text' fullWidth label='Marque'
-                                   onChange={e => onFieldValueChanged(e, 'brand')} value={brand} variant='outlined' />
+                        <TextField className='Field' fullWidth label='Marque' onChange={e => onFieldValueChanged(e, 'brand')}
+                                   value={brand} variant='outlined' />
                     </Grid>
 
                     <Grid item xs>
-                        <TextField className='Content-Field Content-Field-Text' fullWidth label='Modèle'
-                                   onChange={e => onFieldValueChanged(e, 'model')} value={model} variant='outlined' />
+                        <TextField className='Field' fullWidth label='Modèle' onChange={e => onFieldValueChanged(e, 'model')}
+                                   value={model} variant='outlined' />
                     </Grid>
                 </Grid>
 
-                <Grid alignItems="center" container justify="space-between" spacing={2}>
+                <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
-                        <TextField className='Content-Field Content-Field-Text' fullWidth label='Motorisation'
+                        <TextField className='Field' fullWidth label='Motorisation'
                                    onChange={e => onFieldValueChanged(e, 'motorization')} value={motorization} variant='outlined' />
                     </Grid>
 
                     <Grid item xs>
                         <DatePicker autoOk
-                                    cancelLabel="Annuler"
-                                    className='Content-Field Content-Field_date'
+                                    cancelLabel='Annuler'
+                                    className='Field'
                                     clearable
-                                    clearLabel="Supprimer"
+                                    clearLabel='Supprimer'
                                     disableFuture
                                     disableToolbar
                                     fullWidth
-                                    inputVariant="outlined"
-                                    label="Date de mise en circulation"
+                                    inputVariant='outlined'
+                                    label='Date de mise en circulation'
                                     labelFunc={formatDateLabel}
                                     onChange={e => onFieldValueChanged(e, 'releaseDate')}
                                     TextFieldComponent={releaseDateFieldProps}
@@ -345,47 +363,39 @@ function AddCarModal({ className, open, onClose, onValidate, registrations }) {
                 </Grid>
             </Grid>
 
-            <FormControl className='Content-Field Content-Field_file' fullWidth variant="outlined">
-                <InputLabel htmlFor="CertificateField">Carte grise</InputLabel>
+            <FormControl className='Field' fullWidth variant='outlined'>
+                <InputLabel htmlFor='CertificateField'>Carte grise</InputLabel>
 
-                <OutlinedInput id="CertificateField"
-                               endAdornment={certificateFieldAdornment}
-                               labelWidth={80}
-                               readOnly
-                               value={certificateFileName} />
+                <OutlinedInput id='CertificateField' endAdornment={certificateFieldAdornment} labelWidth={80} readOnly value={certificateFileName} />
             </FormControl>
 
-            <FormControl className='Content-Field Content-Field_file' fullWidth variant="outlined">
-                <InputLabel htmlFor="PictureField">Image</InputLabel>
+            <FormControl className='Field' fullWidth variant='outlined'>
+                <InputLabel htmlFor='PictureField'>Image</InputLabel>
 
-                <OutlinedInput id="PictureField"
-                               endAdornment={pictureFieldAdornment}
-                               labelWidth={46}
-                               readOnly
-                               value={pictureFileName} />
+                <OutlinedInput id='PictureField' endAdornment={pictureFieldAdornment} labelWidth={46} readOnly value={pictureFileName} />
             </FormControl>
 
-            <TextField className='Content-Field Content-Field_text' fullWidth label='Commentaires' multiline
-                       onChange={e => onFieldValueChanged(e, 'comments')} rowsMax={4} value={comments} variant='outlined' />
+            <TextField className='Field' fullWidth label='Commentaires' multiline onChange={e => onFieldValueChanged(e, 'comments')}
+                       rowsMax={4} value={comments} variant='outlined' />
         </DialogContent>
 
-        <DialogActions className='Actions'>
-            <Button className='Actions-CancelButton' onClick={onCancelAction}>
+        <DialogActions>
+            <Button className='CancelButton' color='primary' onClick={onCancelAction}>
                 Annuler
             </Button>
 
-            <Button className='Actions-ValidateButton' onClick={onValidateButtonClick} autoFocus>
+            <Button autoFocus className='ValidateButton' color='primary' onClick={onValidateButtonClick}>
                 Ajouter
             </Button>
         </DialogActions>
-    </Dialog>;
+    </Dialog>);
 }
 
 AddCarModal.propTypes = {
     className: PropTypes.string,
-    open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onValidate: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired,
     registrations: PropTypes.arrayOf(PropTypes.string)
 };
 

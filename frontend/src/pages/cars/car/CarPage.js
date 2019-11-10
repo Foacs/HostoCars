@@ -1,3 +1,9 @@
+import React, { Fragment, PureComponent } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
+
 import {
     Box,
     Button,
@@ -16,39 +22,51 @@ import {
     Typography
 } from '@material-ui/core';
 import { ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon } from '@material-ui/icons';
+
 import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
+import { ErrorPanel, LoadingPanel } from 'components';
 import { CertificateModal, DeleteCarModal, EditCarModal } from 'modals';
-import PropTypes from 'prop-types';
-import React, { Fragment, PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
-import { bindActionCreators } from 'redux';
 import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
 
 import './CarPage.scss';
 
+/**
+ * Car page component.
+ */
 class CarPage extends PureComponent {
+    /**
+     * Constructor.
+     *
+     * @param props
+     *     The component props
+     */
     constructor(props) {
         super(props);
 
+        // Initializes the component state
         this.state = {
+            haveCarsBeenLoaded: false,
             isCertificateModalOpen: false,
-            isEditModalOpen: false,
             isDeleteModalOpen: false,
+            isEditModalOpen: false,
             redirect: false
         };
 
-        this.updateComponent = this.updateComponent.bind(this);
-        this.onOpenCertificateModal = this.onOpenCertificateModal.bind(this);
+        // Binds the local methods
         this.onCloseCertificateModal = this.onCloseCertificateModal.bind(this);
-        this.onOpenEditCarModal = this.onOpenEditCarModal.bind(this);
-        this.onValidateEditCarModal = this.onValidateEditCarModal.bind(this);
-        this.onCloseEditCarModal = this.onCloseEditCarModal.bind(this);
-        this.onOpenDeleteCarModal = this.onOpenDeleteCarModal.bind(this);
-        this.onValidateDeleteCarModal = this.onValidateDeleteCarModal.bind(this);
         this.onCloseDeleteCarModal = this.onCloseDeleteCarModal.bind(this);
+        this.onCloseEditCarModal = this.onCloseEditCarModal.bind(this);
+        this.onOpenCertificateModal = this.onOpenCertificateModal.bind(this);
+        this.onOpenDeleteCarModal = this.onOpenDeleteCarModal.bind(this);
+        this.onOpenEditCarModal = this.onOpenEditCarModal.bind(this);
+        this.onValidateDeleteCarModal = this.onValidateDeleteCarModal.bind(this);
+        this.onValidateEditCarModal = this.onValidateEditCarModal.bind(this);
+        this.updateComponent = this.updateComponent.bind(this);
     }
 
+    /**
+     * Method called when the component did mount.
+     */
     componentDidMount() {
         const { changeSelectedMenuIndex } = this.props;
 
@@ -57,195 +75,208 @@ class CarPage extends PureComponent {
         this.updateComponent();
     }
 
+    /**
+     * Method called when the component did update.
+     */
     componentDidUpdate() {
         this.updateComponent();
     }
 
-    updateComponent() {
-        const { cars, changeCurrentPage, getCars, isGetInError, isGetInProgress, match: { params: { id } } } = this.props;
-
-        let content = '';
-        if (isGetInProgress) {
-            content = <CircularProgress size={20} thickness={4} />;
-        } else if (isGetInError) {
-            content = <ErrorIcon />;
-        } else {
-            content = <SmileyIcon />;
-        }
-
-        if (cars && 0 < cars.length) {
-            const car = cars.find(car => Number(id) === car.id);
-
-            if (car) {
-                this.setState({ car });
-                content = car.registration;
-            } else {
-                getCars();
-
-                changeCurrentPage(<SmileyIcon />, [ {
-                    label: 'Voitures',
-                    link: '/cars'
-                } ]);
-            }
-        } else {
-            getCars();
-        }
-
-        changeCurrentPage(content, [ {
-            label: 'Voitures',
-            link: '/cars'
-        } ]);
-    }
-
-    onOpenCertificateModal() {
-        this.setState({ isCertificateModalOpen: true });
-    };
-
+    /**
+     * Handles the certificate modal close action.
+     */
     onCloseCertificateModal() {
         this.setState({ isCertificateModalOpen: false });
     };
 
+    /**
+     * Handles the 'Delete car' modal close action.
+     */
+    onCloseDeleteCarModal() {
+        this.setState({ isDeleteModalOpen: false });
+    }
+
+    /**
+     * Handles the 'Edit car' modal close action.
+     */
+    onCloseEditCarModal() {
+        this.setState({ isEditModalOpen: false });
+    }
+
+    /**
+     * Handles the certificate button click action.
+     */
+    onOpenCertificateModal() {
+        this.setState({ isCertificateModalOpen: true });
+    };
+
+    /**
+     * Handles the 'Delete car' button click action.
+     */
+    onOpenDeleteCarModal() {
+        this.setState({ isDeleteModalOpen: true });
+    };
+
+    /**
+     * Handles the 'Edit car' button click action.
+     */
     onOpenEditCarModal() {
         this.setState({ isEditModalOpen: true });
     };
 
+    /**
+     * Handles the 'Delete car' modal validate action.
+     */
+    onValidateDeleteCarModal() {
+        const { deleteCar } = this.props;
+        const { car: { id } } = this.state;
+
+        deleteCar(id)
+            .then(() => this.setState({ redirect: true }));
+    }
+
+    /**
+     * Handles the 'Edit car' modal validate action.
+     */
     onValidateEditCarModal(car) {
         const { editCar } = this.props;
 
         editCar(car);
     }
 
-    onCloseEditCarModal() {
-        this.setState({ isEditModalOpen: false });
-    }
+    /**
+     * Updates the car page.
+     */
+    updateComponent() {
+        const { haveCarsBeenLoaded } = this.state;
+        const { cars, changeCurrentPage, getCars, isInError, isLoading, match: { params: { id } } } = this.props;
 
-    onOpenDeleteCarModal() {
-        this.setState({ isDeleteModalOpen: true });
-    };
+        let content;
+        if (isInError) {
+            // If the cars failed to be loaded, displays an error icon
+            content = <ErrorIcon />;
+        } else if (isLoading) {
+            // If the cars are being loaded, displays a circular progress
+            content = <CircularProgress size={20} thickness={4} />;
+        } else {
+            // If the cars are not being loaded nor failed to be, checks if they do have been loaded
+            if (!cars || 0 === cars.length) {
+                if (haveCarsBeenLoaded) {
+                    // If there is no car even after loading, displays the smiley icon
+                    content = <SmileyIcon />;
+                } else {
+                    // If there is no car but they have not been loaded, loads them
+                    getCars()
+                        .then(() => this.setState({ haveCarsBeenLoaded: true }));
+                    content = <CircularProgress size={20} thickness={4} />;
+                }
+            } else {
+                // If there are cars, tries to get the current one
+                const car = cars.find(car => Number(id) === car.id);
 
-    onValidateDeleteCarModal() {
-        const { deleteCar } = this.props;
-        const { car: { id } } = this.state;
+                if (car) {
+                    // If the current car has been found, displays its registration
+                    this.setState({ car });
+                    content = car.registration;
+                } else if (haveCarsBeenLoaded) {
+                    // If the current car has not been found even after loading, displays the smiley icon
+                    content = <SmileyIcon />;
+                } else {
+                    // If the current car has not been found but the cars have not been loaded, loads them
+                    getCars()
+                        .then(() => this.setState({ haveCarsBeenLoaded: true }));
+                    content = <CircularProgress size={20} thickness={4} />;
+                }
+            }
+        }
 
-        deleteCar(id);
-
-        this.setState({ redirect: true });
-    }
-
-    onCloseDeleteCarModal() {
-        this.setState({ isDeleteModalOpen: false });
+        // Updates the breadcrumbs
+        changeCurrentPage(content, [ {
+            label: 'Voitures',
+            link: '/cars'
+        } ]);
     }
 
     render() {
         const { cars } = this.props;
-        const { car, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, redirect } = this.state;
+        const { car, haveCarsBeenLoaded, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, isInError, isLoading, redirect } = this.state;
 
         let content;
-        if (car) {
-            const picture = car.picture ? <img alt={`Car n°${car.id}`} className='PicturePanel-Picture'
-                                               src={`data:image/jpeg;base64,${car.picture}`} /> : <DefaultCarPicture
-                className='PicturePanel-Picture PicturePanel-Picture_default' />;
+        if (isInError) {
+            // If the cars failed to be loaded, displays the error panel
+            content = <ErrorPanel />;
+        } else if (isLoading) {
+            // If the cars are being loaded, displays the loading panel
+            content = <LoadingPanel />;
+        } else if (car) {
+            // If the car has been found, displays the car content
+            const picture = car.picture ? <img alt={`Car n°${car.id}`} className='CarPicture' src={`data:image/jpeg;base64,${car.picture}`} /> :
+                <DefaultCarPicture className='CarPicture CarPicture_default' />;
 
-            const certificateButton = <IconButton className="InfoPanel-Content-Table-Body-Row-Cell-Button" onClick={this.onOpenCertificateModal}>
-                <DisplayIcon className="InfoPanel-Content-Table-Body-Row-Cell-Button-Icon" />
+            const certificateButton = <IconButton className='CertificateButton' onClick={this.onOpenCertificateModal}>
+                <DisplayIcon />
             </IconButton>;
 
-            const commentsSection = <Fragment><Grid item>
-                <Typography className='InfoPanel-Content-CommentsSubtitle' variant='subtitle1'>
-                    Commentaires
-                </Typography>
-            </Grid>
+            const commentsSection = (<Fragment>
+                <Grid item>
+                    <Typography className='CommentsSubtitle' variant='subtitle1'>Commentaires</Typography>
+                </Grid>
 
                 <Grid item>
-                    <Typography className='InfoPanel-Content-Comments' variant='body2'>
-                        {car.comments}
-                    </Typography>
+                    <Typography variant='body2'>{car.comments}</Typography>
                 </Grid>
-            </Fragment>;
+            </Fragment>);
 
-            content = <Fragment>
+            const registrations = cars && cars.filter(currentCar => car.registration !== currentCar.registration)
+                .map(currentCar => currentCar.registration);
+
+            content = (<Fragment>
                 <Grid container spacing={4}>
                     <Grid container item xs={6}>
                         <Grid item xs={12}>
-                            <ExpansionPanel className='InfoPanel' defaultExpanded>
-                                <ExpansionPanelSummary className='InfoPanel-Header'>
-                                    <Typography className='InfoPanel-Header-Title' color='primary' variant='h6'>
-                                        Informations
-                                    </Typography>
+                            <ExpansionPanel defaultExpanded>
+                                <ExpansionPanelSummary>
+                                    <Typography color='primary' variant='h6'>Informations</Typography>
                                 </ExpansionPanelSummary>
 
-                                <ExpansionPanelDetails className='InfoPanel-Content'>
+                                <ExpansionPanelDetails>
                                     <Grid container direction='column' spacing={2}>
                                         <Grid item>
-                                            <Table className='InfoPanel-Content-Table'>
-                                                <TableBody className='InfoPanel-Content-Table-Body'>
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Propriétaire
-                                                        </TableCell>
-
-                                                        <TableCell align='right' className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            {car.owner}
-                                                        </TableCell>
+                                            <Table>
+                                                <TableBody>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Propriétaire</TableCell>
+                                                        <TableCell align='right'>{car.owner}</TableCell>
                                                     </TableRow>
 
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Numéro d'immatriculation
-                                                        </TableCell>
-
-                                                        <TableCell align='right' className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            {car.registration}
-                                                        </TableCell>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Numéro d'immatriculation</TableCell>
+                                                        <TableCell align='right'>{car.registration}</TableCell>
                                                     </TableRow>
 
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Marque
-                                                        </TableCell>
-
-                                                        <TableCell align='right' className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            {car.brand}
-                                                        </TableCell>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Marque</TableCell>
+                                                        <TableCell align='right'>{car.brand}</TableCell>
                                                     </TableRow>
 
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Modèle
-                                                        </TableCell>
-
-                                                        <TableCell align='right' className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            {car.model}
-                                                        </TableCell>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Modèle</TableCell>
+                                                        <TableCell align='right'>{car.model}</TableCell>
                                                     </TableRow>
 
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Motorisation
-                                                        </TableCell>
-
-                                                        <TableCell align='right' className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            {car.motorization}
-                                                        </TableCell>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Motorisation</TableCell>
+                                                        <TableCell align='right'>{car.motorization}</TableCell>
                                                     </TableRow>
 
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Date de mise en circulation
-                                                        </TableCell>
-
-                                                        <TableCell align='right' className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            {formatDateLabel(car.releaseDate)}
-                                                        </TableCell>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Date de mise en circulation</TableCell>
+                                                        <TableCell align='right'>{formatDateLabel(car.releaseDate)}</TableCell>
                                                     </TableRow>
 
-                                                    <TableRow className='InfoPanel-Content-Table-Body-Row' hover>
-                                                        <TableCell className='InfoPanel-Content-Table-Body-Row-Cell'>
-                                                            Carte grise
-                                                        </TableCell>
-
-                                                        <TableCell align='right'
-                                                                   className='InfoPanel-Content-Table-Body-Row-Cell InfoPanel-Content-Table-Body-Row-Cell_certificate'>
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Carte grise</TableCell>
+                                                        <TableCell align='right' className='CertificateCell'>
                                                             {car.certificate && certificateButton}
                                                         </TableCell>
                                                     </TableRow>
@@ -257,8 +288,8 @@ class CarPage extends PureComponent {
                                     </Grid>
                                 </ExpansionPanelDetails>
 
-                                <ExpansionPanelActions className='InfoPanel-Actions'>
-                                    <Button className='InfoPanel-Actions-EditButton' color='primary' onClick={this.onOpenEditCarModal}>
+                                <ExpansionPanelActions>
+                                    <Button color='primary' onClick={this.onOpenEditCarModal}>
                                         Éditer
                                     </Button>
                                 </ExpansionPanelActions>
@@ -274,8 +305,8 @@ class CarPage extends PureComponent {
                         </Grid>
 
                         <Grid item xs={12}>
-                            <Paper className='DeletePanel'>
-                                <Button className='DeletePanel-DeleteButton' color='secondary' fullWidth onClick={this.onOpenDeleteCarModal}>
+                            <Paper>
+                                <Button color='secondary' fullWidth onClick={this.onOpenDeleteCarModal}>
                                     Supprimer
                                 </Button>
                             </Paper>
@@ -283,35 +314,38 @@ class CarPage extends PureComponent {
                     </Grid>
                 </Grid>
 
-                <CertificateModal className='CertificateModal' onClose={this.onCloseCertificateModal} open={isCertificateModalOpen}
-                                  certificate={car && car.certificate} />
+                {car.certificate && <CertificateModal certificate={car.certificate} onClose={this.onCloseCertificateModal}
+                                                      open={isCertificateModalOpen} />}
 
-                <EditCarModal car={car} open={isEditModalOpen} onClose={this.onCloseEditCarModal} onValidate={this.onValidateEditCarModal}
-                              registrations={cars.filter(currentCar => currentCar.registration !== car.registration)
-                                                 .map(currentCar => currentCar.registration)} />
+                <EditCarModal car={car} onClose={this.onCloseEditCarModal} open={isEditModalOpen} onValidate={this.onValidateEditCarModal}
+                              registrations={registrations} />
 
-                <DeleteCarModal open={isDeleteModalOpen} onClose={this.onCloseDeleteCarModal} onValidate={this.onValidateDeleteCarModal} />
-            </Fragment>;
+                <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteModalOpen} onValidate={this.onValidateDeleteCarModal} />
+
+                {redirect && <Redirect to='/cars' />}
+            </Fragment>);
+        } else if (!haveCarsBeenLoaded) {
+            // If the car has not been found but the cars have not been loaded yet, displays the loading panel
+            content = <LoadingPanel />;
         } else {
-            content = <div className='NotFoundCar'>
-                <SmileyIcon className='NotFoundCar-SmileyIcon' />
+            // If the car has not been found even after loading the cars, displays the 'Not found' content
+            content = (<div className='NotFoundCar'>
+                <SmileyIcon className='SmileyIcon' color='primary' />
 
-                <Typography className='NotFoundCar-Label' variant='h1'>Voiture introuvable</Typography>
-            </div>;
+                <Typography className='Label' color='primary' variant='h1'>Voiture introuvable</Typography>
+            </div>);
         }
 
-        return <Box id="CarPage">
-            {redirect && <Redirect to="/cars" />}
-
+        return (<Box id='CarPage'>
             {content}
-        </Box>;
+        </Box>);
     }
 }
 
 const mapStateToProps = state => ({
     cars: state.cars.cars,
-    isGetAllInError: state.cars.isGetAllInError,
-    isGetAllInProgress: state.cars.isGetAllInProgress
+    isInError: state.cars.isGetAllInError,
+    isLoading: state.cars.isGetAllInProgress
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -327,8 +361,9 @@ CarPage.propTypes = {
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
     editCar: PropTypes.func.isRequired,
-    isGetAllInError: PropTypes.bool.isRequired,
-    isGetAllInProgress: PropTypes.bool.isRequired,
+    isInError: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    getCars: PropTypes.func.isRequired,
     match: PropTypes.shape({
         params: PropTypes.shape({
             id: PropTypes.string.isRequired

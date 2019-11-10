@@ -1,15 +1,22 @@
+import React, { PureComponent } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
 import { Box, Typography } from '@material-ui/core';
 import { SentimentDissatisfiedRounded as SmileyIcon } from '@material-ui/icons';
 
 import { changeCurrentPageAction, changeSelectedMenuIndexAction } from 'actions';
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 import './NotFoundPage.scss';
 
+/**
+ * Not found page component.
+ */
 class NotFoundPage extends PureComponent {
+    /**
+     * Method called when the component did mount.
+     */
     componentDidMount() {
         const { changeCurrentPage, changeSelectedMenuIndex } = this.props;
 
@@ -18,11 +25,16 @@ class NotFoundPage extends PureComponent {
         changeSelectedMenuIndex(-1);
     }
 
+    /**
+     * Render method.
+     */
     render() {
         return <Box id='NotFoundPage'>
             <SmileyIcon className='SmileyIcon' />
 
-            <Typography className='Label' variant='h1'>Page introuvable</Typography>
+            <Typography className='Label' variant='h1'>
+                Page introuvable
+            </Typography>
         </Box>;
     }
 }

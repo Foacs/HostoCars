@@ -1,5 +1,3 @@
-@import '../../../resources/colors';
-
 #ErrorPanel {
     left:         50%;
     margin-right: -50%;
@@ -8,27 +6,14 @@
     top:          50%;
     transform:    translate(-50%, -50%);
 
-    &.transparent {
-        background: $transparent;
-        box-shadow: none;
+    .Icon {
+        height: 80px;
+        width:  80px;
     }
 
-    .Grid {
-        &-IconItem {
-            &-Icon {
-                color:  $error-color;
-                height: 80px;
-                width:  80px;
-            }
-        }
-
-        &-LabelItem {
-            &-Label {
-                color:               $error-dark-color;
-                padding-top:         12px;
-                -moz-user-select:    none;
-                -webkit-user-select: none;
-            }
-        }
+    .Label {
+        padding-top:         12px;
+        -moz-user-select:    none;
+        -webkit-user-select: none;
     }
 }

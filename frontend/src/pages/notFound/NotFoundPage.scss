@@ -9,14 +9,14 @@
     text-align:     center;
     top:            20%;
 
-    .SmileyIcon {
-        animation: pendulum infinite 3s ease-in-out 1s both;
-        font-size: 512px;
-    }
-
     .Label {
         font-weight: normal;
         line-height: 1.25;
+    }
+
+    .SmileyIcon {
+        animation: pendulum infinite 3s ease-in-out 1s both;
+        font-size: 512px;
     }
 }
 

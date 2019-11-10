@@ -1,29 +1,45 @@
-import { Box, Button, Grid, Typography } from '@material-ui/core';
-import { AddCircleOutlineRounded as AddIcon } from '@material-ui/icons';
-import { addCarAction, changeCarsSortOrderAction, changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from 'actions';
-import { CarCard, ErrorPanel, LoadingPanel } from 'components';
-import { AddCarModal } from 'modals';
-import PropTypes from 'prop-types';
 import React, { Fragment, PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import PropTypes from 'prop-types';
+
+import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { AddCircleOutlineRounded as AddIcon } from '@material-ui/icons';
+
+import { addCarAction, changeCarsSortOrderAction, changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction } from 'actions';
+import { CarCard, ErrorPanel, LoadingPanel } from 'components';
+import { AddCarModal } from 'modals';
 import { CarPropType } from 'resources';
 
 import './CarsOverviewPage.scss';
 
+/**
+ * Cars overview page component.
+ */
 class CarsOverviewPage extends PureComponent {
+    /**
+     * Constructor.
+     *
+     * @param props
+     *     The component props
+     */
     constructor(props) {
         super(props);
 
+        // Initializes the component state
         this.state = { isAddCarModalOpen: false };
 
-        this.onRegistrationButtonClick = this.onRegistrationButtonClick.bind(this);
-        this.onOwnerButtonClick = this.onOwnerButtonClick.bind(this);
-        this.onOpenAddCarModal = this.onOpenAddCarModal.bind(this);
-        this.onValidateAddCarModal = this.onValidateAddCarModal.bind(this);
+        // Binds the local methods
         this.onCloseAddCarModal = this.onCloseAddCarModal.bind(this);
+        this.onOpenAddCarModal = this.onOpenAddCarModal.bind(this);
+        this.onOwnerButtonClick = this.onOwnerButtonClick.bind(this);
+        this.onRegistrationButtonClick = this.onRegistrationButtonClick.bind(this);
+        this.onValidateAddCarModal = this.onValidateAddCarModal.bind(this);
     }
 
+    /**
+     * Method called when the component did mount.
+     */
     componentDidMount() {
         const { changeCurrentPage, changeSelectedMenuIndex, getCars, sortedBy } = this.props;
 
@@ -33,99 +49,116 @@ class CarsOverviewPage extends PureComponent {
         getCars(sortedBy);
     }
 
-    onRegistrationButtonClick() {
-        const { changeCarsSortOrder, getCars, sortedBy } = this.props;
-        const registration = 'registration';
+    /**
+     * Handles the 'Add car' modal close action.
+     */
+    onCloseAddCarModal() {
+        this.setState({ isAddCarModalOpen: false });
+    };
 
-        if (sortedBy !== registration) {
-            changeCarsSortOrder(registration);
+    /**
+     * Handles the 'Add car' button click action.
+     */
+    onOpenAddCarModal() {
+        this.setState({ isAddCarModalOpen: true });
+    };
 
-            getCars(registration);
-        }
-    }
-
+    /**
+     * Handles the 'Sort by owner' button click action.
+     */
     onOwnerButtonClick() {
         const { changeCarsSortOrder, getCars, sortedBy } = this.props;
         const owner = 'owner';
 
         if (sortedBy !== owner) {
             changeCarsSortOrder(owner);
-
             getCars(owner);
         }
     }
 
-    onOpenAddCarModal() {
-        this.setState({ isAddCarModalOpen: true });
-    };
+    /**
+     * Handles the 'Sort by registration' button click action.
+     */
+    onRegistrationButtonClick() {
+        const { changeCarsSortOrder, getCars, sortedBy } = this.props;
+        const registration = 'registration';
 
+        if (sortedBy !== registration) {
+            changeCarsSortOrder(registration);
+            getCars(registration);
+        }
+    }
+
+    /**
+     * Handles the 'Add car' modal validate action.
+     */
     onValidateAddCarModal(car) {
         const { addCar, sortedBy } = this.props;
 
         addCar(car, sortedBy);
     }
 
-    onCloseAddCarModal() {
-        this.setState({ isAddCarModalOpen: false });
-    };
-
+    /**
+     * Render method.
+     */
     render() {
-        const { cars, isGetAllInError, isGetAllInProgress, sortedBy } = this.props;
+        const { cars, isInError, isLoading, sortedBy } = this.props;
         const { isAddCarModalOpen } = this.state;
 
         let content;
-        if (isGetAllInError) {
+        if (isInError) {
+            // If the cars failed to be loaded, displays the error panel
             content = <ErrorPanel className='ErrorPanel' />;
-        } else if (isGetAllInProgress) {
+        } else if (isLoading) {
+            // If the cars are being loaded, displays the loading panel
             content = <LoadingPanel className='LoadingPanel' />;
         } else {
-            const registrationButtonClassName = `HeaderGrid-SortSection-RegistrationButton ${'registration' === sortedBy
-            && 'HeaderGrid-SortSection-RegistrationButton_selected'}`;
-            const ownerButtonClassName = `HeaderGrid-SortSection-OwnerButton ${'owner' === sortedBy
-            && 'HeaderGrid-SortSection-OwnerButton_selected'}`;
-
+            // If the cars have been loaded, displays the page normal content
             content = (<Fragment>
                 <Grid alignItems='center' className='HeaderGrid' container justify='space-between'>
                     <Grid item>
-                        <Button className='HeaderGrid-AddCarButton' onClick={this.onOpenAddCarModal} variant='outlined'>
+                        <Button className='AddCarButton' color='primary' onClick={this.onOpenAddCarModal} variant='outlined'>
                             Ajouter
 
-                            <AddIcon className='HeaderGrid-AddCarButton-Icon' />
+                            <AddIcon className='AddCarIcon' />
                         </Button>
                     </Grid>
 
                     <Grid item>
-                        <Box className='HeaderGrid-SortSection'>
-                            <Button className={registrationButtonClassName} disableRipple
+                        <Box className='SortSection'>
+                            <Button className='RegistrationButton' color={'registration' === sortedBy ? 'primary' : 'inherit'} disableRipple
                                     onClick={this.onRegistrationButtonClick}>Immatriculation</Button>
-                            <Typography className='HeaderGrid-SortSection-Separator non-selectable' variant='h6'>|</Typography>
-                            <Button className={ownerButtonClassName} disableRipple onClick={this.onOwnerButtonClick}>Propriétaire</Button>
+
+                            <Typography className='Separator non-selectable' variant='h6'>|</Typography>
+
+                            <Button className='OwnerButton' color={'owner' === sortedBy ? 'primary' : 'inherit'} disableRipple
+                                    onClick={this.onOwnerButtonClick}>Propriétaire</Button>
                         </Box>
                     </Grid>
                 </Grid>
 
-                <Grid className='CarsGrid' container justify='flex-start' alignItems='flex-start' spacing={4}>
-                    {cars.map(car => <Grid className='CarsGrid-Item' item key={car.registration} lg={4} md={6} sm={12} xl={3} xs={12}>
-                        <CarCard car={car} className='CarsGrid-Item-CarCard' />
+                <Grid alignItems='flex-start' container justify='flex-start' spacing={4}>
+                    {cars.map(car => <Grid item key={car.registration} lg={4} md={6} sm={12} xl={3} xs={12}>
+                        <CarCard car={car} className='CarCard' />
                     </Grid>)}
                 </Grid>
+
+                <AddCarModal onClose={this.onCloseAddCarModal} open={isAddCarModalOpen} onValidate={this.onValidateAddCarModal}
+                             registrations={cars.map(car => car.registration)} />
             </Fragment>);
         }
 
-        return <Box id="CarsOverviewPage">
+        return (<Box id='CarsOverviewPage'>
             {content}
-
-            <AddCarModal open={isAddCarModalOpen} onClose={this.onCloseAddCarModal} onValidate={this.onValidateAddCarModal}
-                         registrations={cars.map(car => car.registration)} />
-        </Box>;
+        </Box>);
     }
 }
 
 const mapStateToProps = state => ({
     cars: state.cars.cars,
-    sortedBy: state.cars.sortedBy,
-    isGetAllInProgress: state.cars.isGetAllInProgress,
-    isGetAllInError: state.cars.isGetAllInError
+    isInError: state.cars.isGetAllInError,
+    isLoading: state.cars.isGetAllInProgress,
+    sortedBy: state.cars.sortedBy
 });
 
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -139,12 +172,12 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 CarsOverviewPage.propTypes = {
     addCar: PropTypes.func.isRequired,
     cars: PropTypes.arrayOf(CarPropType).isRequired,
-    sortedBy: PropTypes.string.isRequired,
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
     getCars: PropTypes.func.isRequired,
-    isGetAllInError: PropTypes.bool.isRequired,
-    isGetAllInProgress: PropTypes.bool.isRequired
+    isInError: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    sortedBy: PropTypes.string.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CarsOverviewPage);

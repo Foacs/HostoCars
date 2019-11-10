@@ -3,40 +3,37 @@
 #CarsOverviewPage {
     padding: 12px 32px 32px 32px;
 
+    .CarCard {
+        min-width: 280px;
+    }
+
+    .ErrorPanel, .LoadingPanel {
+        left: calc(50% + 128px);
+    }
+
     .HeaderGrid {
         padding-bottom: 20px;
         padding-top:    12px;
 
-        &-AddCarButton {
+        .AddCarButton {
             border-color:  $primary-color;
-            color:         $primary-color;
             padding-left:  12px;
             padding-right: 8px;
 
-            &-Icon {
+            .AddCarIcon {
                 margin-left: 4px;
                 padding:     2px;
             }
         }
 
-        &-SortSection {
+        .SortSection {
             align-content:   center;
             align-items:     baseline;
             display:         flex;
             justify-content: flex-end;
             width:           100%;
 
-            &-RegistrationButton, &-OwnerButton {
-                &:hover {
-                    background-color: $transparent;
-
-                    &:before {
-                        -webkit-transform: scaleX(1);
-                        transform:         scaleX(1);
-                        visibility:        visible;
-                    }
-                }
-
+            .OwnerButton, .RegistrationButton {
                 &:before {
                     background-color:   $primary-color;
                     bottom:             10px;
@@ -52,25 +49,19 @@
                     width:              80%;
                 }
 
-                &_selected {
-                    color: $primary-color;
+                &:hover {
+                    background-color: $transparent;
+
+                    &:before {
+                        -webkit-transform: scaleX(1);
+                        transform:         scaleX(1);
+                        visibility:        visible;
+                    }
                 }
             }
 
-            &-Separator {
+            .Separator {
                 color: $gray;
-            }
-        }
-    }
-
-    .ErrorPanel, .LoadingPanel {
-        left: calc(50% + 128px);
-    }
-
-    .CarsGrid {
-        &-Item {
-            &-CarCard {
-                min-width: 280px;
             }
         }
     }

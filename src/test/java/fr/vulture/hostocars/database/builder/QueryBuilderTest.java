@@ -286,23 +286,23 @@ class QueryBuilderTest {
     final void testGetWhereClauseOperator() {
         assertAll("Asserting all cases",
             () -> assertEquals(" IS ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, INTEGER)),
-                "Null INTEGER query argument should return \" IS \""),
+                "Returned operator different from expected"),
             () -> assertEquals(" = ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", 1, INTEGER)),
-                "Non null INTEGER query argument should return \" = \""),
+                "Returned operator different from expected"),
             () -> assertEquals(" IS ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, DATE)),
-                "Null DATE query argument should return \" IS \""),
+                "Returned operator different from expected"),
             () -> assertEquals(" = ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", LocalDate.now(), DATE)),
-                "Non null DATE query argument should return \" = \""),
+                "Returned operator different from expected"),
             () -> assertEquals(" IS ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, VARCHAR)),
-                "Null VARCHAR query argument should return \" IS \""),
+                "Returned operator different from expected"),
             () -> assertEquals(" LIKE ", QueryBuilder.getWhereClauseOperator(new QueryArgument("", "", VARCHAR)),
-                "Non null VARCHAR query argument should return \" LIKE \""),
+                "Returned operator different from expected"),
             () -> assertEquals("Search over a BLOB element is prohibited",
                 assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, BLOB)),
-                    "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected"),
+                    "Expected exception has not been thrown").getMessage(), "Thrown exception message different from expected"),
             () -> assertEquals("Unknown query argument type",
                 assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseOperator(new QueryArgument("", null, UNKNOWN_TYPE)),
-                    "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected")
+                    "Expected exception has not been thrown").getMessage(), "Thrown exception message different from expected")
         );
     }
 
@@ -324,10 +324,10 @@ class QueryBuilderTest {
                 "Returned value different from expected"),
             () -> assertEquals("Search over a BLOB element is prohibited",
                 assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseValue(new QueryArgument("", null, BLOB)),
-                    "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected"),
+                    "Expected exception has not been thrown").getMessage(), "Thrown exception message different from expected"),
             () -> assertEquals("Unknown query argument type",
                 assertThrows(TechnicalException.class, () -> QueryBuilder.getWhereClauseValue(new QueryArgument("", null, UNKNOWN_TYPE)),
-                    "Should return a TechnicalException").getMessage(), "Thrown exception message different from expected")
+                    "Expected exception has not been thrown").getMessage(), "Thrown exception message different from expected")
         );
     }
 

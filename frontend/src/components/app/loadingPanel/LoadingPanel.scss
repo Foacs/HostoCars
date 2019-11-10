@@ -1,5 +1,3 @@
-@import '../../../resources/colors';
-
 #LoadingPanel {
     left:         50%;
     margin-right: -50%;
@@ -8,25 +6,9 @@
     top:          50%;
     transform:    translate(-50%, -50%);
 
-    &.transparent {
-        background: $transparent;
-        box-shadow: none;
-    }
-
-    .Grid {
-        &-ProgressItem {
-            &-Progress {
-                color: $primary-color;
-            }
-        }
-
-        &-LabelItem {
-            &-Label {
-                color:               $primary-dark-color;
-                padding-top:         12px;
-                -moz-user-select:    none;
-                -webkit-user-select: none;
-            }
-        }
+    .Label {
+        padding-top:         12px;
+        -moz-user-select:    none;
+        -webkit-user-select: none;
     }
 }
