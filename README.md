@@ -1,8 +1,19 @@
-# HostoCars #
+<pre>
+
+    ______  __               _____        _________
+    ___  / / /______ __________  /_______ __  ____/______ _________________
+    __  /_/ / _  __ \__  ___/_  __/_  __ \_  /     _  __ `/__  ___/__  ___/
+    _  __  /  / /_/ /_(__  ) / /_  / /_/ // /___   / /_/ / _  /    _(__  )
+    /_/ /_/   \____/ /____/  \__/  \____/ \____/   \__,_/  /_/     /____/
+                                                     :: Version 1.0.0 ::
+
+</pre>
 
 ##### _Logiciel de gestion et de facturation de réparations de véhicules._ #####
 
-###### Version: `1.0.0` ######
+<pre />
+
+#### Version: `1.0.0` ####
 
 - Mise en place de la base de données
 - Gestion de la version de la base de données
