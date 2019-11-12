@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Redirect, Route, Router, Switch } from 'react-router-dom';
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import DateFnsUtils from '@date-io/date-fns';
 import { Box, CssBaseline } from '@material-ui/core';
@@ -34,7 +34,7 @@ function unregister() {
 ReactDOM.render(<ThemeProvider theme={theme}>
     <DatePickerProvider locale={frLocale} utils={DateFnsUtils}>
         <Provider store={store}>
-            <Router history={createBrowserHistory()}>
+            <HashRouter history={createBrowserHistory()}>
                 <CssBaseline />
 
                 <main data-simplebar>
@@ -51,7 +51,7 @@ ReactDOM.render(<ThemeProvider theme={theme}>
 
                     <Menu />
                 </main>
-            </Router>
+            </HashRouter>
         </Provider>
     </DatePickerProvider>
 </ThemeProvider>, document.getElementById('root'));
