@@ -196,6 +196,7 @@
                 <directory>src/main/resources</directory>
                 <includes>
                     <include>application.properties</include>
+                    <include>banner.txt</include>
                     <include>**/*.sql</include>
                 </includes>
             </resource>
