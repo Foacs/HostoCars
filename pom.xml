@@ -114,8 +114,11 @@
         </dependency>
     </dependencies>
 
-    <!-- Packages the application to an executable jar -->
     <build>
+        <!-- JAR file name -->
+        <finalName>application</finalName>
+
+        <!-- Packages the application to an executable jar -->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
