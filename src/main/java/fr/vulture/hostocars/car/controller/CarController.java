@@ -83,22 +83,22 @@ public class CarController {
     /**
      * Retrieves the list of all the {@link Car} entities from the database.
      *
-     * @param sortingField
+     * @param sortedBy
      *     The optional sorting clause field
      *
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public final ResponseEntity<?> getCars(@RequestParam(required = false) final String sortingField) {
-        logger.debug("[getCars <= Calling] With sorting field = {}", sortingField);
+    public final ResponseEntity<?> getCars(@RequestParam(required = false) final String sortedBy) {
+        logger.debug("[getCars <= Calling] With sorting field = {}", sortedBy);
 
         try {
             // Builds the query
             final QueryBuilder queryBuilder = new QueryBuilder().buildSelectQuery(TABLE_NAME, false);
 
             // If the optional sorting field is not null, adds a sorting clause to the query
-            if (nonNull(sortingField)) {
-                final List<String> sortingFields = Collections.singletonList(sortingField);
+            if (nonNull(sortedBy)) {
+                final List<String> sortingFields = Collections.singletonList(sortedBy);
                 queryBuilder.addOrderByClause(sortingFields, false);
             }
 
