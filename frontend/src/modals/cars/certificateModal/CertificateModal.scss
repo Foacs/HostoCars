@@ -1,0 +1,13 @@
+@import '../../../resources/colors';
+
+#CertificateModal {
+    .Content {
+        padding: 5px;
+
+        .Magnifier {
+            & > *:last-child {
+                border-color: rgba($secondary-light-color, 0.5);
+            }
+        }
+    }
+}

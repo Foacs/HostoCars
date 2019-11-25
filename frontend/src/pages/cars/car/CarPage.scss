@@ -1,0 +1,88 @@
+@import '../../../resources/colors';
+
+#CarPage {
+    padding: 32px;
+
+    .CommentsSubtitle {
+        color: $gray;
+    }
+
+    .InfoPanelHeader {
+        cursor:     default;
+        min-height: 52px;
+
+        .EditButton {
+            position: absolute;
+            right:    8px;
+            top:      4px;
+        }
+
+        .InfoPanelTitle {
+            left:     24px;
+            position: absolute;
+            top:      12px;
+        }
+    }
+
+    .NotFoundCar {
+        left:           calc(50% - 128px);
+        overflow:       hidden;
+        pointer-events: none;
+        position:       absolute;
+        text-align:     center;
+        top:            20%;
+
+        .Label {
+            font-weight: normal;
+            line-height: 1.25;
+        }
+
+        .SmileyIcon {
+            animation: pendulum infinite 3s ease-in-out 1s both;
+            font-size: 512px;
+        }
+    }
+
+    .PicturePanel {
+        overflow:    hidden;
+        padding-top: 56.25%;
+        position:    relative;
+        width:       100%;
+
+        .CarPicture {
+            bottom:     0;
+            height:     100%;
+            left:       0;
+            margin:     auto;
+            object-fit: cover;
+            position:   absolute;
+            right:      0;
+            top:        0;
+            width:      100%;
+
+            &_default {
+                height:     80%;
+                object-fit: none;
+                width:      80%;
+            }
+        }
+    }
+
+    .TableRow {
+        &:last-child > * {
+            border-bottom: none;
+        }
+
+        .CertificateCell {
+            padding-bottom: 2px;
+            padding-right:  4px;
+            padding-top:    2px;
+
+            .CertificateButton {
+                &:hover {
+                    color: $primary-color;
+                }
+            }
+        }
+    }
+}

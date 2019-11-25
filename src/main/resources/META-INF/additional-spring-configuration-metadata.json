@@ -1,0 +1,49 @@
+{
+    "properties": [
+        {
+            "name": "project.version",
+            "type": "java.lang.String",
+            "description": "The current application version (should be extracted from Maven)."
+        },
+        {
+            "name": "database.location",
+            "type": "java.lang.String",
+            "description": "The relative path to the database folder."
+        },
+        {
+            "name": "database.path",
+            "type": "java.lang.String",
+            "description": "The relative path to the database file."
+        },
+        {
+            "name": "database.url",
+            "type": "java.lang.String",
+            "description": "The JDBC URL to the database."
+        },
+        {
+            "name": "database.backup.number",
+            "type": "java.lang.Integer",
+            "description": "The maximum number of backups of the database can be saved at one time."
+        },
+        {
+            "name": "database.backup.delay",
+            "type": "java.lang.Integer",
+            "description": "The minimum number of days between two database backups."
+        },
+        {
+            "name": "database.update.backup.number",
+            "type": "java.lang.Integer",
+            "description": "The maximum number of backups of the database before an update can be saved at one time."
+        },
+        {
+            "name": "sql.scripts.extension",
+            "type": "java.lang.String",
+            "description": "The SQL scripts extension."
+        },
+        {
+            "name": "sql.scripts.resources.location",
+            "type": "java.lang.String",
+            "description": "The relative path to the SQL resources folder."
+        }
+    ]
+}

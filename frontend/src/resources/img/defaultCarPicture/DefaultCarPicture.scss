@@ -1,0 +1,23 @@
+@import '../../colors';
+
+#DefaultCarPicture {
+    .Background {
+        fill: $default-car-picture-background-color;
+    }
+
+    .Headlight, .Outline, .Smile, .Windshield {
+        stroke-linecap:  round;
+        stroke-linejoin: round;
+        stroke-width:    2px;
+    }
+
+    .Headlight, .Windshield {
+        fill:   $white;
+        stroke: $default-car-picture-stroke-color;
+    }
+
+    .Outline, .Smile {
+        fill:   none;
+        stroke: $default-car-picture-stroke-color;
+    }
+}

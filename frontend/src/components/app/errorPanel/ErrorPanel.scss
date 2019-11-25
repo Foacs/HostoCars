@@ -1,0 +1,19 @@
+#ErrorPanel {
+    left:         50%;
+    margin-right: -50%;
+    padding:      24px 48px;
+    position:     absolute;
+    top:          50%;
+    transform:    translate(-50%, -50%);
+
+    .Icon {
+        height: 80px;
+        width:  80px;
+    }
+
+    .Label {
+        padding-top:         12px;
+        -moz-user-select:    none;
+        -webkit-user-select: none;
+    }
+}
