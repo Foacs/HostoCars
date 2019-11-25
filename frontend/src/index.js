@@ -9,7 +9,6 @@ import { MuiPickersUtilsProvider as DatePickerProvider } from '@material-ui/pick
 import { ThemeProvider } from '@material-ui/styles';
 
 import { AppBar, Menu } from 'components';
-import { createBrowserHistory } from 'history';
 import { CarPage, CarsOverviewPage, NotFoundPage } from 'pages';
 import { theme } from 'resources';
 import { store } from 'store';
@@ -34,7 +33,7 @@ function unregister() {
 ReactDOM.render(<ThemeProvider theme={theme}>
     <DatePickerProvider locale={frLocale} utils={DateFnsUtils}>
         <Provider store={store}>
-            <HashRouter history={createBrowserHistory()}>
+            <HashRouter>
                 <CssBaseline />
 
                 <main data-simplebar>

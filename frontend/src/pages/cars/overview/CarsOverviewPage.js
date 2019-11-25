@@ -41,12 +41,12 @@ class CarsOverviewPage extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { changeCurrentPage, changeSelectedMenuIndex, getCars, sortedBy } = this.props;
+        const { changeCurrentPage, changeSelectedMenuIndex, getCars } = this.props;
 
         changeCurrentPage('Voitures', []);
         changeSelectedMenuIndex(0);
 
-        getCars(sortedBy);
+        getCars();
     }
 
     /**
@@ -67,12 +67,11 @@ class CarsOverviewPage extends PureComponent {
      * Handles the 'Sort by owner' button click action.
      */
     onOwnerButtonClick() {
-        const { changeCarsSortOrder, getCars, sortedBy } = this.props;
+        const { changeCarsSortOrder, sortedBy } = this.props;
         const owner = 'owner';
 
         if (sortedBy !== owner) {
             changeCarsSortOrder(owner);
-            getCars(owner);
         }
     }
 
@@ -80,12 +79,11 @@ class CarsOverviewPage extends PureComponent {
      * Handles the 'Sort by registration' button click action.
      */
     onRegistrationButtonClick() {
-        const { changeCarsSortOrder, getCars, sortedBy } = this.props;
+        const { changeCarsSortOrder, sortedBy } = this.props;
         const registration = 'registration';
 
         if (sortedBy !== registration) {
             changeCarsSortOrder(registration);
-            getCars(registration);
         }
     }
 
@@ -108,10 +106,54 @@ class CarsOverviewPage extends PureComponent {
         let content;
         if (isInError) {
             // If the cars failed to be loaded, displays the error panel
-            content = <ErrorPanel className='ErrorPanel' />;
+            content = (<Fragment>
+                <Grid alignItems='center' className='HeaderGrid' container justify='space-between'>
+                    <Grid item>
+                        <Button className='AddCarButton' disabled variant='outlined'>
+                            Ajouter
+
+                            <AddIcon className='AddCarIcon' />
+                        </Button>
+                    </Grid>
+
+                    <Grid item>
+                        <Box className='SortSection'>
+                            <Button className='RegistrationButton' disabled>Immatriculation</Button>
+
+                            <Typography className='Separator non-selectable' variant='h6'>|</Typography>
+
+                            <Button className='OwnerButton' disabled>Propriétaire</Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+
+                <ErrorPanel className='ErrorPanel' />
+            </Fragment>);
         } else if (isLoading) {
             // If the cars are being loaded, displays the loading panel
-            content = <LoadingPanel className='LoadingPanel' />;
+            content = (<Fragment>
+                <Grid alignItems='center' className='HeaderGrid' container justify='space-between'>
+                    <Grid item>
+                        <Button className='AddCarButton' disabled variant='outlined'>
+                            Ajouter
+
+                            <AddIcon className='AddCarIcon' />
+                        </Button>
+                    </Grid>
+
+                    <Grid item>
+                        <Box className='SortSection'>
+                            <Button className='RegistrationButton' disabled>Immatriculation</Button>
+
+                            <Typography className='Separator non-selectable' variant='h6'>|</Typography>
+
+                            <Button className='OwnerButton' disabled>Propriétaire</Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+
+                <LoadingPanel className='LoadingPanel' />
+            </Fragment>);
         } else {
             // If the cars have been loaded, displays the page normal content
             content = (<Fragment>

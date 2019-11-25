@@ -7,6 +7,23 @@
         color: $gray;
     }
 
+    .InfoPanelHeader {
+        cursor:     default;
+        min-height: 52px;
+
+        .EditButton {
+            position: absolute;
+            right:    8px;
+            top:      4px;
+        }
+
+        .InfoPanelTitle {
+            left:     24px;
+            position: absolute;
+            top:      12px;
+        }
+    }
+
     .NotFoundCar {
         left:           calc(50% - 128px);
         overflow:       hidden;

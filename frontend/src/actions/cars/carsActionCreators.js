@@ -77,6 +77,9 @@ const changeCarsSortOrder = sortedBy => ({
 export const changeCarsSortOrderAction = sortedBy => {
     return dispatch => {
         dispatch(changeCarsSortOrder(sortedBy));
+        getCarsAction()(dispatch, () => {
+            return { cars: { sortedBy } };
+        });
     };
 };
 
@@ -85,19 +88,16 @@ export const changeCarsSortOrderAction = sortedBy => {
  *
  * @param id
  *     The car's ID to delete
- * @param history
- *     The navigator's history
  *
  * @returns {function(): Promise} the action's promise
  */
-export const deleteCarAction = (id, history) => {
+export const deleteCarAction = id => {
     return dispatch => {
         dispatch(deleteCarStart());
 
         return axios.delete(`${WEB_SERVICE_BASE_URL}/cars/${id}/delete`)
             .then(() => {
                 dispatch(deleteCarSuccess(id));
-                history.push('/cars');
             })
             .catch(() => {
                 dispatch(deleteCarFailure());
@@ -257,16 +257,13 @@ const getCarSuccess = car => ({
 /**
  * Returns the list of all cars.
  *
- * @param sortedBy
- *     The sort clause
- *
  * @returns {function(): Promise} the action's promise
  */
-export const getCarsAction = sortedBy => {
-    return dispatch => {
+export const getCarsAction = () => {
+    return (dispatch, getState) => {
         dispatch(getCarsStart());
 
-        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/all?sortedBy=${sortedBy}`)
+        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/all?sortedBy=${getState().cars.sortedBy}`)
             .then(res => {
                 if (OK_STATUS === res.status) {
                     dispatch(getCarsSuccess(res.data));

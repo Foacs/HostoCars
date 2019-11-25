@@ -276,7 +276,8 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
     </InputAdornment>) : (<InputAdornment position='end'>
         <IconButton component='label' variant='contained'>
             <BrowseIcon />
-            <input id='CertificateInput' onChange={e => onFieldValueChanged(e, 'certificate')} type='file' />
+            <input accept='image/jpe, image/jpg, image/jpeg, image/gif, image/png, image/bmp,' id='CertificateInput'
+                   onChange={e => onFieldValueChanged(e, 'certificate')} type='file' />
         </IconButton>
     </InputAdornment>);
 
@@ -290,7 +291,8 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
     </InputAdornment>) : (<InputAdornment position='end'>
         <IconButton component='label' variant='contained'>
             <BrowseIcon />
-            <input id='PictureInput' onChange={e => onFieldValueChanged(e, 'picture')} type='file' />
+            <input accept='image/jpe, image/jpg, image/jpeg, image/gif, image/png, image/bmp,' id='PictureInput'
+                   onChange={e => onFieldValueChanged(e, 'picture')} type='file' />
         </IconButton>
     </InputAdornment>);
 

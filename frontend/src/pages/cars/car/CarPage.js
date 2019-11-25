@@ -9,7 +9,6 @@ import {
     Button,
     CircularProgress,
     ExpansionPanel,
-    ExpansionPanelActions,
     ExpansionPanelDetails,
     ExpansionPanelSummary,
     Grid,
@@ -21,7 +20,9 @@ import {
     TableRow,
     Typography
 } from '@material-ui/core';
-import { ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon } from '@material-ui/icons';
+import {
+    ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon, EditRounded as EditIcon
+} from '@material-ui/icons';
 
 import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
 import { ErrorPanel, LoadingPanel } from 'components';
@@ -45,6 +46,7 @@ class CarPage extends PureComponent {
 
         // Initializes the component state
         this.state = {
+            car: undefined,
             haveCarsBeenLoaded: false,
             isCertificateModalOpen: false,
             isDeleteModalOpen: false,
@@ -78,7 +80,17 @@ class CarPage extends PureComponent {
     /**
      * Method called when the component did update.
      */
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
+        const { match: { params: { id } } } = this.props;
+        const { match: { params: { id: prevId } } } = prevProps;
+
+        if (id !== prevId) {
+            this.setState({
+                car: undefined,
+                haveCarsBeenLoaded: false
+            });
+        }
+
         this.updateComponent();
     }
 
@@ -132,7 +144,7 @@ class CarPage extends PureComponent {
         const { car: { id } } = this.state;
 
         deleteCar(id)
-            .then(() => this.setState({ redirect: true }));
+            .then(this.setState({ redirect: true }));
     }
 
     /**
@@ -167,7 +179,7 @@ class CarPage extends PureComponent {
                 } else {
                     // If there is no car but they have not been loaded, loads them
                     getCars()
-                        .then(() => this.setState({ haveCarsBeenLoaded: true }));
+                        .then(this.setState({ haveCarsBeenLoaded: true }));
                     content = <CircularProgress size={20} thickness={4} />;
                 }
             } else {
@@ -184,7 +196,7 @@ class CarPage extends PureComponent {
                 } else {
                     // If the current car has not been found but the cars have not been loaded, loads them
                     getCars()
-                        .then(() => this.setState({ haveCarsBeenLoaded: true }));
+                        .then(this.setState({ haveCarsBeenLoaded: true }));
                     content = <CircularProgress size={20} thickness={4} />;
                 }
             }
@@ -198,11 +210,13 @@ class CarPage extends PureComponent {
     }
 
     render() {
-        const { cars } = this.props;
-        const { car, haveCarsBeenLoaded, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, isInError, isLoading, redirect } = this.state;
+        const { cars, isInError, isLoading } = this.props;
+        const { car, haveCarsBeenLoaded, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, redirect } = this.state;
 
         let content;
-        if (isInError) {
+        if (redirect) {
+            content = <Redirect to='/cars' />;
+        } else if (isInError) {
             // If the cars failed to be loaded, displays the error panel
             content = <ErrorPanel />;
         } else if (isLoading) {
@@ -234,9 +248,13 @@ class CarPage extends PureComponent {
                 <Grid container spacing={4}>
                     <Grid container item xs={6}>
                         <Grid item xs={12}>
-                            <ExpansionPanel defaultExpanded>
-                                <ExpansionPanelSummary>
-                                    <Typography color='primary' variant='h6'>Informations</Typography>
+                            <ExpansionPanel expanded>
+                                <ExpansionPanelSummary className='InfoPanelHeader'>
+                                    <Typography className='InfoPanelTitle' color='primary' variant='h6'>Informations</Typography>
+
+                                    <IconButton className='EditButton' color='primary' onClick={this.onOpenEditCarModal}>
+                                        <EditIcon />
+                                    </IconButton>
                                 </ExpansionPanelSummary>
 
                                 <ExpansionPanelDetails>
@@ -287,17 +305,11 @@ class CarPage extends PureComponent {
                                         {car.comments && commentsSection}
                                     </Grid>
                                 </ExpansionPanelDetails>
-
-                                <ExpansionPanelActions>
-                                    <Button color='primary' onClick={this.onOpenEditCarModal}>
-                                        Éditer
-                                    </Button>
-                                </ExpansionPanelActions>
                             </ExpansionPanel>
                         </Grid>
                     </Grid>
 
-                    <Grid container item xs={6}>
+                    <Grid container item spacing={2} xs={6}>
                         <Grid item xs={12}>
                             <Paper className='PicturePanel'>
                                 {picture}
@@ -321,8 +333,6 @@ class CarPage extends PureComponent {
                               registrations={registrations} />
 
                 <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteModalOpen} onValidate={this.onValidateDeleteCarModal} />
-
-                {redirect && <Redirect to='/cars' />}
             </Fragment>);
         } else if (!haveCarsBeenLoaded) {
             // If the car has not been found but the cars have not been loaded yet, displays the loading panel
