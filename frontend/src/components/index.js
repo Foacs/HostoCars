@@ -4,3 +4,5 @@ export { default as CarCard } from './cars/carCard/CarCard';
 export { default as ErrorPanel } from './app/errorPanel/ErrorPanel';
 export { default as LoadingPanel } from './app/loadingPanel/LoadingPanel';
 export { default as Menu } from './app/menu/Menu';
+export { default as Notification } from './app/notification/Notification';
+export { default as Notifier } from './app/notifier/Notifier';

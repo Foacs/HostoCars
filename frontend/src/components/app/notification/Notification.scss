@@ -1,0 +1,97 @@
+@import '../../../resources/colors';
+
+#Notification {
+    .Panel {
+        background-color: $background-light-color;
+        border:           2px solid $background-dark-color;
+        border-radius:    4px;
+        min-width:        360px;
+
+        &_error {
+            border-color: $error-color;
+            color:        $error-color;
+
+            .CloseButton {
+                color: $error-color;
+            }
+
+            .Title {
+                color: $error-color;
+            }
+        }
+
+        &_info {
+            border-color: $info-color;
+
+            .CloseButton {
+                color: $info-color;
+            }
+
+            .Title {
+                color: $info-color;
+            }
+        }
+
+        &_success {
+            border-color: $success-color;
+            color:        $success-color;
+
+            .CloseButton {
+                color: $success-color;
+            }
+
+            .Title {
+                color: $success-color;
+            }
+        }
+
+        &_warning {
+            border-color: $warning-color;
+            color:        $warning-color;
+
+            .CloseButton {
+                color: $warning-color;
+            }
+
+            .Title {
+                color: $warning-color;
+            }
+        }
+
+        .Content {
+            margin-bottom:  12px;
+            margin-top:     12px;
+            padding-bottom: 0;
+            padding-top:    0;
+        }
+
+        .Title {
+            cursor:        default;
+            min-height:    60px;
+            padding-right: 6px;
+
+            &_expandable {
+                cursor: pointer;
+            }
+
+            & > div {
+                margin: 12px 0;
+            }
+
+            .CloseButton {
+                position: absolute;
+                right:    6px;
+                top:      6px;
+            }
+
+            .Message {
+                padding-right: 54px;
+                padding-top:   2px;
+            }
+
+            .VariantIcon {
+                margin-right: 12px;
+            }
+        }
+    }
+}

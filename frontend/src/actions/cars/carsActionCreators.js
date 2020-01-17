@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { carsActionTypes as types } from 'actions';
+import { enqueueNotificationAction, carsActionTypes as types } from 'actions';
 import { NO_CONTENT_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
 
 /**
@@ -18,10 +18,22 @@ export const addCarAction = car => {
         return axios.post(`${WEB_SERVICE_BASE_URL}/cars/save`, car)
             .then(() => {
                 dispatch(addCarSuccess());
+                dispatch(enqueueNotificationAction({
+                    message: 'Voiture ajoutée avec succès.',
+                    options: {
+                        variant: 'success'
+                    }
+                }));
                 return dispatch(getCarsAction(getState().cars.sortedBy));
             })
             .catch(() => {
                 dispatch(addCarFailure());
+                dispatch(enqueueNotificationAction({
+                    message: 'Une erreur est survenue lors de l\'ajout d\'une voiture.',
+                    options: {
+                        variant: 'error'
+                    }
+                }));
             });
     };
 };
@@ -98,9 +110,21 @@ export const deleteCarAction = id => {
         return axios.delete(`${WEB_SERVICE_BASE_URL}/cars/${id}/delete`)
             .then(() => {
                 dispatch(deleteCarSuccess(id));
+                dispatch(enqueueNotificationAction({
+                    message: 'Voiture supprimée avec succès.',
+                    options: {
+                        variant: 'success'
+                    }
+                }));
             })
             .catch(() => {
                 dispatch(deleteCarFailure());
+                dispatch(enqueueNotificationAction({
+                    message: 'Une erreur est survenue lors de la suppression d\'une voiture.',
+                    options: {
+                        variant: 'error'
+                    }
+                }));
             });
     };
 };
@@ -151,11 +175,22 @@ export const editCarAction = car => {
         return axios.put(`${WEB_SERVICE_BASE_URL}/cars/${car.id}/update`, car)
             .then(() => {
                 dispatch(editCarSuccess());
-
+                dispatch(enqueueNotificationAction({
+                    message: 'Voiture éditée avec succès.',
+                    options: {
+                        variant: 'success'
+                    }
+                }));
                 return dispatch(getCarAction(car.id));
             })
             .catch(() => {
                 dispatch(editCarFailure());
+                dispatch(enqueueNotificationAction({
+                    message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
+                    options: {
+                        variant: 'error'
+                    }
+                }));
             });
     };
 };

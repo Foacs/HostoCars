@@ -31,6 +31,15 @@ export const formatDateLabel = date => {
 };
 
 /**
+ * Returns a random number generated from the current date time.
+ *
+ * @returns {number} the generated random number
+ */
+export const generateRandomNumber = () => {
+    return new Date().getTime() + Math.random();
+};
+
+/**
  * Reads a file and converts it to a byte array.
  *
  * @param file
