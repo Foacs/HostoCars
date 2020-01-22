@@ -5,11 +5,11 @@
         background-color: $background-light-color;
         border:           2px solid $background-dark-color;
         border-radius:    4px;
+        max-width:        720px;
         min-width:        360px;
 
         &_error {
             border-color: $error-color;
-            color:        $error-color;
 
             .CloseButton {
                 color: $error-color;
@@ -34,7 +34,6 @@
 
         &_success {
             border-color: $success-color;
-            color:        $success-color;
 
             .CloseButton {
                 color: $success-color;
@@ -47,7 +46,6 @@
 
         &_warning {
             border-color: $warning-color;
-            color:        $warning-color;
 
             .CloseButton {
                 color: $warning-color;
@@ -68,6 +66,7 @@
         .Title {
             cursor:        default;
             min-height:    60px;
+            padding-left:  12px;
             padding-right: 6px;
 
             &_expandable {

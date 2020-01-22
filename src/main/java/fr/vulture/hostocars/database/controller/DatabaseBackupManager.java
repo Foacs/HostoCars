@@ -2,7 +2,7 @@ package fr.vulture.hostocars.database.controller;
 
 import static java.util.Objects.isNull;
 
-import fr.vulture.hostocars.exception.TechnicalException;
+import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

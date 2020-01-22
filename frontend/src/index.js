@@ -32,9 +32,9 @@ const unregister = () => {
 };
 
 ReactDOM.render(<ThemeProvider theme={theme}>
-    <SnackbarProvider maxSnack={5}>
-        <DatePickerProvider locale={frLocale} utils={DateFnsUtils}>
-            <Provider store={store}>
+    <Provider store={store}>
+        <SnackbarProvider maxSnack={5}>
+            <DatePickerProvider locale={frLocale} utils={DateFnsUtils}>
                 <HashRouter>
                     <CssBaseline />
 
@@ -55,9 +55,9 @@ ReactDOM.render(<ThemeProvider theme={theme}>
                         <Menu />
                     </main>
                 </HashRouter>
-            </Provider>
-        </DatePickerProvider>
-    </SnackbarProvider>
+            </DatePickerProvider>
+        </SnackbarProvider>
+    </Provider>
 </ThemeProvider>, document.getElementById('root'));
 
 unregister();

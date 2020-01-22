@@ -15,11 +15,3 @@ export const CarPropType = PropTypes.shape({
     registration: PropTypes.string.isRequired,
     releaseDate: PropTypes.date
 });
-
-/**
- * Breadcrumbs' navigation path prop type.
- */
-export const NavigationPathPropType = PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    link: PropTypes.string.isRequired
-}));

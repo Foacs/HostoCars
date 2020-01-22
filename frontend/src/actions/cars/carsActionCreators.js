@@ -1,5 +1,7 @@
+import React from 'react';
 import axios from 'axios';
 
+import { ErrorNotificationContent } from 'components';
 import { enqueueNotificationAction, carsActionTypes as types } from 'actions';
 import { NO_CONTENT_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
 
@@ -26,11 +28,13 @@ export const addCarAction = car => {
                 }));
                 return dispatch(getCarsAction(getState().cars.sortedBy));
             })
-            .catch(() => {
+            .catch(e => {
                 dispatch(addCarFailure());
                 dispatch(enqueueNotificationAction({
                     message: 'Une erreur est survenue lors de l\'ajout d\'une voiture.',
                     options: {
+                        content: <ErrorNotificationContent error={e} />,
+                        persist: true,
                         variant: 'error'
                     }
                 }));
@@ -117,11 +121,13 @@ export const deleteCarAction = id => {
                     }
                 }));
             })
-            .catch(() => {
+            .catch(e => {
                 dispatch(deleteCarFailure());
                 dispatch(enqueueNotificationAction({
                     message: 'Une erreur est survenue lors de la suppression d\'une voiture.',
                     options: {
+                        content: <ErrorNotificationContent error={e} />,
+                        persist: true,
                         variant: 'error'
                     }
                 }));
@@ -183,11 +189,13 @@ export const editCarAction = car => {
                 }));
                 return dispatch(getCarAction(car.id));
             })
-            .catch(() => {
+            .catch(e => {
                 dispatch(editCarFailure());
                 dispatch(enqueueNotificationAction({
                     message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
                     options: {
+                        content: <ErrorNotificationContent error={e} />,
+                        persist: true,
                         variant: 'error'
                     }
                 }));

@@ -48,19 +48,18 @@ class Notifier extends PureComponent {
             const { content, variant } = options;
 
             // Defines the notification to display
-            const notification = (<Notification message={message} onClose={handleClose} variant={variant}>
+            const notification = (<Notification id={key} message={message} onClose={handleClose} variant={variant}>
                 {content}
             </Notification>);
 
             // Enqueues the notification
             enqueueSnackbar(message, {
-                ...options,
+                autoHideDuration: 5000, ...options,
                 key,
                 anchorOrigin: {
                     vertical: 'top',
                     horizontal: 'right'
                 },
-                autoHideDuration: 10000,
                 content: notification,
                 onExited: handleExit,
                 TransitionComponent: Collapse
@@ -95,7 +94,7 @@ Notifier.prototypes = {
         dismissed: PropTypes.bool,
         key: PropTypes.number.isRequired,
         message: PropTypes.string.isRequired,
-        options: PropTypes.objectOf(PropTypes.any).isRequired
+        options: PropTypes.objectOf(PropTypes.any)
     }))
 };
 

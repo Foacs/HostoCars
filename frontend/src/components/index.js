@@ -1,8 +1,9 @@
 export { default as AppBar } from './app/appBar/AppBar';
 export { default as Breadcrumbs } from './app/breadcrumbs/Breadcrumbs';
 export { default as CarCard } from './cars/carCard/CarCard';
+export { default as ErrorNotificationContent } from './notification/errorNotificationContent/ErrorNotificationContent';
 export { default as ErrorPanel } from './app/errorPanel/ErrorPanel';
 export { default as LoadingPanel } from './app/loadingPanel/LoadingPanel';
 export { default as Menu } from './app/menu/Menu';
-export { default as Notification } from './app/notification/Notification';
-export { default as Notifier } from './app/notifier/Notifier';
+export { default as Notification } from './notification/notification/Notification';
+export { default as Notifier } from './notification/notifier/Notifier';
