@@ -1,4 +1,11 @@
 /**
+ * The mail address to use when sending an error mail.
+ *
+ * @type {string}
+ */
+export const ERROR_MAIL_ADDRESS = '***REMOVED***';
+
+/**
  * Web service 'No content' response status.
  * @type {number}
  */

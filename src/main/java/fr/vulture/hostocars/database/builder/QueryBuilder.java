@@ -6,7 +6,7 @@ import static java.sql.Types.INTEGER;
 import static java.sql.Types.VARCHAR;
 import static java.util.Objects.nonNull;
 
-import fr.vulture.hostocars.exception.TechnicalException;
+import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.sql.Types;
 import java.util.Iterator;
 import java.util.List;

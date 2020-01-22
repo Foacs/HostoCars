@@ -16,8 +16,9 @@ import fr.vulture.hostocars.database.builder.Query;
 import fr.vulture.hostocars.database.builder.QueryArgument;
 import fr.vulture.hostocars.database.builder.QueryBuilder;
 import fr.vulture.hostocars.database.controller.DatabaseController;
-import fr.vulture.hostocars.exception.FunctionalException;
-import fr.vulture.hostocars.exception.TechnicalException;
+import fr.vulture.hostocars.error.ResponseData;
+import fr.vulture.hostocars.error.exception.FunctionalException;
+import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -90,7 +91,7 @@ public class CarController {
      */
     @GetMapping("/all")
     public final ResponseEntity<?> getCars(@RequestParam(required = false) final String sortedBy) {
-        logger.debug("[getCars <= Calling] With sorting field = {}", sortedBy);
+        logger.info("[getCars <= Calling] With sorting field = {}", sortedBy);
 
         try {
             // Builds the query
@@ -123,19 +124,27 @@ public class CarController {
 
             // If no entity was found, returns a 204 status
             if (cars.isEmpty()) {
-                logger.debug("[getCars => {}] No car found", NO_CONTENT.value());
+                logger.info("[getCars => {}] No car found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
             // If at least one entity has been found, returns the list with a 200 status
-            logger.debug("[getCars => {}] {} car(s) found", OK.value(), cars.size());
+            logger.info("[getCars => {}] {} car(s) found", OK.value(), cars.size());
             return ResponseEntity.ok(cars);
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[getCars => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[getCars => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[getCars => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 
@@ -185,7 +194,7 @@ public class CarController {
      */
     @GetMapping("/{id}")
     public final ResponseEntity<?> getCarByID(@PathVariable @NotNull @Min(1) final Integer id) {
-        logger.debug("[getCarByID <= Calling] With ID = {}", id);
+        logger.info("[getCarByID <= Calling] With ID = {}", id);
 
         try {
             // Builds the query
@@ -204,19 +213,27 @@ public class CarController {
             // If an entity has been found, retrieves it
             if (result.next()) {
                 // Returns the extracted entity with a 200 status
-                logger.debug("[getCarByID => {}] Car found for ID = {}", OK.value(), id);
+                logger.info("[getCarByID => {}] Car found for ID = {}", OK.value(), id);
                 return ResponseEntity.ok(extractEntityFromResultSet(result));
             }
 
             // If no entity has been found, returns a 204 status
-            logger.debug("[getCarByID => {}] No car found for ID = {}", NO_CONTENT.value(), id);
+            logger.info("[getCarByID => {}] No car found for ID = {}", NO_CONTENT.value(), id);
             return ResponseEntity.noContent().build();
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[getCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[getCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[getCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 
@@ -230,7 +247,7 @@ public class CarController {
      */
     @GetMapping("/{field}/values")
     public final ResponseEntity<?> getDistinctFieldValues(@PathVariable @NotNull final String field) {
-        logger.debug("[getDistinctFieldValues <= Calling] With field = {}", field);
+        logger.info("[getDistinctFieldValues <= Calling] With field = {}", field);
 
         try {
             // If the field is inexistant in the Cars table or irrelevant for the query, throws a functional exception
@@ -261,25 +278,34 @@ public class CarController {
 
             // If no value was found, returns a 204 status
             if (values.isEmpty()) {
-                logger.debug("[getDistinctFieldValues => {}] No value found", NO_CONTENT.value());
+                logger.info("[getDistinctFieldValues => {}] No value found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
             // If at least one value has been found, returns the list with a 200 status
-            logger.debug("[getDistinctFieldValues => {}] {} distinct values(s) found", OK.value(), values.size());
+            logger.info("[getDistinctFieldValues => {}] {} distinct values(s) found", OK.value(), values.size());
             return ResponseEntity.ok(values);
         }
 
         // If a functional exception has been thrown, returns a 400 status
         catch (final FunctionalException e) {
-            logger.error("[getDistinctFieldValues => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+            logger.error("[getDistinctFieldValues => {}]", BAD_REQUEST.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.badRequest().body(new ResponseData(responseMessage));
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[getDistinctFieldValues => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[getDistinctFieldValues => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[getDistinctFieldValues => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 
@@ -306,7 +332,7 @@ public class CarController {
      */
     @GetMapping("/search")
     public final ResponseEntity<?> searchCars(@RequestBody @NotNull final CarRequestBody body) {
-        logger.debug("[searchCars <= Calling] With body = {}", body);
+        logger.info("[searchCars <= Calling] With body = {}", body);
 
         try {
             // Gets the query arguments
@@ -338,25 +364,34 @@ public class CarController {
 
             // If no entity was found, returns a 204 status
             if (cars.isEmpty()) {
-                logger.debug("[searchCars => {}] No car found", NO_CONTENT.value());
+                logger.info("[searchCars => {}] No car found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
             // If at least one entity has been found, returns the list with a 200 status
-            logger.debug("[searchCars => {}] {} car(s) found", OK.value(), cars.size());
+            logger.info("[searchCars => {}] {} car(s) found", OK.value(), cars.size());
             return ResponseEntity.ok(cars);
         }
 
         // If a functional exception has been thrown, returns a 400 status
         catch (final FunctionalException e) {
-            logger.error("[searchCars => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+            logger.error("[searchCars => {}]", BAD_REQUEST.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.badRequest().body(new ResponseData(responseMessage));
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[searchCars => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[searchCars => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[searchCars => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 
@@ -408,7 +443,7 @@ public class CarController {
      */
     @PostMapping("/save")
     public final ResponseEntity<?> saveCar(@RequestBody @NotNull final CarRequestBody body) {
-        logger.debug("[saveCar <= Calling] With body = {}", body);
+        logger.info("[saveCar <= Calling] With body = {}", body);
 
         try {
             // If any mandatory field is missing from the body, throws an exception
@@ -437,7 +472,7 @@ public class CarController {
                 final int generatedID = result.getInt(1);
 
                 // Returns the generated key with a 200 status
-                logger.debug("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedID);
+                logger.info("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedID);
                 return ResponseEntity.ok(generatedID);
             }
 
@@ -447,14 +482,23 @@ public class CarController {
 
         // If a functional exception has been thrown, returns a 400 status
         catch (final FunctionalException e) {
-            logger.error("[saveCar => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+            logger.error("[saveCar => {}]", BAD_REQUEST.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.badRequest().body(new ResponseData(responseMessage));
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[saveCar => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[saveCar => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[saveCar => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 
@@ -508,7 +552,7 @@ public class CarController {
      */
     @PutMapping("/{id}/update")
     public final ResponseEntity<?> updateCarByID(@PathVariable @NotNull @Min(1) final Integer id, @RequestBody final CarRequestBody body) {
-        logger.debug("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
+        logger.info("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
 
         try {
             // Gets the query arguments
@@ -531,25 +575,34 @@ public class CarController {
 
             if (0 == result) {
                 // If no line has been updated, returns a 204 status
-                logger.debug("[updateCarByID => {}] No car found to update", NO_CONTENT.value());
+                logger.info("[updateCarByID => {}] No car found to update", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             } else {
                 // If a line has been updated, returns a 200 status
-                logger.debug("[updateCarByID => {}] Car updated", OK.value());
+                logger.info("[updateCarByID => {}] Car updated", OK.value());
                 return ResponseEntity.ok().build();
             }
         }
 
         // If a functional exception has been thrown, returns a 400 status
         catch (final FunctionalException e) {
-            logger.error("[updateCarByID => {}] {}", BAD_REQUEST.value(), e.getMessage());
-            return ResponseEntity.badRequest().body("Functional error: " + e.getMessage());
+            logger.error("[updateCarByID => {}]", BAD_REQUEST.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.badRequest().body(new ResponseData(responseMessage));
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[updateCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[updateCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[updateCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 
@@ -563,7 +616,7 @@ public class CarController {
      */
     @DeleteMapping("/{id}/delete")
     public final ResponseEntity<?> deleteCarByID(@PathVariable @NotNull @Min(1) final Integer id) {
-        logger.debug("[deleteCarByID <= Calling] With ID = {}", id);
+        logger.info("[deleteCarByID <= Calling] With ID = {}", id);
 
         try {
             // Builds the query
@@ -578,19 +631,27 @@ public class CarController {
 
             if (0 == result) {
                 // If no line has been deleted, returns a 204 status
-                logger.debug("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
+                logger.info("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             } else {
                 // If a line has been deleted, returns a 200 status
-                logger.debug("[deleteCarByID => {}] Car deleted", OK.value());
+                logger.info("[deleteCarByID => {}] Car deleted", OK.value());
                 return ResponseEntity.ok().build();
             }
         }
 
         // If a technical exception has been thrown, returns a 500 status
-        catch (final SQLException | TechnicalException e) {
-            logger.error("[deleteCarByID => {}] {}", INTERNAL_SERVER_ERROR.value(), e.getMessage());
-            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("Technical error: " + e.getMessage());
+        catch (final TechnicalException e) {
+            logger.error("[deleteCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getMessage();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final Exception e) {
+            logger.error("[deleteCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(new ResponseData(responseMessage));
         }
     }
 

@@ -6,8 +6,6 @@ import PropTypes from 'prop-types';
 import { Breadcrumbs as MuiBreadcrumbs, Link, Typography } from '@material-ui/core';
 import { HomeRounded as HomeIcon, NavigateNextRounded as NextIcon } from '@material-ui/icons';
 
-import { NavigationPathPropType } from 'resources';
-
 import './Breadcrumbs.scss';
 
 /**
@@ -46,7 +44,10 @@ const mapStateToProps = state => ({
 
 Breadcrumbs.propTypes = {
     className: PropTypes.string,
-    currentNavigationPath: NavigationPathPropType.isRequired,
+    currentNavigationPath: PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        link: PropTypes.string.isRequired
+    })).isRequired,
     currentPageName: PropTypes.node.isRequired
 };
 

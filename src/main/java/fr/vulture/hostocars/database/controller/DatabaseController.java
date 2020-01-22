@@ -10,7 +10,7 @@ import static java.util.Objects.nonNull;
 import fr.vulture.hostocars.database.builder.Query;
 import fr.vulture.hostocars.database.builder.QueryArgument;
 import fr.vulture.hostocars.database.builder.QueryBuilder;
-import fr.vulture.hostocars.exception.TechnicalException;
+import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -95,13 +95,13 @@ public class DatabaseController implements InitializingBean {
 
     @Override
     public final void afterPropertiesSet() throws TechnicalException, SQLException, IOException {
-        logger.debug("Initializing the database connection");
+        logger.info("Initializing the database connection");
 
         // If the folder doesn't exist, creates it
         final File dataFolder = new File(this.databaseLocation);
         if (!dataFolder.exists() || !dataFolder.isDirectory()) {
             dataFolder.mkdir();
-            logger.debug("Database folder created with name {}", this.databaseLocation);
+            logger.info("Database folder created with name {}", this.databaseLocation);
         }
 
         // If the database file doesn't exist yet, an initialization is needed
@@ -149,7 +149,7 @@ public class DatabaseController implements InitializingBean {
      *     if a technical error occurs while executing a script
      */
     private void updateDatabaseToCurrentVersion(@NotNull final String databaseVersion) throws IOException, SQLException, TechnicalException {
-        logger.debug("Updating the database from version {} to version {}", databaseVersion, this.projectVersion);
+        logger.info("Updating the database from version {} to version {}", databaseVersion, this.projectVersion);
 
         // Backups the database
         this.databaseBackupManager.backupDatabase(true);
@@ -162,10 +162,8 @@ public class DatabaseController implements InitializingBean {
                 this.executeScript(resource);
             }
 
-            logger.debug("Database successfully updated to version {}", version);
+            logger.info("Database successfully updated to version {}", version);
         }
-
-        logger.info("Database successfully updated from version {} to version {}", databaseVersion, this.projectVersion);
     }
 
     /**

@@ -1,0 +1,27 @@
+@import '../../../resources/colors';
+
+#ErrorNotificationContent {
+    align-items:    center;
+    display:        flex;
+    flex-direction: column;
+    width:          100%;
+
+    .DetailList {
+        width: 100%;
+    }
+
+    .MailButton {
+        border: 2px solid $error-color;
+        color:  $error-color;
+        padding: {
+            left:  12px;
+            right: 8px;
+        }
+
+        .MailButtonIcon {
+            color:       $error-color;
+            margin-left: 4px;
+            padding:     2px;
+        }
+    }
+}

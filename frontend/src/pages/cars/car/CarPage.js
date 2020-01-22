@@ -139,12 +139,12 @@ class CarPage extends PureComponent {
     /**
      * Handles the 'Delete car' modal validate action.
      */
-    onValidateDeleteCarModal() {
+    async onValidateDeleteCarModal() {
         const { deleteCar } = this.props;
         const { car: { id } } = this.state;
 
-        deleteCar(id)
-            .then(this.setState({ redirect: true }));
+        await deleteCar(id);
+        this.setState({ redirect: true });
     }
 
     /**

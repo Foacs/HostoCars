@@ -46,6 +46,8 @@ function resolveNotificationIcon(variant) {
  *     The component content
  * @param {string} [className='']
  *     The component class name
+ * @param {number} code
+ *     The notification key
  * @param {string} message
  *    The notification message
  * @param {func} onClose
@@ -55,7 +57,7 @@ function resolveNotificationIcon(variant) {
  *
  * @constructor
  */
-function Notification({ children, className, message, onClose, variant }) {
+function Notification({ children, className, id, message, onClose, variant }) {
     // Defines the notification panel class name depending on the variant.
     const panelClassName = 'Panel' + (variant ? ' Panel_' + variant : '');
 
@@ -80,7 +82,7 @@ function Notification({ children, className, message, onClose, variant }) {
             {children && <Divider variant='middle' />}
 
             {children && <ExpansionPanelDetails className='Content'>
-                {children}
+                {React.cloneElement(children, { id: id })}
             </ExpansionPanelDetails>}
         </ExpansionPanel>
     </Box>);
@@ -89,6 +91,7 @@ function Notification({ children, className, message, onClose, variant }) {
 Notification.propTypes = {
     children: PropTypes.node,
     className: PropTypes.string,
+    id: PropTypes.number.isRequired,
     message: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
     variant: PropTypes.string
