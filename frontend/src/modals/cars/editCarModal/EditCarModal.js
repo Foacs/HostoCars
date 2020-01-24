@@ -37,12 +37,6 @@ const currentCertificateLabel = 'Carte grise actuelle';
 const currentImageLabel = 'Image actuelle';
 
 /**
- * The text to display when the required owner field is not provided.
- * @type {string}
- */
-const ownerRequiredHelperText = 'Veuillez renseigner le nom du propriétaire';
-
-/**
  * The text to display when the required registration field is not provided.
  * @type {string}
  */
@@ -53,6 +47,18 @@ const registrationRequiredHelperText = 'Veuillez renseigner l\'immatriculation';
  * @type {string}
  */
 const registrationUniqueHelperText = 'Ce numéro d\'immatriculation existe déjà';
+
+/**
+ * The text to display when the serial number field already exists.
+ * @type {string}
+ */
+const serialNumberUniqueHelperText = 'Ce VIN existe déjà';
+
+/**
+ * The text to display when the required owner field is not provided.
+ * @type {string}
+ */
+const ownerRequiredHelperText = 'Veuillez renseigner le nom du propriétaire';
 
 /**
  * Modal to edit an existing car.
@@ -69,17 +75,21 @@ const registrationUniqueHelperText = 'Ce numéro d\'immatriculation existe déj�
  *     If the modal is open
  * @param registrations
  *     The list of existing registrations (except the one of the current car)
+ * @param serialNumbers
+ *     The list of existing serial numbers (except the one of the current car)
  */
-function EditCarModal({ car, className, onClose, onValidate, open, registrations }) {
+function EditCarModal({ car, className, onClose, onValidate, open, registrations, serialNumbers }) {
     // Initializes the help flag
     const [ help, setHelp ] = React.useState(false);
 
     // Initializes the car fields
-    const [ owner, setOwner ] = React.useState(car.owner);
     const [ registration, setRegistration ] = React.useState(car.registration);
+    const [ serialNumber, setSerialNumber ] = React.useState(car.serialNumber ? car.serialNumber : '');
+    const [ owner, setOwner ] = React.useState(car.owner);
     const [ brand, setBrand ] = React.useState(car.brand ? car.brand : '');
     const [ model, setModel ] = React.useState(car.model ? car.model : '');
     const [ motorization, setMotorization ] = React.useState(car.motorization ? car.motorization : '');
+    const [ engineCode, setEngineCode ] = React.useState(car.engineCode ? car.engineCode : '');
     const [ releaseDate, setReleaseDate ] = React.useState(car.releaseDate);
     const [ certificate, setCertificate ] = React.useState(car.certificate);
     const [ picture, setPicture ] = React.useState(car.picture);
@@ -90,19 +100,22 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
     const [ pictureFileName, setPictureFileName ] = React.useState(car.picture ? currentImageLabel : '');
 
     // Initializes the constraints
-    const [ ownerRequired, setOwnerRequired ] = React.useState(false);
     const [ registrationRequired, setRegistrationRequired ] = React.useState(false);
     const [ registrationUnique, setRegistrationUnique ] = React.useState(false);
+    const [ serialNumberUnique, setSerialNumberUnique ] = React.useState(false);
+    const [ ownerRequired, setOwnerRequired ] = React.useState(false);
 
     /**
      * Clears the form.
      */
     const clearForm = () => {
-        setOwner(car.owner);
         setRegistration(car.registration);
+        setSerialNumber(car.serialNumber ? car.serialNumber : '');
+        setOwner(car.owner);
         setBrand(car.brand ? car.brand : '');
         setModel(car.model ? car.model : '');
         setMotorization(car.motorization ? car.motorization : '');
+        setEngineCode(car.engineCode ? car.engineCode : '');
         setReleaseDate(car.releaseDate);
         setCertificate(car.certificate);
         setPicture(car.picture);
@@ -111,9 +124,10 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
         setCertificateFileName(car.certificate ? currentCertificateLabel : '');
         setPictureFileName(car.picture ? currentImageLabel : '');
 
-        setOwnerRequired(false);
         setRegistrationRequired(false);
         setRegistrationUnique(false);
+        setSerialNumberUnique(false);
+        setOwnerRequired(false);
     };
 
     /**
@@ -151,14 +165,18 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
      */
     const onFieldValueChanged = (e, field) => {
         switch (field) {
-            case 'owner':
-                setOwner(e.target.value);
-                setOwnerRequired(false);
-                break;
             case 'registration':
                 setRegistration(e.target.value);
                 setRegistrationRequired(false);
                 setRegistrationUnique(false);
+                break;
+            case 'serialNumber':
+                setSerialNumber(e.target.value);
+                setSerialNumberUnique(false);
+                break;
+            case 'owner':
+                setOwner(e.target.value);
+                setOwnerRequired(false);
                 break;
             case 'brand':
                 setBrand(e.target.value);
@@ -168,6 +186,9 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
                 break;
             case 'motorization':
                 setMotorization(e.target.value);
+                break;
+            case 'engineCode':
+                setEngineCode(e.target.value);
                 break;
             case 'releaseDate':
                 setReleaseDate(e);
@@ -215,11 +236,13 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
         if (validateForm()) {
             const editedCar = {
                 id: car.id,
-                owner: emptyValue === owner ? null : owner,
                 registration: emptyValue === registration ? null : registration,
+                serialNumber: emptyValue === serialNumber ? null : serialNumber,
+                owner: emptyValue === owner ? null : owner,
                 brand: emptyValue === brand ? null : brand,
                 model: emptyValue === model ? null : model,
                 motorization: emptyValue === motorization ? null : motorization,
+                engineCode: emptyValue === engineCode ? null : engineCode,
                 releaseDate,
                 certificate,
                 picture,
@@ -248,18 +271,24 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
     const validateForm = () => {
         let isValid = true;
 
-        // Validates the owner field
-        if (null === owner || '' === owner) {
-            setOwnerRequired(true);
-            isValid = false;
-        }
-
         // Validates the registration field
         if (null === registration || '' === registration) {
             setRegistrationRequired(true);
             isValid = false;
         } else if (registrations.includes(registration)) {
             setRegistrationUnique(true);
+            isValid = false;
+        }
+
+        // Validates the serial number field
+        if (null !== serialNumber && '' !== serialNumber && serialNumbers.includes(serialNumber)) {
+            setSerialNumberUnique(true);
+            isValid = false;
+        }
+
+        // Validates the owner field
+        if (null === owner || '' === owner) {
+            setOwnerRequired(true);
             isValid = false;
         }
 
@@ -314,6 +343,32 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
             <Grid alignItems='center' container direction='column' justify='center'>
                 <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
+                        <TextField className={`Field ${(registrationRequired || registrationUnique) && 'Field_error'}`}
+                                   error={registrationRequired || registrationUnique}
+                                   fullWidth
+                                   helperText={registrationRequired ? registrationRequiredHelperText : registrationUnique
+                                       && registrationUniqueHelperText}
+                                   label="Numéro d'immatriculation"
+                                   onChange={e => onFieldValueChanged(e, 'registration')}
+                                   required
+                                   value={registration}
+                                   variant='outlined' />
+                    </Grid>
+
+                    <Grid item xs>
+                        <TextField className={`Field ${(serialNumberUnique) && 'Field_error'}`}
+                                   error={serialNumberUnique}
+                                   fullWidth
+                                   helperText={serialNumberUnique && serialNumberUniqueHelperText}
+                                   label='VIN'
+                                   onChange={e => onFieldValueChanged(e, 'serialNumber')}
+                                   value={serialNumber}
+                                   variant='outlined' />
+                    </Grid>
+                </Grid>
+
+                <Grid alignItems='center' container justify='space-between' spacing={2}>
+                    <Grid item xs>
                         <TextField className={`Field ${ownerRequired && 'Field_error'}`}
                                    error={ownerRequired}
                                    fullWidth
@@ -326,35 +381,27 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
                     </Grid>
 
                     <Grid item xs>
-                        <TextField className={`Field ${(registrationRequired || registrationUnique) && 'Field_error'}`}
-                                   error={registrationRequired || registrationUnique}
-                                   fullWidth
-                                   helperText={registrationRequired ? registrationRequiredHelperText : registrationUnique
-                                       && registrationUniqueHelperText}
-                                   label="Numéro d'immatriculation"
-                                   onChange={e => onFieldValueChanged(e, 'registration')}
-                                   required
-                                   value={registration}
-                                   variant='outlined' />
+                        <TextField className='Field' fullWidth label='Marque'
+                                   onChange={e => onFieldValueChanged(e, 'brand')} value={brand} variant='outlined' />
                     </Grid>
                 </Grid>
 
                 <Grid alignItems='center' container justify='space-between' spacing={2}>
-                    <Grid item xs>
-                        <TextField className='Field' fullWidth label='Marque'
-                                   onChange={e => onFieldValueChanged(e, 'brand')} value={brand} variant='outlined' />
-                    </Grid>
-
                     <Grid item xs>
                         <TextField className='Field' fullWidth label='Modèle'
                                    onChange={e => onFieldValueChanged(e, 'model')} value={model} variant='outlined' />
                     </Grid>
+
+                    <Grid item xs>
+                        <TextField className='Field' fullWidth label='Motorisation'
+                                   onChange={e => onFieldValueChanged(e, 'motorization')} value={motorization} variant='outlined' />
+                    </Grid>
                 </Grid>
 
                 <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
-                        <TextField className='Field' fullWidth label='Motorisation'
-                                   onChange={e => onFieldValueChanged(e, 'motorization')} value={motorization} variant='outlined' />
+                        <TextField className='Field' fullWidth label='Code moteur'
+                                   onChange={e => onFieldValueChanged(e, 'engineCode')} value={engineCode} variant='outlined' />
                     </Grid>
 
                     <Grid item xs>
@@ -411,12 +458,14 @@ EditCarModal.propTypes = {
     open: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
     onValidate: PropTypes.func.isRequired,
-    registrations: PropTypes.arrayOf(PropTypes.string)
+    registrations: PropTypes.arrayOf(PropTypes.string),
+    serialNumbers: PropTypes.arrayOf(PropTypes.string)
 };
 
 EditCarModal.defaultProps = {
     className: '',
-    registrations: []
+    registrations: [],
+    serialNumbers: []
 };
 
 export default EditCarModal;
