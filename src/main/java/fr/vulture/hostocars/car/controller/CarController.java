@@ -58,14 +58,16 @@ public class CarController {
 
     private static final String TABLE_NAME = "Cars";
     private static final String ID_COLUMN_NAME = "id";
-    private static final String OWNER_COLUMN_NAME = "owner";
     private static final String REGISTRATION_COLUMN_NAME = "registration";
+    private static final String SERIAL_NUMBER_COLUMN_NAME = "serialNumber";
+    private static final String OWNER_COLUMN_NAME = "owner";
     private static final String BRAND_COLUMN_NAME = "brand";
     private static final String MODEL_COLUMN_NAME = "model";
     private static final String MOTORIZATION_COLUMN_NAME = "motorization";
+    private static final String ENGINE_CODE_COLUMN_NAME = "engineCode";
     private static final String RELEASE_DATE_COLUMN_NAME = "releaseDate";
-    private static final String CERTIFICATE_COLUMN_NAME = "certificate";
     private static final String COMMENTS_COLUMN_NAME = "comments";
+    private static final String CERTIFICATE_COLUMN_NAME = "certificate";
     private static final String PICTURE_COLUMN_NAME = "picture";
 
     private final DatabaseController databaseController;
@@ -166,11 +168,13 @@ public class CarController {
         car.setId(resultSet.getInt(ID_COLUMN_NAME));
 
         // Extracts the strings
-        car.setOwner(resultSet.getString(OWNER_COLUMN_NAME));
         car.setRegistration(resultSet.getString(REGISTRATION_COLUMN_NAME));
+        car.setSerialNumber(resultSet.getString(SERIAL_NUMBER_COLUMN_NAME));
+        car.setOwner(resultSet.getString(OWNER_COLUMN_NAME));
         car.setBrand(resultSet.getString(BRAND_COLUMN_NAME));
         car.setModel(resultSet.getString(MODEL_COLUMN_NAME));
         car.setMotorization(resultSet.getString(MOTORIZATION_COLUMN_NAME));
+        car.setEngineCode(resultSet.getString(ENGINE_CODE_COLUMN_NAME));
         car.setComments(resultSet.getString(COMMENTS_COLUMN_NAME));
 
         // Extracts the dates
@@ -318,8 +322,8 @@ public class CarController {
      * @return if the field exists and is relevant or not
      */
     private static boolean isFieldIrrelevant(@NotNull final String field) {
-        return !Arrays.asList(OWNER_COLUMN_NAME, REGISTRATION_COLUMN_NAME, BRAND_COLUMN_NAME, MODEL_COLUMN_NAME, MOTORIZATION_COLUMN_NAME,
-            RELEASE_DATE_COLUMN_NAME).contains(field);
+        return !Arrays.asList(REGISTRATION_COLUMN_NAME, SERIAL_NUMBER_COLUMN_NAME, OWNER_COLUMN_NAME, BRAND_COLUMN_NAME, MODEL_COLUMN_NAME,
+            MOTORIZATION_COLUMN_NAME, ENGINE_CODE_COLUMN_NAME, RELEASE_DATE_COLUMN_NAME).contains(field);
     }
 
     /**
@@ -396,38 +400,26 @@ public class CarController {
     }
 
     /**
-     * Returns the list of {@link QueryArgument} relevant for searching from the input {@link CarRequestBody}.
+     * Returns the list of {@link QueryArgument} relevant for creating or updating from the input {@link CarRequestBody}.
      *
      * @param body
      *     The body from which to extract the arguments
      *
      * @return a list of {@link QueryArgument}
      */
-    private static List<QueryArgument> getSearchRelevantFields(@NotNull final CarRequestBody body) {
-        final List<QueryArgument> result = new ArrayList<>(0);
+    private static List<QueryArgument> getUpdateRelevantFields(@NotNull final CarRequestBody body) {
+        final List<QueryArgument> result = getSearchRelevantFields(body);
 
-        if (nonNull(body.getOwner())) {
-            result.add(new QueryArgument(OWNER_COLUMN_NAME, body.getOwner().orElse(null), VARCHAR));
+        if (nonNull(body.getComments())) {
+            result.add(new QueryArgument(COMMENTS_COLUMN_NAME, body.getComments().orElse(null), VARCHAR));
         }
 
-        if (nonNull(body.getRegistration())) {
-            result.add(new QueryArgument(REGISTRATION_COLUMN_NAME, body.getRegistration().orElse(null), VARCHAR));
+        if (nonNull(body.getCertificate())) {
+            result.add(new QueryArgument(CERTIFICATE_COLUMN_NAME, body.getCertificate().orElse(null), BLOB));
         }
 
-        if (nonNull(body.getBrand())) {
-            result.add(new QueryArgument(BRAND_COLUMN_NAME, body.getBrand().orElse(null), VARCHAR));
-        }
-
-        if (nonNull(body.getModel())) {
-            result.add(new QueryArgument(MODEL_COLUMN_NAME, body.getModel().orElse(null), VARCHAR));
-        }
-
-        if (nonNull(body.getMotorization())) {
-            result.add(new QueryArgument(MOTORIZATION_COLUMN_NAME, body.getMotorization().orElse(null), VARCHAR));
-        }
-
-        if (nonNull(body.getReleaseDate())) {
-            result.add(new QueryArgument(RELEASE_DATE_COLUMN_NAME, body.getReleaseDate().orElse(null), DATE));
+        if (nonNull(body.getPicture())) {
+            result.add(new QueryArgument(PICTURE_COLUMN_NAME, body.getPicture().orElse(null), BLOB));
         }
 
         return result;
@@ -515,26 +507,46 @@ public class CarController {
     }
 
     /**
-     * Returns the list of {@link QueryArgument} relevant for creating or updating from the input {@link CarRequestBody}.
+     * Returns the list of {@link QueryArgument} relevant for searching from the input {@link CarRequestBody}.
      *
      * @param body
      *     The body from which to extract the arguments
      *
      * @return a list of {@link QueryArgument}
      */
-    private static List<QueryArgument> getUpdateRelevantFields(@NotNull final CarRequestBody body) {
-        final List<QueryArgument> result = getSearchRelevantFields(body);
+    private static List<QueryArgument> getSearchRelevantFields(@NotNull final CarRequestBody body) {
+        final List<QueryArgument> result = new ArrayList<>(0);
 
-        if (nonNull(body.getCertificate())) {
-            result.add(new QueryArgument(CERTIFICATE_COLUMN_NAME, body.getCertificate().orElse(null), BLOB));
+        if (nonNull(body.getRegistration())) {
+            result.add(new QueryArgument(REGISTRATION_COLUMN_NAME, body.getRegistration().orElse(null), VARCHAR));
         }
 
-        if (nonNull(body.getComments())) {
-            result.add(new QueryArgument(COMMENTS_COLUMN_NAME, body.getComments().orElse(null), VARCHAR));
+        if (nonNull(body.getSerialNumber())) {
+            result.add(new QueryArgument(SERIAL_NUMBER_COLUMN_NAME, body.getSerialNumber().orElse(null), VARCHAR));
         }
 
-        if (nonNull(body.getPicture())) {
-            result.add(new QueryArgument(PICTURE_COLUMN_NAME, body.getPicture().orElse(null), BLOB));
+        if (nonNull(body.getOwner())) {
+            result.add(new QueryArgument(OWNER_COLUMN_NAME, body.getOwner().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getBrand())) {
+            result.add(new QueryArgument(BRAND_COLUMN_NAME, body.getBrand().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getModel())) {
+            result.add(new QueryArgument(MODEL_COLUMN_NAME, body.getModel().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getMotorization())) {
+            result.add(new QueryArgument(MOTORIZATION_COLUMN_NAME, body.getMotorization().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getEngineCode())) {
+            result.add(new QueryArgument(ENGINE_CODE_COLUMN_NAME, body.getEngineCode().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getReleaseDate())) {
+            result.add(new QueryArgument(RELEASE_DATE_COLUMN_NAME, body.getReleaseDate().orElse(null), DATE));
         }
 
         return result;
@@ -661,14 +673,16 @@ public class CarController {
     @Data
     private static class CarRequestBody {
 
-        private Optional<String> owner;
         private Optional<String> registration;
+        private Optional<String> serialNumber;
+        private Optional<String> owner;
         private Optional<String> brand;
         private Optional<String> model;
         private Optional<String> motorization;
+        private Optional<String> engineCode;
         private Optional<LocalDate> releaseDate;
-        private Optional<byte[]> certificate;
         private Optional<String> comments;
+        private Optional<byte[]> certificate;
         private Optional<byte[]> picture;
 
     }

@@ -186,7 +186,7 @@ class CarsOverviewPage extends PureComponent {
                 </Grid>
 
                 <AddCarModal onClose={this.onCloseAddCarModal} open={isAddCarModalOpen} onValidate={this.onValidateAddCarModal}
-                             registrations={cars.map(car => car.registration)} />
+                             registrations={cars.map(car => car.registration)} serialNumbers={cars.map(car => car.serialNumber)} />
             </Fragment>);
         }
 

@@ -273,6 +273,11 @@ class CarPage extends PureComponent {
                                                     </TableRow>
 
                                                     <TableRow className='TableRow' hover>
+                                                        <TableCell>VIN</TableCell>
+                                                        <TableCell align='right'>{car.serialNumber}</TableCell>
+                                                    </TableRow>
+
+                                                    <TableRow className='TableRow' hover>
                                                         <TableCell>Marque</TableCell>
                                                         <TableCell align='right'>{car.brand}</TableCell>
                                                     </TableRow>
@@ -285,6 +290,11 @@ class CarPage extends PureComponent {
                                                     <TableRow className='TableRow' hover>
                                                         <TableCell>Motorisation</TableCell>
                                                         <TableCell align='right'>{car.motorization}</TableCell>
+                                                    </TableRow>
+
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Code moteur</TableCell>
+                                                        <TableCell align='right'>{car.engineCode}</TableCell>
                                                     </TableRow>
 
                                                     <TableRow className='TableRow' hover>
@@ -330,7 +340,7 @@ class CarPage extends PureComponent {
                                                       open={isCertificateModalOpen} />}
 
                 <EditCarModal car={car} onClose={this.onCloseEditCarModal} open={isEditModalOpen} onValidate={this.onValidateEditCarModal}
-                              registrations={registrations} />
+                              registrations={registrations} serialNumbers={cars.map(car => car.serialNumber)} />
 
                 <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteModalOpen} onValidate={this.onValidateDeleteCarModal} />
             </Fragment>);

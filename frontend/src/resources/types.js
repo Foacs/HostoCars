@@ -7,11 +7,13 @@ export const CarPropType = PropTypes.shape({
     brand: PropTypes.string,
     certificate: PropTypes.blob,
     comments: PropTypes.string,
+    engineCode: PropTypes.string,
     id: PropTypes.number.isRequired,
     model: PropTypes.string,
     motorization: PropTypes.string,
     owner: PropTypes.string.isRequired,
     picture: PropTypes.blob,
     registration: PropTypes.string.isRequired,
-    releaseDate: PropTypes.date
+    releaseDate: PropTypes.date,
+    serialNumber: PropTypes.string
 });
