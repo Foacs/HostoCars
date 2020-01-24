@@ -19,7 +19,20 @@ import './CertificateModal.scss';
  *     If the modal is open
  */
 function CertificateModal({ className, certificate, onClose, open }) {
-    return <Dialog className={className} id='CertificateModal' onClose={onClose} open={open}>
+    /**
+     * Handles the key pressed action.
+     *
+     * @param e
+     *     The event
+     */
+    const onKeyPressed = e => {
+        if (27 === e.keyCode) {
+            e.preventDefault();
+            onClose();
+        }
+    };
+
+    return <Dialog className={className} id='CertificateModal' onClose={onClose} onKeyDown={onKeyPressed} open={open}>
         <DialogContent className='Content'>
             <Magnifier className='Magnifier' height='100%' mgBorderWidth={3} mgShowOverflow={false} src={`data:image/jpeg;base64,${certificate}`}
                        width='100%' />

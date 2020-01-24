@@ -19,13 +19,26 @@ import './DeleteCarModal.scss';
  */
 function DeleteCarModal({ className, onClose, onValidate, open }) {
     /**
+     * Handles the key pressed action.
+     *
+     * @param e
+     *     The event
+     */
+    const onKeyPressed = e => {
+        if (27 === e.keyCode) {
+            e.preventDefault();
+            onClose();
+        }
+    };
+
+    /**
      * Handles the validate button click action.
      */
     const onValidateButtonClick = () => {
         onValidate();
     };
 
-    return <Dialog className={className} id='DeleteCarModal' onClose={onClose} open={open}>
+    return <Dialog className={className} id='DeleteCarModal' onClose={onClose} onKeyDown={onKeyPressed} open={open}>
         <DialogTitle className='Title'>
             Suppression d'une voiture
         </DialogTitle>

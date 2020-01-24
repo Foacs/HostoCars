@@ -244,6 +244,9 @@ class CarPage extends PureComponent {
             const registrations = cars && cars.filter(currentCar => car.registration !== currentCar.registration)
                 .map(currentCar => currentCar.registration);
 
+            const serialNumbers = cars && cars.filter(currentCar => car.serialNumber !== currentCar.serialNumber)
+                .map(currentCar => currentCar.serialNumber);
+
             content = (<Fragment>
                 <Grid container spacing={4}>
                     <Grid container item xs={6}>
@@ -340,7 +343,7 @@ class CarPage extends PureComponent {
                                                       open={isCertificateModalOpen} />}
 
                 <EditCarModal car={car} onClose={this.onCloseEditCarModal} open={isEditModalOpen} onValidate={this.onValidateEditCarModal}
-                              registrations={registrations} serialNumbers={cars.map(car => car.serialNumber)} />
+                              registrations={registrations} serialNumbers={serialNumbers} />
 
                 <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteModalOpen} onValidate={this.onValidateDeleteCarModal} />
             </Fragment>);
