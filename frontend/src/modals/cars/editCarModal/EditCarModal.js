@@ -227,9 +227,32 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
     };
 
     /**
-     * Handles the validate button click action.
+     * Handles the key pressed action.
+     *
+     * @param e
+     *     The event
      */
-    const onValidateButtonClick = () => {
+    const onKeyPressed = e => {
+        switch (e.keyCode) {
+            case 13:
+                // Prevents the event from propagating
+                e.preventDefault();
+                onValidateAction();
+                break;
+            case 27:
+                // Prevents the event from propagating
+                e.preventDefault();
+                onCancelAction();
+                break;
+            default:
+                break;
+        }
+    };
+
+    /**
+     * Handles the validation action.
+     */
+    const onValidateAction = () => {
         const emptyValue = '';
 
         // Checks the form validation
@@ -255,6 +278,13 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
             setCertificateFileName(car.certificate ? currentCertificateLabel : '');
             setPictureFileName(car.picture ? currentImageLabel : '');
         }
+    };
+
+    /**
+     * Handles the validate button click action.
+     */
+    const onValidateButtonClick = () => {
+        onValidateAction();
     };
 
     /**
@@ -325,7 +355,7 @@ function EditCarModal({ car, className, onClose, onValidate, open, registrations
         </IconButton>
     </InputAdornment>);
 
-    return (<Dialog className={className} id='EditCarModal' onClose={onCancelAction} open={open}>
+    return (<Dialog className={className} id='EditCarModal' onClose={onCancelAction} onKeyDown={onKeyPressed} open={open}>
         <DialogTitle className='Title'>
             Ajout d'une voiture
 

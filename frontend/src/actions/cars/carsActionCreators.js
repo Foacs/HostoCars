@@ -250,8 +250,16 @@ export const getCarAction = id => {
                     dispatch(getCarNoContent(id));
                 }
             })
-            .catch(() => {
+            .catch(e => {
                 dispatch(getCarFailure());
+                dispatch(enqueueNotificationAction({
+                    message: 'Une erreur est survenue lors du chargement d\'une voiture.',
+                    options: {
+                        content: <ErrorNotificationContent error={e} />,
+                        persist: true,
+                        variant: 'error'
+                    }
+                }));
             });
     };
 };
@@ -314,8 +322,16 @@ export const getCarsAction = () => {
                     dispatch(getCarsSuccess([]));
                 }
             })
-            .catch(() => {
+            .catch(e => {
                 dispatch(getCarsFailure());
+                dispatch(enqueueNotificationAction({
+                    message: 'Une erreur est survenue lors du chargement des voitures.',
+                    options: {
+                        content: <ErrorNotificationContent error={e} />,
+                        persist: true,
+                        variant: 'error'
+                    }
+                }));
             });
     };
 };

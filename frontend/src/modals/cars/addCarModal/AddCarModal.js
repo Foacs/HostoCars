@@ -216,29 +216,61 @@ function AddCarModal({ className, onClose, onValidate, open, registrations, seri
     };
 
     /**
-     * Handles the validate button click action.
+     * Handles the key pressed action.
+     *
+     * @param e
+     *     The event
      */
-    const onValidateButtonClick = () => {
+    const onKeyPressed = e => {
+        switch (e.keyCode) {
+            case 13:
+                // Prevents the event from propagating
+                e.preventDefault();
+                onValidateAction();
+                break;
+            case 27:
+                // Prevents the event from propagating
+                e.preventDefault();
+                onCancelAction();
+                break;
+            default:
+                break;
+        }
+    };
+
+    /**
+     * Handles the validation action.
+     */
+    const onValidateAction = () => {
+        const emptyValue = '';
+
         // Checks the form validation
         if (validateForm()) {
             const car = {
-                registration: '' === registration ? null : registration,
-                serialNumber: '' === serialNumber ? null : serialNumber,
-                owner: '' === owner ? null : owner,
-                brand: '' === brand ? null : brand,
-                model: '' === model ? null : model,
-                motorization: '' === motorization ? null : motorization,
-                engineCode: '' === engineCode ? null : engineCode,
+                registration: emptyValue === registration ? null : registration,
+                serialNumber: emptyValue === serialNumber ? null : serialNumber,
+                owner: emptyValue === owner ? null : owner,
+                brand: emptyValue === brand ? null : brand,
+                model: emptyValue === model ? null : model,
+                motorization: emptyValue === motorization ? null : motorization,
+                engineCode: emptyValue === engineCode ? null : engineCode,
                 releaseDate,
                 certificate,
                 picture,
-                comments: '' === comments ? null : comments
+                comments: emptyValue === comments ? null : comments
             };
 
             onValidate(car);
             onClose();
             clearForm();
         }
+    };
+
+    /**
+     * Handles the validate button click action.
+     */
+    const onValidateButtonClick = () => {
+        onValidateAction();
     };
 
     /**
@@ -312,7 +344,7 @@ function AddCarModal({ className, onClose, onValidate, open, registrations, seri
         </IconButton>
     </InputAdornment>);
 
-    return (<Dialog className={className} id='AddCarModal' onClose={onCancelAction} open={open}>
+    return (<Dialog className={className} id='AddCarModal' onClose={onCancelAction} onKeyDown={onKeyPressed} open={open}>
         <DialogTitle className='Title'>
             Ajout d'une voiture
 
