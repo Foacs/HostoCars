@@ -1,18 +1,30 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { withSnackbar } from 'notistack';
 import PropTypes from 'prop-types';
 
 import { Collapse } from '@material-ui/core';
-import { withSnackbar } from 'notistack';
 
 import { Notification } from 'components';
 import { dequeueNotificationAction } from 'actions';
 
 /**
- * Manager for the application's notifications.
+ * Manager for the notifications.
+ *
+ * @param {func} closeSnackbar
+ *     The notification close event action
+ * @param {func} dequeueNotification
+ *     The {@link dequeueNotificationAction} action
+ * @param {func} enqueueSnackbar
+ *     The notification enqueue event action
+ * @param {object[]} [notifications = []]
+ *     The notifications
+ *
+ * @class
  */
 class Notifier extends PureComponent {
+    // Initialize the displayed notifications keys
     displayed = [];
 
     /**
@@ -34,12 +46,16 @@ class Notifier extends PureComponent {
                 return;
             }
 
-            // Defines the notification close event action
+            /**
+             * Handles the notification close event action.
+             */
             const handleClose = () => {
                 dequeueNotification(key);
             };
 
-            // Defines the notification exit event action
+            /**
+             * Handles the notification exit event action.
+             */
             const handleExit = () => {
                 dequeueNotification(key);
                 this.displayed = this.displayed.filter(k => key !== k);
@@ -78,11 +94,11 @@ class Notifier extends PureComponent {
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     notifications: state.notifications.notifications
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     dequeueNotification: dequeueNotificationAction
 }, dispatch);
 

@@ -7,27 +7,27 @@ import { Box, Button, Collapse, List, ListItemText } from '@material-ui/core';
 import { MailOutlineRounded as MailIcon } from '@material-ui/icons';
 
 import { sendMailAction } from 'actions';
-import { ERROR_MAIL_ADDRESS } from 'resources';
+import { ERROR_MAIL_ADDRESS, LOG_FILE_PATH } from 'resources';
 
 import './ErrorNotificationContent.scss';
 
 /**
  * Generates an error mail from an error's details.
  *
- * @param {string} statusText
+ * @param {string} [statusText = '']
  *     The error status text
- * @param {number} status
+ * @param {number} [status = '']
  *     The error status code
- * @param {string} message
+ * @param {string} [message = '']
  *     The error message
- * @param {string} url
+ * @param {string} [url = '']
  *     The error URL
- * @param {string} timestamp
+ * @param {string} [timestamp = '']
  *     The error timestamp
  *
  * @returns {object} the generated error mail object
  */
-function generateErrorMail(statusText, status, message, url, timestamp) {
+function generateErrorMail(statusText = '', status = '', message = '', url = '', timestamp = '') {
     return {
         recipient: ERROR_MAIL_ADDRESS,
         subject: 'Notification HostoCars - ERREUR',
@@ -48,18 +48,21 @@ function generateErrorMail(statusText, status, message, url, timestamp) {
                         <tr><th>URL</th><td>${url || ''}</td></tr>
                         <tr><th>Time</th><td>${timestamp || ''}</td></tr>
                     </table>
-                    <br /><i>Le fichier de log est disponible en pièce jointe.</i>
+                    <br />
+                    <i>Le fichier de log est disponible en pièce jointe.</i>
                 </body>
             </html>`,
-        attachments: [ './log/log.log' ]
+        attachments: [ LOG_FILE_PATH ]
     };
 }
 
 /**
- * The application's notification error content component.
+ * The notification error content component.
  *
- * @param {boolean} disableMail
- *     Flag for disabling the mail button
+ * @param {string} [className = '']
+ *     The component class name
+ * @param {boolean} [disableMail = false]
+ *     If the mail button is disabled
  * @param {object} error
  *     The error
  * @param {func} sendMail
@@ -67,15 +70,17 @@ function generateErrorMail(statusText, status, message, url, timestamp) {
  *
  * @constructor
  */
-function ErrorNotificationContent({ disableMail, error, sendMail }) {
-    // Initializes the displayMail flag
-    const [ displayMail, setDisplayMail ] = React.useState(!disableMail);
-
+function ErrorNotificationContent({ className, disableMail, error, sendMail }) {
     const {
         config: { url } = {}, response: { status, statusText, data: { message, timestamp } = {} } = { data: {} }
     } = error;
 
-    // Handles the mail button click action.
+    // Initializes the displayMail flag
+    const [ displayMail, setDisplayMail ] = React.useState(!disableMail);
+
+    /**
+     * Handles the mail button click action.
+     */
     const onMailButtonClick = () => {
         // Sends an error mail with the current error details
         sendMail(generateErrorMail(statusText, status, message, url, timestamp));
@@ -84,7 +89,7 @@ function ErrorNotificationContent({ disableMail, error, sendMail }) {
         setDisplayMail(false);
     };
 
-    return (<Box id='ErrorNotificationContent'>
+    return (<Box className={className} id='ErrorNotificationContent'>
         <List className='DetailList'>
             <ListItemText primary='Error' secondary={statusText} />
             <ListItemText primary='Code' secondary={status} />
@@ -103,11 +108,12 @@ function ErrorNotificationContent({ disableMail, error, sendMail }) {
     </Box>);
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     sendMail: sendMailAction
 }, dispatch);
 
 ErrorNotificationContent.propTypes = {
+    className: PropTypes.string,
     disableMail: PropTypes.bool,
     error: PropTypes.shape({
         config: PropTypes.shape({ url: PropTypes.string }),
@@ -124,6 +130,7 @@ ErrorNotificationContent.propTypes = {
 };
 
 ErrorNotificationContent.defaultProps = {
+    className: '',
     disableMail: false
 };
 

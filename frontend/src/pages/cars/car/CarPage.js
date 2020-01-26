@@ -21,7 +21,7 @@ import {
     Typography
 } from '@material-ui/core';
 import {
-    ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon, EditRounded as EditIcon
+    SearchRounded as DisplayIcon, EditRounded as EditIcon, ErrorOutlineRounded as ErrorIcon, SentimentDissatisfiedRounded as SmileyIcon
 } from '@material-ui/icons';
 
 import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
@@ -32,14 +32,37 @@ import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
 import './CarPage.scss';
 
 /**
- * Car page component.
+ * The car page component.
+ *
+ * @param {object[]} cars
+ *     The list of all the cars
+ * @param {func} changeCurrentPage
+ *     The {@link changeCurrentPageAction} action
+ * @param {func} changeSelectedMenuIndex
+ *     The {@link changeSelectedMenuIndexAction} action
+ * @param {func} deleteCar
+ *     The {@link deleteCarAction} action
+ * @param {func} editCar
+ *     The {@link editCarAction} action
+ * @param {boolean} isInError
+ *     If the car loading is in error
+ * @param {boolean} isLoading
+ *     If the car loading is in progress
+ * @param {func} getCars
+ *     The {@link getCarsAction} action
+ * @param {object} match
+ *     The URL parameters
+ *
+ * @class
  */
 class CarPage extends PureComponent {
     /**
      * Constructor.
      *
-     * @param props
+     * @param {object} props
      *     The component props
+     *
+     * @constructor
      */
     constructor(props) {
         super(props);
@@ -79,6 +102,9 @@ class CarPage extends PureComponent {
 
     /**
      * Method called when the component did update.
+     *
+     * @param {object} prevProps
+     *     The previous props
      */
     componentDidUpdate(prevProps) {
         const { match: { params: { id } } } = this.props;
@@ -365,13 +391,13 @@ class CarPage extends PureComponent {
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     cars: state.cars.cars,
     isInError: state.cars.isGetAllInError,
     isLoading: state.cars.isGetAllInProgress
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     changeCurrentPage: changeCurrentPageAction,
     changeSelectedMenuIndex: changeSelectedMenuIndexAction,
     deleteCar: deleteCarAction,
@@ -383,6 +409,7 @@ CarPage.propTypes = {
     cars: PropTypes.arrayOf(CarPropType).isRequired,
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
+    deleteCar: PropTypes.func.isRequired,
     editCar: PropTypes.func.isRequired,
     isInError: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,

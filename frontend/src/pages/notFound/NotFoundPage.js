@@ -11,7 +11,14 @@ import { changeCurrentPageAction, changeSelectedMenuIndexAction } from 'actions'
 import './NotFoundPage.scss';
 
 /**
- * Not found page component.
+ * The not found page component.
+ *
+ * @param {func} changeCurrentPage
+ *     The {@link changeCurrentPageAction} action
+ * @param {func} changeSelectedMenuIndex
+ *     The {@link changeSelectedMenuIndexAction} action
+ *
+ * @class
  */
 class NotFoundPage extends PureComponent {
     /**
@@ -39,7 +46,7 @@ class NotFoundPage extends PureComponent {
     }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     changeCurrentPage: changeCurrentPageAction,
     changeSelectedMenuIndex: changeSelectedMenuIndexAction
 }, dispatch);

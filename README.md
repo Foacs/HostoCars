@@ -1,19 +1,36 @@
-<pre>
+<div style="text-align:center;">
+  <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/frontend/public/logo.png?raw=true" alt="HostoCars logo" />
+</div>
 
-    ______  __               _____        _________
-    ___  / / /______ __________  /_______ __  ____/______ _________________
-    __  /_/ / _  __ \__  ___/_  __/_  __ \_  /     _  __ `/__  ___/__  ___/
-    _  __  /  / /_/ /_(__  ) / /_  / /_/ // /___   / /_/ / _  /    _(__  )
-    /_/ /_/   \____/ /____/  \__/  \____/ \____/   \__,_/  /_/     /____/
-                                                     :: Version 1.0.0 ::
+<br />
 
-</pre>
+<div style="text-align:center;">
+<i>Logiciel de gestion et de facturation de réparations de véhicules.</i>
+</div>
 
-##### _Logiciel de gestion et de facturation de réparations de véhicules._ #####
+<br />
 
-<pre />
+#### Version [`1.1.0`](https://github.com/Vulture68/HostoCars/releases/download/1.1.0/HostoCars.exe "Download HostoCars v1.1.0")
 
-#### Version: `1.0.0` ####
+<hr/>
+
+<div style="text-align:right;"><i>25 Jan 2020</i></div>
+
+- Mise en place du système de notifications
+- Gestion des erreurs
+- Ajout de la fonctionnalité d'envoi de mail au support en cas d'erreur
+- Ajout des champs 'Code moteur' et 'VIN' aux voitures
+- Ajout de la fonctionnalité de validation avec la touche 'Entrer' sur les fenêtres de dialogues
+- Ajout de la fonctionnalité d'annulation avec la touche 'Echap' sur les fenêtres de dialogues
+- Correction du système de mise à jour de la base de données
+
+<br />
+
+#### Version [`1.0.0`](https://github.com/Vulture68/HostoCars/releases/download/1.0.0/HostoCars.exe "Download HostoCars v1.0.0")
+
+<hr/>
+
+<div style="text-align:right;"><i>25 Nov 2019</i></div>
 
 - Mise en place de la base de données
 - Gestion de la version de la base de données

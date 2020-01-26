@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './Logo.scss';
+
 /**
  * The application logo.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
+ *
+ * @constructor
  */
 function Logo({ className }) {
     // noinspection LongLine, SpellCheckingInspection

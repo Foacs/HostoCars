@@ -7,10 +7,12 @@ import { ErrorOutlineRounded as ErrorIcon } from '@material-ui/icons';
 import './ErrorPanel.scss';
 
 /**
- * Error panel component.
+ * The error panel component.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
+ *
+ * @constructor
  */
 function ErrorPanel({ className }) {
     return (<Paper className={className} id='ErrorPanel'>
@@ -27,13 +29,11 @@ function ErrorPanel({ className }) {
 }
 
 ErrorPanel.propTypes = {
-    className: PropTypes.string,
-    transparent: PropTypes.bool
+    className: PropTypes.string
 };
 
 ErrorPanel.defaultProps = {
-    className: '',
-    transparent: false
+    className: ''
 };
 
 export default ErrorPanel;
