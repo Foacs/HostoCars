@@ -21,7 +21,7 @@ import {
     Typography
 } from '@material-ui/core';
 import {
-    ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon, EditRounded as EditIcon
+    SearchRounded as DisplayIcon, EditRounded as EditIcon, ErrorOutlineRounded as ErrorIcon, SentimentDissatisfiedRounded as SmileyIcon
 } from '@material-ui/icons';
 
 import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
@@ -32,14 +32,37 @@ import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
 import './CarPage.scss';
 
 /**
- * Car page component.
+ * The car page component.
+ *
+ * @param {object[]} cars
+ *     The list of all the cars
+ * @param {func} changeCurrentPage
+ *     The {@link changeCurrentPageAction} action
+ * @param {func} changeSelectedMenuIndex
+ *     The {@link changeSelectedMenuIndexAction} action
+ * @param {func} deleteCar
+ *     The {@link deleteCarAction} action
+ * @param {func} editCar
+ *     The {@link editCarAction} action
+ * @param {boolean} isInError
+ *     If the car loading is in error
+ * @param {boolean} isLoading
+ *     If the car loading is in progress
+ * @param {func} getCars
+ *     The {@link getCarsAction} action
+ * @param {object} match
+ *     The URL parameters
+ *
+ * @class
  */
 class CarPage extends PureComponent {
     /**
      * Constructor.
      *
-     * @param props
+     * @param {object} props
      *     The component props
+     *
+     * @constructor
      */
     constructor(props) {
         super(props);
@@ -79,6 +102,9 @@ class CarPage extends PureComponent {
 
     /**
      * Method called when the component did update.
+     *
+     * @param {object} prevProps
+     *     The previous props
      */
     componentDidUpdate(prevProps) {
         const { match: { params: { id } } } = this.props;
@@ -139,12 +165,12 @@ class CarPage extends PureComponent {
     /**
      * Handles the 'Delete car' modal validate action.
      */
-    onValidateDeleteCarModal() {
+    async onValidateDeleteCarModal() {
         const { deleteCar } = this.props;
         const { car: { id } } = this.state;
 
-        deleteCar(id)
-            .then(this.setState({ redirect: true }));
+        await deleteCar(id);
+        this.setState({ redirect: true });
     }
 
     /**
@@ -244,6 +270,9 @@ class CarPage extends PureComponent {
             const registrations = cars && cars.filter(currentCar => car.registration !== currentCar.registration)
                 .map(currentCar => currentCar.registration);
 
+            const serialNumbers = cars && cars.filter(currentCar => car.serialNumber !== currentCar.serialNumber)
+                .map(currentCar => currentCar.serialNumber);
+
             content = (<Fragment>
                 <Grid container spacing={4}>
                     <Grid container item xs={6}>
@@ -273,6 +302,11 @@ class CarPage extends PureComponent {
                                                     </TableRow>
 
                                                     <TableRow className='TableRow' hover>
+                                                        <TableCell>VIN</TableCell>
+                                                        <TableCell align='right'>{car.serialNumber}</TableCell>
+                                                    </TableRow>
+
+                                                    <TableRow className='TableRow' hover>
                                                         <TableCell>Marque</TableCell>
                                                         <TableCell align='right'>{car.brand}</TableCell>
                                                     </TableRow>
@@ -285,6 +319,11 @@ class CarPage extends PureComponent {
                                                     <TableRow className='TableRow' hover>
                                                         <TableCell>Motorisation</TableCell>
                                                         <TableCell align='right'>{car.motorization}</TableCell>
+                                                    </TableRow>
+
+                                                    <TableRow className='TableRow' hover>
+                                                        <TableCell>Code moteur</TableCell>
+                                                        <TableCell align='right'>{car.engineCode}</TableCell>
                                                     </TableRow>
 
                                                     <TableRow className='TableRow' hover>
@@ -330,7 +369,7 @@ class CarPage extends PureComponent {
                                                       open={isCertificateModalOpen} />}
 
                 <EditCarModal car={car} onClose={this.onCloseEditCarModal} open={isEditModalOpen} onValidate={this.onValidateEditCarModal}
-                              registrations={registrations} />
+                              registrations={registrations} serialNumbers={serialNumbers} />
 
                 <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteModalOpen} onValidate={this.onValidateDeleteCarModal} />
             </Fragment>);
@@ -352,13 +391,13 @@ class CarPage extends PureComponent {
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     cars: state.cars.cars,
     isInError: state.cars.isGetAllInError,
     isLoading: state.cars.isGetAllInProgress
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     changeCurrentPage: changeCurrentPageAction,
     changeSelectedMenuIndex: changeSelectedMenuIndexAction,
     deleteCar: deleteCarAction,
@@ -370,6 +409,7 @@ CarPage.propTypes = {
     cars: PropTypes.arrayOf(CarPropType).isRequired,
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
+    deleteCar: PropTypes.func.isRequired,
     editCar: PropTypes.func.isRequired,
     isInError: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,

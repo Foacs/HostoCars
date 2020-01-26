@@ -18,6 +18,8 @@ import 'typeface-roboto';
 
 /**
  * Application's theme.
+ *
+ * @type {object}
  */
 export const theme = createMuiTheme({
     palette: {

@@ -3,10 +3,8 @@ import { connect } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { Breadcrumbs as MuiBreadcrumbs, Link, Typography } from '@material-ui/core';
+import { Link, Breadcrumbs as MuiBreadcrumbs, Typography } from '@material-ui/core';
 import { HomeRounded as HomeIcon, NavigateNextRounded as NextIcon } from '@material-ui/icons';
-
-import { NavigationPathPropType } from 'resources';
 
 import './Breadcrumbs.scss';
 
@@ -16,14 +14,16 @@ import './Breadcrumbs.scss';
 const separator = <NextIcon fontSize='small' />;
 
 /**
- * The application breadcrumbs.
+ * The application breadcrumbs component.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
- * @param currentNavigationPath
+ * @param {object} currentNavigationPath
  *     The current page navigation path
- * @param currentPageName
+ * @param {string} currentPageName
  *     The current page name
+ *
+ * @constructor
  */
 function Breadcrumbs({ className, currentNavigationPath, currentPageName }) {
     return (<MuiBreadcrumbs className={className} id='Breadcrumbs' separator={separator}>
@@ -39,14 +39,17 @@ function Breadcrumbs({ className, currentNavigationPath, currentPageName }) {
     </MuiBreadcrumbs>);
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     currentPageName: state.navigation.currentPageName,
     currentNavigationPath: state.navigation.currentNavigationPath
 });
 
 Breadcrumbs.propTypes = {
     className: PropTypes.string,
-    currentNavigationPath: NavigationPathPropType.isRequired,
+    currentNavigationPath: PropTypes.arrayOf(PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        link: PropTypes.string.isRequired
+    })).isRequired,
     currentPageName: PropTypes.node.isRequired
 };
 

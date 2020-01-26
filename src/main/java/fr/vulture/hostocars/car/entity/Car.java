@@ -12,14 +12,16 @@ public class Car {
 
     @NotNull
     private Integer id;
-    private String owner;
     private String registration;
+    private String serialNumber;
+    private String owner;
     private String brand;
     private String model;
     private String motorization;
+    private String engineCode;
     private LocalDate releaseDate;
-    private byte[] certificate;
     private String comments;
+    private byte[] certificate;
     private byte[] picture;
 
 }

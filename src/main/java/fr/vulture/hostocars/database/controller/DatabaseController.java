@@ -7,10 +7,11 @@ import static java.sql.Types.VARCHAR;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import fr.vulture.hostocars.comparator.VersionComparator;
 import fr.vulture.hostocars.database.builder.Query;
 import fr.vulture.hostocars.database.builder.QueryArgument;
 import fr.vulture.hostocars.database.builder.QueryBuilder;
-import fr.vulture.hostocars.exception.TechnicalException;
+import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 import java.util.SortedMap;
@@ -59,6 +61,7 @@ public class DatabaseController implements InitializingBean {
 
     private final SQLResourceExtractor sqlResourceExtractor;
     private final DatabaseBackupManager databaseBackupManager;
+    private final VersionComparator versionComparator;
 
     @NotNull
     @Value("${database.location}")
@@ -86,22 +89,26 @@ public class DatabaseController implements InitializingBean {
      *     The autowired {@link SQLResourceExtractor} component
      * @param databaseBackupManager
      *     The autowired {@link DatabaseBackupManager} component
+     * @param versionComparator
+     *     The autowired {@link VersionComparator} component
      */
     @Autowired
-    public DatabaseController(@NotNull final SQLResourceExtractor sqlResourceExtractor, @NotNull final DatabaseBackupManager databaseBackupManager) {
+    public DatabaseController(@NotNull final SQLResourceExtractor sqlResourceExtractor, @NotNull final DatabaseBackupManager databaseBackupManager,
+        @NotNull final VersionComparator versionComparator) {
         this.sqlResourceExtractor = sqlResourceExtractor;
         this.databaseBackupManager = databaseBackupManager;
+        this.versionComparator = versionComparator;
     }
 
     @Override
     public final void afterPropertiesSet() throws TechnicalException, SQLException, IOException {
-        logger.debug("Initializing the database connection");
+        logger.info("Initializing the database connection");
 
         // If the folder doesn't exist, creates it
         final File dataFolder = new File(this.databaseLocation);
         if (!dataFolder.exists() || !dataFolder.isDirectory()) {
             dataFolder.mkdir();
-            logger.debug("Database folder created with name {}", this.databaseLocation);
+            logger.info("Database folder created with name {}", this.databaseLocation);
         }
 
         // If the database file doesn't exist yet, an initialization is needed
@@ -149,7 +156,7 @@ public class DatabaseController implements InitializingBean {
      *     if a technical error occurs while executing a script
      */
     private void updateDatabaseToCurrentVersion(@NotNull final String databaseVersion) throws IOException, SQLException, TechnicalException {
-        logger.debug("Updating the database from version {} to version {}", databaseVersion, this.projectVersion);
+        logger.info("Updating the database from version {} to version {}", databaseVersion, this.projectVersion);
 
         // Backups the database
         this.databaseBackupManager.backupDatabase(true);
@@ -158,14 +165,16 @@ public class DatabaseController implements InitializingBean {
         final SortedMap<String, SortedSet<Resource>> resources = this.sqlResourceExtractor.extractSQLResources(databaseVersion, this.projectVersion);
 
         for (final String version : resources.keySet()) {
-            for (final Resource resource : resources.get(version)) {
-                this.executeScript(resource);
+            // If the version is strictly higher than the current database version and lower or equal to the project version, executes its scripts
+            if (0 > this.versionComparator.compare(databaseVersion, version)
+                && 0 >= this.versionComparator.compare(version, this.projectVersion)) {
+                for (final Resource resource : resources.get(version)) {
+                    this.executeScript(resource);
+                }
+
+                logger.info("Database successfully updated to version {}", version);
             }
-
-            logger.debug("Database successfully updated to version {}", version);
         }
-
-        logger.info("Database successfully updated from version {} to version {}", databaseVersion, this.projectVersion);
     }
 
     /**
@@ -213,51 +222,65 @@ public class DatabaseController implements InitializingBean {
      *     if an I/O error occurs while reading the script file
      * @throws SQLException
      *     if an SQL error occurs while executing the statement
-     * @throws TechnicalException
-     *     if a technical error occurs while generating the statement
      */
-    private void executeScript(@NotNull final Resource resource) throws IOException, SQLException, TechnicalException {
-        logger.debug("Executing script file {}", resource.getFilename());
+    private void executeScript(@NotNull final Resource resource) throws IOException, SQLException {
+        logger.info("Executing script file {}", resource.getFilename());
+
+        // Closes the current database connection
+        this.connection.close();
 
         // Initializes the buffered reader for the script file
         final BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()));
 
-        // While the buffered reader has more lines to read, keeps reading the script file
-        String line;
-        String queryString = EMPTY_STRING;
-        while (nonNull(line = reader.readLine())) {
-            // Ignores the lines that are comments
-            if (!line.startsWith(SQL_COMMENT_DELIMITER)) {
-                // Removes the comments at the end of the line
-                line = line.split(SQL_COMMENT_DELIMITER)[0];
+        try {
+            // While the buffered reader has more lines to read, keeps reading the script file
+            String line;
+            String queryString = EMPTY_STRING;
+            while (nonNull(line = reader.readLine())) {
+                // Ignores the lines that are comments
+                if (!line.startsWith(SQL_COMMENT_DELIMITER)) {
+                    // Removes the comments at the end of the line
+                    line = line.split(SQL_COMMENT_DELIMITER)[0];
 
-                // Adds the current line to the current query (separated with a space)
-                queryString = queryString.concat(SINGLE_SPACE).concat(line);
+                    // Adds the current line to the current query (separated with a space)
+                    queryString = queryString.concat(SINGLE_SPACE).concat(line);
 
-                // If the query ends with a query delimiter, executes the query
-                if (queryString.endsWith(SQL_QUERY_DELIMITER)) {
-                    // Removes useless spaces
-                    queryString = queryString.trim().replaceAll(MULTIPLE_BLANK_REGEX, SINGLE_SPACE);
+                    // If the query ends with a query delimiter, executes the query
+                    if (queryString.endsWith(SQL_QUERY_DELIMITER)) {
+                        // Removes useless spaces
+                        queryString = queryString.trim().replaceAll(MULTIPLE_BLANK_REGEX, SINGLE_SPACE);
 
-                    logger.debug("Executing query \"{}\"", queryString);
+                        // Re-opens the connection and disables the auto-commit
+                        this.connection = DriverManager.getConnection(this.databaseUrl);
+                        this.connection.setAutoCommit(false);
 
-                    // Creates the current query statement
-                    final Query query = new Query();
-                    query.setQuery(queryString);
-                    final PreparedStatement statement = this.prepareStatement(query, false);
+                        // Creates a statement
+                        final Statement statement = this.connection.createStatement();
 
-                    // Executes the statement
-                    statement.execute();
+                        // Executes the query
+                        logger.trace("Executing query : {}", queryString);
+                        logger.trace("Execution output : {}", statement.executeUpdate(queryString));
 
-                    logger.debug("The query has been successfully executed");
+                        // Closes the statement, commits the changes and closes the connection
+                        statement.close();
+                        this.connection.commit();
+                        this.connection.close();
 
-                    // Re-initializes the query
-                    queryString = EMPTY_STRING;
+                        // Re-initializes the query
+                        queryString = EMPTY_STRING;
+                    }
                 }
             }
-        }
 
-        logger.debug("Script file {} successfully executed", resource.getFilename());
+            logger.debug("Script file {} successfully executed", resource.getFilename());
+        } catch (final SQLException e) {
+            logger.error("Script file {} execution failed", resource.getFilename());
+
+            throw e;
+        } finally {
+            // Re-opens the connection
+            this.connection = DriverManager.getConnection(this.databaseUrl);
+        }
     }
 
     /**

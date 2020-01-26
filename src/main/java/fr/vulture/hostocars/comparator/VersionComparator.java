@@ -11,12 +11,12 @@ import org.springframework.stereotype.Component;
 @Component("versionComparator")
 public class VersionComparator implements Comparator<String>, Serializable {
 
+    private static final long serialVersionUID = -657647773545405079L;
+
     /**
      * Regex for versions.
      */
     public static final String VERSION_STRING_REGEX = "[0-9]+\\.[0-9]+\\.[0-9]+";
-
-    private static final long serialVersionUID = -657647773545405079L;
 
     @Override
     public final int compare(@NotNull final String o1, @NotNull final String o2) {

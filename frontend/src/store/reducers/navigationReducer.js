@@ -1,8 +1,6 @@
 import { navigationActionTypes as types } from 'actions';
 
-/**
- * Reducer's initial state.
- */
+// The reducer's initial state
 const initialState = {
     currentNavigationPath: [],
     currentPageName: '',
@@ -12,10 +10,10 @@ const initialState = {
 /**
  * Returns the next reducer's state after the current action.
  *
- * @param state
- *     The current reducer's state
- * @param action
+ * @param {string} action
  *     The action
+ * @param {object} [state = initialState]
+ *     The current reducer's state
  *
  * @returns {object} the next reducer's state
  */
