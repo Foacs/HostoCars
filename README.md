@@ -1,11 +1,11 @@
-<div style="text-align:center;">
+<p align="center">
   <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/frontend/public/logo.png?raw=true" alt="HostoCars logo" />
-</div>
+</p>
 
 <br />
 
-<div style="text-align:center;">
-<i>Logiciel de gestion et de facturation de réparations de véhicules.</i>
+<div align="center">
+    <i>Logiciel de gestion et de facturation de réparations de véhicules.</i>
 </div>
 
 <br />
@@ -14,7 +14,9 @@
 
 <hr/>
 
-<div style="text-align:right;"><i>25 Jan 2020</i></div>
+<div align="center">
+    <i>25 Jan 2020</i>
+</div>
 
 - Mise en place du système de notifications
 - Gestion des erreurs
@@ -30,7 +32,9 @@
 
 <hr/>
 
-<div style="text-align:right;"><i>25 Nov 2019</i></div>
+<div align="center">
+    <i>25 Nov 2019</i>
+</div>
 
 - Mise en place de la base de données
 - Gestion de la version de la base de données
