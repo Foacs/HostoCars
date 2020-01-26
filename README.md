@@ -14,7 +14,7 @@
 
 <hr/>
 
-<div align="center">
+<div align="right">
     <i>25 Jan 2020</i>
 </div>
 
@@ -32,7 +32,7 @@
 
 <hr/>
 
-<div align="center">
+<div align="right">
     <i>25 Nov 2019</i>
 </div>
 
