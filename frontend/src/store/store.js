@@ -6,6 +6,8 @@ import { carsReducer, navigationReducer, notificationReducer } from 'store';
 
 /**
  * Combines all the application reducers.
+ *
+ * @type {*}
  */
 const store = createStore(combineReducers({
     cars: carsReducer,

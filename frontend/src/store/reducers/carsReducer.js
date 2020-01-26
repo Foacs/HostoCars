@@ -1,8 +1,6 @@
 import { carsActionTypes as types } from 'actions';
 
-/**
- * Reducer's initial state.
- */
+// The reducer's initial state
 const initialState = {
     cars: [],
     isAddInError: false,
@@ -21,14 +19,14 @@ const initialState = {
 /**
  * Returns the next reducer's state after the current action.
  *
- * @param state
- *     The current reducer's state
- * @param action
+ * @param {string} action
  *     The action
+ * @param {object} [state = initialState]
+ *     The current reducer's state
  *
  * @returns {object} the next reducer's state
  */
-const carsReducer = (state = initialState, action) => {
+const carsReducer = (action, state = initialState) => {
     switch (action.type) {
         case types.ADD_CAR:
             return {

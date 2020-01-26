@@ -6,10 +6,12 @@ import { CircularProgress, Grid, Paper, Typography } from '@material-ui/core';
 import './LoadingPanel.scss';
 
 /**
- * Loading panel component.
+ * The loading panel component.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
+ *
+ * @constructor
  */
 function LoadingPanel({ className }) {
     return (<Paper className={className} id='LoadingPanel'>
@@ -26,13 +28,11 @@ function LoadingPanel({ className }) {
 }
 
 LoadingPanel.propTypes = {
-    className: PropTypes.string,
-    transparent: PropTypes.bool
+    className: PropTypes.string
 };
 
 LoadingPanel.defaultProps = {
-    className: '',
-    transparent: false
+    className: ''
 };
 
 export default LoadingPanel;

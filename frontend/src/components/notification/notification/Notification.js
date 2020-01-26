@@ -16,13 +16,17 @@ import './Notification.scss';
 
 /**
  * Resolves the icon to display in the notification for the given variant.
+ * <br/>
+ * The known variants are : <i>info</i>, <i>success</i>, <i>warning</i> and <i>error</i>.
+ * <br/>
+ * If an unknown variant is given, no icon is returned.
  *
- * @param variant
+ * @param {string} variant
  *     The notification variant
  *
  * @returns {*} the notification icon
  */
-function resolveNotificationIcon(variant) {
+const resolveNotificationIcon = (variant) => {
     const className = 'VariantIcon';
 
     switch (variant) {
@@ -37,17 +41,17 @@ function resolveNotificationIcon(variant) {
         default:
             return null;
     }
-}
+};
 
 /**
- * The application's notification component.
+ * The notification component.
  *
- * @param {*} [children=undefined]
+ * @param {*} [children = undefined]
  *     The component content
- * @param {string} [className='']
+ * @param {string} [className = '']
  *     The component class name
- * @param {number} code
- *     The notification key
+ * @param {number} id
+ *     The notification ID
  * @param {string} message
  *    The notification message
  * @param {func} onClose
@@ -58,13 +62,13 @@ function resolveNotificationIcon(variant) {
  * @constructor
  */
 function Notification({ children, className, id, message, onClose, variant }) {
-    // Defines the notification panel class name depending on the variant.
+    // Defines the notification panel class name depending on the variant
     const panelClassName = 'Panel' + (variant ? ' Panel_' + variant : '');
 
-    // Defines the notification title class name depending on the children.
+    // Defines the notification title class name depending on the children
     const titleClassName = 'Title' + (children ? ' Title_expandable' : '');
 
-    // Defines the notification icon depending on the variant.
+    // Defines the notification icon depending on the variant
     const notificationIcon = resolveNotificationIcon(variant);
 
     return (<Box className={className} id='Notification'>

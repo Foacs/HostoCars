@@ -14,14 +14,37 @@ import { CarPropType } from 'resources';
 import './CarsOverviewPage.scss';
 
 /**
- * Cars overview page component.
+ * The cars overview page component.
+ *
+ * @param {func} addCar
+ *     The {@link addCarAction} action
+ * @param {object[]} cars
+ *    The list of all the cars
+ * @param {func} changeCarsSortOrder
+ *     The {@link changeCarsSortOrderAction} action
+ * @param {func} changeCurrentPage
+ *     The {@link changeCurrentPageAction} action
+ * @param {func} changeSelectedMenuIndex
+ *     The {@link changeSelectedMenuIndexAction} action
+ * @param {func} getCars
+ *     The {@link getCarsAction} action
+ * @param {boolean} isInError
+ *    If the cars loading is in error
+ * @param {boolean} isLoading
+ *    If the cars loading is in progress
+ * @param {string} sortedBy
+ *    The sorting clause
+ *
+ * @class
  */
 class CarsOverviewPage extends PureComponent {
     /**
      * Constructor.
      *
-     * @param props
+     * @param {object} props
      *     The component props
+     *
+     * @constructor
      */
     constructor(props) {
         super(props);
@@ -89,6 +112,9 @@ class CarsOverviewPage extends PureComponent {
 
     /**
      * Handles the 'Add car' modal validate action.
+     *
+     * @param {object} car
+     *     The car to add
      */
     onValidateAddCarModal(car) {
         const { addCar, sortedBy } = this.props;
@@ -196,14 +222,14 @@ class CarsOverviewPage extends PureComponent {
     }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     cars: state.cars.cars,
     isInError: state.cars.isGetAllInError,
     isLoading: state.cars.isGetAllInProgress,
     sortedBy: state.cars.sortedBy
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     addCar: addCarAction,
     changeCarsSortOrder: changeCarsSortOrderAction,
     changeCurrentPage: changeCurrentPageAction,
@@ -214,6 +240,7 @@ const mapDispatchToProps = dispatch => bindActionCreators({
 CarsOverviewPage.propTypes = {
     addCar: PropTypes.func.isRequired,
     cars: PropTypes.arrayOf(CarPropType).isRequired,
+    changeCarsSortOrder: PropTypes.func.isRequired,
     changeCurrentPage: PropTypes.func.isRequired,
     changeSelectedMenuIndex: PropTypes.func.isRequired,
     getCars: PropTypes.func.isRequired,

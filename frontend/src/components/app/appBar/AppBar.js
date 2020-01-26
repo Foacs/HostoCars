@@ -10,8 +10,10 @@ import './AppBar.scss';
 /**
  * The application's bar component.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
+ *
+ * @constructor
  */
 function AppBar({ className }) {
     return (<MaterialAppBar className={className} id='AppBar' position='fixed'>
