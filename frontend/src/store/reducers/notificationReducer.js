@@ -15,7 +15,7 @@ const initialState = {
  *
  * @returns {object} the next reducer's state
  */
-const notificationReducer = (action, state = initialState) => {
+const notificationReducer = (state = initialState, action) => {
     switch (action.type) {
         case types.DEQUEUE_NOTIFICATION:
             return {

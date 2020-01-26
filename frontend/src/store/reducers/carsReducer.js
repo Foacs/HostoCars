@@ -26,7 +26,7 @@ const initialState = {
  *
  * @returns {object} the next reducer's state
  */
-const carsReducer = (action, state = initialState) => {
+const carsReducer = (state = initialState, action) => {
     switch (action.type) {
         case types.ADD_CAR:
             return {

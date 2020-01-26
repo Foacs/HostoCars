@@ -17,7 +17,7 @@ const initialState = {
  *
  * @returns {object} the next reducer's state
  */
-const navigationReducer = (action, state = initialState) => {
+const navigationReducer = (state = initialState, action) => {
     switch (action.type) {
         case types.CHANGE_CURRENT_PAGE:
             return {
