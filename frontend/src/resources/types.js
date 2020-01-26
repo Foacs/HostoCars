@@ -2,24 +2,20 @@ import PropTypes from 'prop-types';
 
 /**
  * Car prop type.
+ *
+ * @type {object}
  */
 export const CarPropType = PropTypes.shape({
     brand: PropTypes.string,
     certificate: PropTypes.blob,
     comments: PropTypes.string,
-    id: PropTypes.number.isRequired,
+    engineCode: PropTypes.string,
+    id: PropTypes.number,
     model: PropTypes.string,
     motorization: PropTypes.string,
-    owner: PropTypes.string.isRequired,
+    owner: PropTypes.string,
     picture: PropTypes.blob,
-    registration: PropTypes.string.isRequired,
-    releaseDate: PropTypes.date
+    registration: PropTypes.string,
+    releaseDate: PropTypes.date,
+    serialNumber: PropTypes.string
 });
-
-/**
- * Breadcrumbs' navigation path prop type.
- */
-export const NavigationPathPropType = PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    link: PropTypes.string.isRequired
-}));

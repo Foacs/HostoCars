@@ -6,8 +6,10 @@ import './DefaultCarPicture.scss';
 /**
  * The default image for a car.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
+ *
+ * @constructor
  */
 function DefaultCarPicture({ className }) {
     // noinspection LongLine

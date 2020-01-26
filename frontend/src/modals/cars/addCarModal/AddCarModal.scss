@@ -1,33 +1,3 @@
-@import '../../../resources/colors';
-
 #AddCarModal {
-    .Field {
-        margin-bottom: 28px;
 
-        &_error {
-            margin-bottom: 8px;
-        }
-
-        &:nth-child(5) {
-            margin-bottom: 0;
-        }
-    }
-
-    .Instructions_hidden {
-        display: none;
-    }
-
-    .Title {
-        color: $primary-color;
-
-        .HelpButton {
-            position: absolute;
-            right:    12px;
-            top:      8px;
-        }
-    }
-}
-
-#CertificateInput, #PictureInput {
-    display: none;
 }

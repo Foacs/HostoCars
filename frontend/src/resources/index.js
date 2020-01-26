@@ -8,11 +8,14 @@ export * from './constants';
 export { default as DefaultCarPicture } from './img/defaultCarPicture/DefaultCarPicture';
 export { default as Logo } from './img/logo/Logo';
 
+// Menu
+export { menuItems } from './menu';
+
 // Theme
 export { theme } from './theme';
 
 // Prop Types
 export * from './types';
 
-// Theme
+// Utils
 export * from './utils';

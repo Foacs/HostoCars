@@ -5,40 +5,26 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
-import { DirectionsCarRounded as CarsIcon, ListAltRounded as InterventionsIcon } from '@material-ui/icons';
 
 import { changeSelectedMenuIndexAction } from 'actions';
-import { Logo } from 'resources';
+import { Logo, menuItems } from 'resources';
 
 import './Menu.scss';
 
 /**
- * Defines the menu items.
- */
-const menuItems = [ {
-    label: 'Voitures',
-    link: '/cars',
-    icon: <CarsIcon />
-}, {
-    label: 'Interventions',
-    link: '/interventions',
-    icon: <InterventionsIcon />
-} ];
-
-/**
- * The application's menu component.
+ * The application menu component.
  *
- * @param changeSelectedIndex
- *     The action to change the selected menu index
- * @param className
+ * @param {func} changeSelectedIndex
+ *     The {@link changeSelectedMenuIndexAction} action
+ * @param {string} [className = '']
  *     The component class name
- * @param selectedIndex
+ * @param {number} selectedIndex
  *     The selected menu index
+ *
+ * @constructor
  */
 function Menu({ changeSelectedIndex, className, selectedIndex }) {
-    /**
-     * Defines the menu footer label.
-     */
+    // Defines the menu footer label
     const footerText = `${process.env.REACT_APP_NAME} v${process.env.REACT_APP_VERSION}`;
 
     return (<Drawer anchor='left' className={className} id='Menu' variant='permanent'>
@@ -46,7 +32,7 @@ function Menu({ changeSelectedIndex, className, selectedIndex }) {
 
         <List>
             {menuItems.map((menuItem, index) => (
-                <ListItem button component={Link} key={menuItem.label} onClick={() => changeSelectedIndex(index)} selected={index === selectedIndex}
+                <ListItem button component={Link} key={menuItem.label} onClick={() => changeSelectedIndex(index)} selected={selectedIndex === index}
                           to={menuItem.link}>
                     <ListItemIcon className='Icon'>{menuItem.icon}</ListItemIcon>
 
@@ -58,11 +44,11 @@ function Menu({ changeSelectedIndex, className, selectedIndex }) {
     </Drawer>);
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
     selectedIndex: state.navigation.selectedMenuIndex
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators({
+const mapDispatchToProps = (dispatch) => bindActionCreators({
     changeSelectedIndex: changeSelectedMenuIndexAction
 }, dispatch);
 

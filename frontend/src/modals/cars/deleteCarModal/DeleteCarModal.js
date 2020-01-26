@@ -3,29 +3,37 @@ import PropTypes from 'prop-types';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 
+import { ESCAPE_KEY_CODE } from 'resources';
+
 import './DeleteCarModal.scss';
 
 /**
- * Modal to delete an existing car.
+ * The modal component to delete an existing car.
  *
- * @param className
+ * @param {string} [className = '']
  *     The component class name
- * @param onClose
+ * @param {func} onClose
  *     The close event handler
- * @param onValidate
+ * @param {func} onValidate
  *     The validate event handler
- * @param open
+ * @param {boolean} open
  *     If the modal is open
  */
 function DeleteCarModal({ className, onClose, onValidate, open }) {
     /**
-     * Handles the validate button click action.
+     * Handles the key pressed action.
+     *
+     * @param {object} e
+     *     The event
      */
-    const onValidateButtonClick = () => {
-        onValidate();
+    const onKeyPressed = (e) => {
+        if (ESCAPE_KEY_CODE === e.keyCode) {
+            e.preventDefault();
+            onClose();
+        }
     };
 
-    return <Dialog className={className} id='DeleteCarModal' onClose={onClose} open={open}>
+    return <Dialog className={className} id='DeleteCarModal' onClose={onClose} onKeyDown={onKeyPressed} open={open}>
         <DialogTitle className='Title'>
             Suppression d'une voiture
         </DialogTitle>
@@ -41,7 +49,7 @@ function DeleteCarModal({ className, onClose, onValidate, open }) {
                 Non
             </Button>
 
-            <Button color='secondary' onClick={onValidateButtonClick} autoFocus>
+            <Button color='secondary' onClick={onValidate} autoFocus>
                 Oui
             </Button>
         </DialogActions>

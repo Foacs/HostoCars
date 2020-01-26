@@ -1,4 +1,4 @@
-package fr.vulture.hostocars.exception;
+package fr.vulture.hostocars.error.exception;
 
 import javax.validation.constraints.NotNull;
 import org.slf4j.helpers.MessageFormatter;

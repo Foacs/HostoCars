@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.google.common.collect.Lists;
-import fr.vulture.hostocars.exception.TechnicalException;
+import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;

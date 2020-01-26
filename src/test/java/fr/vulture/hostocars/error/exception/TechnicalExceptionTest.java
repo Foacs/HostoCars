@@ -1,4 +1,4 @@
-package fr.vulture.hostocars.exception;
+package fr.vulture.hostocars.error.exception;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;

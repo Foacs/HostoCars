@@ -13,7 +13,7 @@
 
     <groupId>fr.vulture</groupId>
     <artifactId>hostocars</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>HostoCars</name>
 
@@ -46,6 +46,26 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <groupId>org.springframework.boot</groupId>
             <optional>true</optional>
+        </dependency>
+
+        <!-- Spring support library used for sending e-mails -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>5.2.3.RELEASE</version>
+        </dependency>
+
+        <!-- Spring library used for sending e-mails -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- Java Mail library -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4</version>
         </dependency>
 
         <!-- JDBC driver for the SQLite database -->

@@ -1,60 +1,56 @@
 import { navigationActionTypes as types } from 'actions';
 
 /**
- * Returns the action object for the CHANGE_SELECTED_MENU_INDEX action type.
- *
- * @param index
- *     The new index
- *
- * @returns {{index, type}} the action's object
- */
-const changeSelectedMenuIndex = index => ({
-    index,
-    type: types.CHANGE_SELECTED_MENU_INDEX
-});
-
-/**
  * Changes the selected menu index.
  *
- * @param index
+ * @param {number} index
  *     The new index
- *
- * @returns {function()} the action's function
  */
-export const changeSelectedMenuIndexAction = index => {
+export const changeSelectedMenuIndexAction = (index) => {
     return dispatch => {
         dispatch(changeSelectedMenuIndex(index));
     };
 };
 
 /**
- * Returns the action object for the CHANGE_CURRENT_PAGE action type.
+ * Returns the action object for the {@link CHANGE_SELECTED_MENU_INDEX} action type.
  *
- * @param pageName
- *     The new page name
- * @param pagePath
- *     The new page path
+ * @param {number} index
+ *     The new index
  *
- * @returns {{pagePath, type, pageName}} the action's object
+ * @returns {object} the action object
  */
-const changeCurrentPage = (pageName, pagePath) => ({
-    pageName,
-    pagePath,
-    type: types.CHANGE_CURRENT_PAGE
+const changeSelectedMenuIndex = (index) => ({
+    index,
+    type: types.CHANGE_SELECTED_MENU_INDEX
 });
 
 /**
  * Updates the breadcrumbs.
  *
- * @param pageName
+ * @param {string} pageName
  *     The new page name
- * @param pagePath
+ * @param {object} pagePath
  *     The new page path
- *
- * @returns {function()} the action's function
  */
 export const changeCurrentPageAction = (pageName, pagePath) => {
     return dispatch => {
         dispatch(changeCurrentPage(pageName, pagePath));
     };
 };
+
+/**
+ * Returns the action object for the {@link CHANGE_CURRENT_PAGE} action type.
+ *
+ * @param {string} pageName
+ *     The new page name
+ * @param {object} pagePath
+ *     The new page path
+ *
+ * @returns {object} the action object
+ */
+const changeCurrentPage = (pageName, pagePath) => ({
+    pageName,
+    pagePath,
+    type: types.CHANGE_CURRENT_PAGE
+});
