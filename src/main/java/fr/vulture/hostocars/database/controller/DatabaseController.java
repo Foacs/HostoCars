@@ -8,9 +8,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 import fr.vulture.hostocars.comparator.VersionComparator;
-import fr.vulture.hostocars.database.builder.Query;
-import fr.vulture.hostocars.database.builder.QueryArgument;
-import fr.vulture.hostocars.database.builder.QueryBuilder;
+import fr.vulture.hostocars.database.query.FilterQueryArgument;
+import fr.vulture.hostocars.database.query.Query;
+import fr.vulture.hostocars.database.query.QueryArgument;
+import fr.vulture.hostocars.database.query.SelectQueryArgument;
 import fr.vulture.hostocars.error.exception.TechnicalException;
 import java.io.BufferedReader;
 import java.io.File;
@@ -22,8 +23,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collections;
-import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import javax.validation.Valid;
@@ -191,9 +190,11 @@ public class DatabaseController implements InitializingBean {
         logger.debug("Retrieving the current database version");
 
         // Builds the query
-        final List<String> columnNames = Collections.singletonList(VALUE_COLUMN_NAME);
-        final List<QueryArgument> arguments = Collections.singletonList(new QueryArgument(KEY_COLUMN_NAME, VERSION_VALUE, VARCHAR));
-        final Query query = new QueryBuilder().buildSelectQuery(DATABASE_INFO_TABLE_NAME, columnNames, false).addWhereClause(arguments).getQuery();
+        final Query query = Query.builder()
+            .select(SelectQueryArgument.of(DATABASE_INFO_TABLE_NAME, VALUE_COLUMN_NAME))
+            .from(DATABASE_INFO_TABLE_NAME)
+            .where(FilterQueryArgument.of(DATABASE_INFO_TABLE_NAME, KEY_COLUMN_NAME, VERSION_VALUE, VARCHAR))
+            .build();
 
         // Prepares the statement
         final PreparedStatement statement = this.prepareStatement(query, false);
@@ -300,12 +301,12 @@ public class DatabaseController implements InitializingBean {
         // Creates the statement from the query
         final PreparedStatement statement;
         try {
-            statement = this.connection.prepareStatement(query.getQuery(), withGeneratedKeys ? RETURN_GENERATED_KEYS : NO_GENERATED_KEYS);
+            statement = this.connection.prepareStatement(query.statement(), withGeneratedKeys ? RETURN_GENERATED_KEYS : NO_GENERATED_KEYS);
 
             // For each query argument, set its value to the statement depending on its type
             int index = 1;
-            for (final QueryArgument argument : query.getArguments()) {
-                statement.setObject(index, argument.getValue(), argument.getType());
+            for (final QueryArgument argument : query.arguments()) {
+                statement.setObject(index, argument.value(), argument.type());
                 index++;
             }
         } catch (final SQLException e) {
