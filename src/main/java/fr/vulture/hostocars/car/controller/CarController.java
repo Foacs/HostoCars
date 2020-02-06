@@ -12,10 +12,14 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 import fr.vulture.hostocars.car.entity.Car;
-import fr.vulture.hostocars.database.builder.Query;
-import fr.vulture.hostocars.database.builder.QueryArgument;
-import fr.vulture.hostocars.database.builder.QueryBuilder;
 import fr.vulture.hostocars.database.controller.DatabaseController;
+import fr.vulture.hostocars.database.query.FilterQueryArgument;
+import fr.vulture.hostocars.database.query.OrderByQueryArgument;
+import fr.vulture.hostocars.database.query.Query;
+import fr.vulture.hostocars.database.query.Query.QueryBuilder;
+import fr.vulture.hostocars.database.query.QueryArgument;
+import fr.vulture.hostocars.database.query.SelectQueryArgument;
+import fr.vulture.hostocars.database.query.WhereQueryArgument;
 import fr.vulture.hostocars.error.ResponseData;
 import fr.vulture.hostocars.error.exception.FunctionalException;
 import fr.vulture.hostocars.error.exception.TechnicalException;
@@ -25,7 +29,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.constraints.Min;
@@ -97,16 +100,15 @@ public class CarController {
 
         try {
             // Builds the query
-            final QueryBuilder queryBuilder = new QueryBuilder().buildSelectQuery(TABLE_NAME, false);
+            final QueryBuilder queryBuilder = Query.builder().selectAll().from(TABLE_NAME);
 
             // If the optional sorting field is not null, adds a sorting clause to the query
             if (nonNull(sortedBy)) {
-                final List<String> sortingFields = Collections.singletonList(sortedBy);
-                queryBuilder.addOrderByClause(sortingFields, false);
+                queryBuilder.orderBy(OrderByQueryArgument.of(TABLE_NAME, sortedBy, OrderByQueryArgument.ASC));
             }
 
             // Retrieves the built query
-            final Query query = queryBuilder.getQuery();
+            final Query query = queryBuilder.build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
@@ -202,11 +204,11 @@ public class CarController {
 
         try {
             // Builds the query
-            final List<QueryArgument> arguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
-            final Query query = new QueryBuilder()
-                .buildSelectQuery(TABLE_NAME, false)
-                .addWhereClause(arguments)
-                .getQuery();
+            final Query query = Query.builder()
+                .selectAll(TABLE_NAME)
+                .from(TABLE_NAME)
+                .where(FilterQueryArgument.of(TABLE_NAME, ID_COLUMN_NAME, id, INTEGER))
+                .build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
@@ -260,8 +262,11 @@ public class CarController {
             }
 
             // Builds the query
-            final List<String> fields = Collections.singletonList(field);
-            final Query query = new QueryBuilder().buildSelectQuery(TABLE_NAME, fields, true).addOrderByClause(fields, false).getQuery();
+            final Query query = Query.builder().
+                selectDistinct(SelectQueryArgument.of(TABLE_NAME, field))
+                .from(TABLE_NAME)
+                .orderBy(OrderByQueryArgument.of(TABLE_NAME, field, OrderByQueryArgument.ASC))
+                .build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
@@ -340,7 +345,7 @@ public class CarController {
 
         try {
             // Gets the query arguments
-            final List<QueryArgument> arguments = getSearchRelevantFields(body);
+            final List<WhereQueryArgument> arguments = getSearchRelevantFields(body);
 
             // If there is no query argument, throw an exception
             if (arguments.isEmpty()) {
@@ -348,7 +353,11 @@ public class CarController {
             }
 
             // Builds the query
-            final Query query = new QueryBuilder().buildSelectQuery(TABLE_NAME, false).addWhereClause(arguments).getQuery();
+            final Query query = Query.builder()
+                .selectAll(TABLE_NAME)
+                .from(TABLE_NAME)
+                .where(arguments)
+                .build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
@@ -400,26 +409,46 @@ public class CarController {
     }
 
     /**
-     * Returns the list of {@link QueryArgument} relevant for creating or updating from the input {@link CarRequestBody}.
+     * Returns the collection of {@link WhereQueryArgument} relevant for searching from the input {@link CarRequestBody}.
      *
      * @param body
      *     The body from which to extract the arguments
      *
-     * @return a list of {@link QueryArgument}
+     * @return a collection of {@link WhereQueryArgument}
      */
-    private static List<QueryArgument> getUpdateRelevantFields(@NotNull final CarRequestBody body) {
-        final List<QueryArgument> result = getSearchRelevantFields(body);
+    private static List<WhereQueryArgument> getSearchRelevantFields(@NotNull final CarRequestBody body) {
+        final List<WhereQueryArgument> result = new ArrayList<>(0);
 
-        if (nonNull(body.getComments())) {
-            result.add(new QueryArgument(COMMENTS_COLUMN_NAME, body.getComments().orElse(null), VARCHAR));
+        if (nonNull(body.getRegistration())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, REGISTRATION_COLUMN_NAME, body.getRegistration().orElse(null), VARCHAR));
         }
 
-        if (nonNull(body.getCertificate())) {
-            result.add(new QueryArgument(CERTIFICATE_COLUMN_NAME, body.getCertificate().orElse(null), BLOB));
+        if (nonNull(body.getSerialNumber())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, SERIAL_NUMBER_COLUMN_NAME, body.getSerialNumber().orElse(null), VARCHAR));
         }
 
-        if (nonNull(body.getPicture())) {
-            result.add(new QueryArgument(PICTURE_COLUMN_NAME, body.getPicture().orElse(null), BLOB));
+        if (nonNull(body.getOwner())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, OWNER_COLUMN_NAME, body.getOwner().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getBrand())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, BRAND_COLUMN_NAME, body.getBrand().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getModel())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, MODEL_COLUMN_NAME, body.getModel().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getMotorization())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, MOTORIZATION_COLUMN_NAME, body.getMotorization().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getEngineCode())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, ENGINE_CODE_COLUMN_NAME, body.getEngineCode().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getReleaseDate())) {
+            result.add(FilterQueryArgument.of(TABLE_NAME, RELEASE_DATE_COLUMN_NAME, body.getReleaseDate().orElse(null), DATE));
         }
 
         return result;
@@ -443,11 +472,10 @@ public class CarController {
                 throw new FunctionalException("Missing mandatory field(s)");
             }
 
-            // Gets the query arguments
-            final List<QueryArgument> arguments = getUpdateRelevantFields(body);
-
             // Builds the query
-            final Query query = new QueryBuilder().buildInsertQuery(TABLE_NAME, arguments).getQuery();
+            final Query query = Query.builder()
+                .insert(TABLE_NAME, getUpdateRelevantFields(body))
+                .build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, true);
@@ -507,46 +535,58 @@ public class CarController {
     }
 
     /**
-     * Returns the list of {@link QueryArgument} relevant for searching from the input {@link CarRequestBody}.
+     * Returns the collection of {@link QueryArgument} relevant for creating or updating from the input {@link CarRequestBody}.
      *
      * @param body
      *     The body from which to extract the arguments
      *
-     * @return a list of {@link QueryArgument}
+     * @return a collection of {@link QueryArgument}
      */
-    private static List<QueryArgument> getSearchRelevantFields(@NotNull final CarRequestBody body) {
+    private static List<QueryArgument> getUpdateRelevantFields(@NotNull final CarRequestBody body) {
         final List<QueryArgument> result = new ArrayList<>(0);
 
         if (nonNull(body.getRegistration())) {
-            result.add(new QueryArgument(REGISTRATION_COLUMN_NAME, body.getRegistration().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(REGISTRATION_COLUMN_NAME, body.getRegistration().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getSerialNumber())) {
-            result.add(new QueryArgument(SERIAL_NUMBER_COLUMN_NAME, body.getSerialNumber().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(SERIAL_NUMBER_COLUMN_NAME, body.getSerialNumber().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getOwner())) {
-            result.add(new QueryArgument(OWNER_COLUMN_NAME, body.getOwner().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(OWNER_COLUMN_NAME, body.getOwner().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getBrand())) {
-            result.add(new QueryArgument(BRAND_COLUMN_NAME, body.getBrand().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(BRAND_COLUMN_NAME, body.getBrand().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getModel())) {
-            result.add(new QueryArgument(MODEL_COLUMN_NAME, body.getModel().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(MODEL_COLUMN_NAME, body.getModel().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getMotorization())) {
-            result.add(new QueryArgument(MOTORIZATION_COLUMN_NAME, body.getMotorization().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(MOTORIZATION_COLUMN_NAME, body.getMotorization().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getEngineCode())) {
-            result.add(new QueryArgument(ENGINE_CODE_COLUMN_NAME, body.getEngineCode().orElse(null), VARCHAR));
+            result.add(QueryArgument.of(ENGINE_CODE_COLUMN_NAME, body.getEngineCode().orElse(null), VARCHAR));
         }
 
         if (nonNull(body.getReleaseDate())) {
-            result.add(new QueryArgument(RELEASE_DATE_COLUMN_NAME, body.getReleaseDate().orElse(null), DATE));
+            result.add(QueryArgument.of(RELEASE_DATE_COLUMN_NAME, body.getReleaseDate().orElse(null), DATE));
+        }
+
+        if (nonNull(body.getComments())) {
+            result.add(QueryArgument.of(COMMENTS_COLUMN_NAME, body.getComments().orElse(null), VARCHAR));
+        }
+
+        if (nonNull(body.getCertificate())) {
+            result.add(QueryArgument.of(CERTIFICATE_COLUMN_NAME, body.getCertificate().orElse(null), BLOB));
+        }
+
+        if (nonNull(body.getPicture())) {
+            result.add(QueryArgument.of(PICTURE_COLUMN_NAME, body.getPicture().orElse(null), BLOB));
         }
 
         return result;
@@ -568,16 +608,19 @@ public class CarController {
 
         try {
             // Gets the query arguments
-            final List<QueryArgument> updateArguments = getUpdateRelevantFields(body);
-            final List<QueryArgument> whereArguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
+            final List<QueryArgument> queryArguments = getUpdateRelevantFields(body);
+            queryArguments.add(QueryArgument.of(ID_COLUMN_NAME, id, INTEGER));
 
             // If there is no query argument, throw an exception
-            if (updateArguments.isEmpty()) {
+            if (queryArguments.isEmpty()) {
                 throw new FunctionalException("No update value has been provided");
             }
 
             // Builds the query
-            final Query query = new QueryBuilder().buildUpdateQuery(TABLE_NAME, updateArguments, whereArguments).getQuery();
+            final Query query = Query.builder()
+                .update(TABLE_NAME, queryArguments)
+                .where(FilterQueryArgument.of(TABLE_NAME, ID_COLUMN_NAME, id, INTEGER))
+                .build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
@@ -632,8 +675,8 @@ public class CarController {
 
         try {
             // Builds the query
-            final List<QueryArgument> arguments = Collections.singletonList(new QueryArgument(ID_COLUMN_NAME, id, INTEGER));
-            final Query query = new QueryBuilder().buildDeleteQuery(TABLE_NAME, arguments).getQuery();
+            final FilterQueryArgument queryArgument = FilterQueryArgument.of(TABLE_NAME, ID_COLUMN_NAME, id, INTEGER);
+            final Query query = Query.builder().delete(TABLE_NAME).where(queryArgument).build();
 
             // Prepares the statement
             final PreparedStatement statement = this.databaseController.prepareStatement(query, false);
