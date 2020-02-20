@@ -1,15 +1,15 @@
 import React from 'react';
 import axios from 'axios';
 
-import { enqueueNotificationAction, carsActionTypes as types } from 'actions';
+import { carsActionTypes as types, enqueueNotificationAction } from 'actions';
 import { ErrorNotificationContent } from 'components';
 import { NO_CONTENT_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
 
 /**
  * Adds a new car and returns the action promise.
- * <br/>
+ * <br />
  * If the operation is successful, a success notification is shown and the list of cars is updated.
- * <br/>
+ * <br />
  * If the operation fails, an error notification is shown.
  *
  * @param {object} car
@@ -18,31 +18,31 @@ import { NO_CONTENT_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
  * @returns {Promise} the action promise
  */
 export const addCarAction = (car) => {
-    return (dispatch, getState) => {
+    return (dispatch) => {
         dispatch(addCarStart());
 
         return axios.post(`${WEB_SERVICE_BASE_URL}/cars/save`, car)
-            .then(() => {
-                dispatch(addCarSuccess());
-                dispatch(enqueueNotificationAction({
-                    message: 'Voiture ajoutée avec succès.',
-                    options: {
-                        variant: 'success'
-                    }
-                }));
-                return dispatch(getCarsAction(getState().cars.sortedBy));
-            })
-            .catch(e => {
-                dispatch(addCarFailure());
-                dispatch(enqueueNotificationAction({
-                    message: 'Une erreur est survenue lors de l\'ajout d\'une voiture.',
-                    options: {
-                        content: <ErrorNotificationContent error={e} />,
-                        persist: true,
-                        variant: 'error'
-                    }
-                }));
-            });
+                .then(() => {
+                    dispatch(addCarSuccess());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Voiture ajoutée avec succès.',
+                        options: {
+                            variant: 'success'
+                        }
+                    }));
+                    return dispatch(getCarsAction());
+                })
+                .catch(e => {
+                    dispatch(addCarFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors de l\'ajout d\'une voiture.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
     };
 };
 
@@ -103,9 +103,9 @@ const changeCarsSortOrder = (sortedBy) => ({
 
 /**
  * Deletes a car and returns the action promise.
- * <br/>
+ * <br />
  * If the operation is successful, a success notification is shown.
- * <br/>
+ * <br />
  * If the operation fails, an error notification is shown.
  *
  * @param {number} id
@@ -118,26 +118,26 @@ export const deleteCarAction = (id) => {
         dispatch(deleteCarStart());
 
         return axios.delete(`${WEB_SERVICE_BASE_URL}/cars/${id}/delete`)
-            .then(() => {
-                dispatch(deleteCarSuccess(id));
-                dispatch(enqueueNotificationAction({
-                    message: 'Voiture supprimée avec succès.',
-                    options: {
-                        variant: 'success'
-                    }
-                }));
-            })
-            .catch(e => {
-                dispatch(deleteCarFailure());
-                dispatch(enqueueNotificationAction({
-                    message: 'Une erreur est survenue lors de la suppression d\'une voiture.',
-                    options: {
-                        content: <ErrorNotificationContent error={e} />,
-                        persist: true,
-                        variant: 'error'
-                    }
-                }));
-            });
+                .then(() => {
+                    dispatch(deleteCarSuccess(id));
+                    dispatch(enqueueNotificationAction({
+                        message: 'Voiture supprimée avec succès.',
+                        options: {
+                            variant: 'success'
+                        }
+                    }));
+                })
+                .catch(e => {
+                    dispatch(deleteCarFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors de la suppression d\'une voiture.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
     };
 };
 
@@ -174,9 +174,9 @@ const deleteCarFailure = () => ({
 
 /**
  * Edits an existing car and returns the action promise.
- * <br/>
+ * <br />
  * If the operation is successful, a success notification is shown and the car is reloaded.
- * <br/>
+ * <br />
  * If the operation fails, an error notification is shown.
  *
  * @param {object} car
@@ -189,27 +189,27 @@ export const editCarAction = (car) => {
         dispatch(editCarStart());
 
         return axios.put(`${WEB_SERVICE_BASE_URL}/cars/${car.id}/update`, car)
-            .then(() => {
-                dispatch(editCarSuccess());
-                dispatch(enqueueNotificationAction({
-                    message: 'Voiture éditée avec succès.',
-                    options: {
-                        variant: 'success'
-                    }
-                }));
-                return dispatch(getCarAction(car.id));
-            })
-            .catch(e => {
-                dispatch(editCarFailure());
-                dispatch(enqueueNotificationAction({
-                    message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
-                    options: {
-                        content: <ErrorNotificationContent error={e} />,
-                        persist: true,
-                        variant: 'error'
-                    }
-                }));
-            });
+                .then(() => {
+                    dispatch(editCarSuccess());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Voiture éditée avec succès.',
+                        options: {
+                            variant: 'success'
+                        }
+                    }));
+                    return dispatch(getCarAction(car.id));
+                })
+                .catch(e => {
+                    dispatch(editCarFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
     };
 };
 
@@ -242,7 +242,7 @@ const editCarFailure = () => ({
 
 /**
  * Loads an existing car and returns the action promise.
- * <br/>
+ * <br />
  * If the operation fails, an error notification is shown.
  *
  * @param {number} id
@@ -255,24 +255,24 @@ export const getCarAction = (id) => {
         dispatch(getCarStart());
 
         return axios.get(`${WEB_SERVICE_BASE_URL}/cars/${id}`)
-            .then(res => {
-                if (OK_STATUS === res.status) {
-                    dispatch(getCarSuccess(res.data));
-                } else if (NO_CONTENT_STATUS === res.status) {
-                    dispatch(getCarNoContent(id));
-                }
-            })
-            .catch(e => {
-                dispatch(getCarFailure());
-                dispatch(enqueueNotificationAction({
-                    message: 'Une erreur est survenue lors du chargement d\'une voiture.',
-                    options: {
-                        content: <ErrorNotificationContent error={e} />,
-                        persist: true,
-                        variant: 'error'
+                .then(res => {
+                    if (OK_STATUS === res.status) {
+                        dispatch(getCarSuccess(res.data));
+                    } else if (NO_CONTENT_STATUS === res.status) {
+                        dispatch(getCarNoContent(id));
                     }
-                }));
-            });
+                })
+                .catch(e => {
+                    dispatch(getCarFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors du chargement d\'une voiture.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
     };
 };
 
@@ -322,7 +322,7 @@ const getCarFailure = () => ({
 
 /**
  * Loads all existing cars and returns the action promise.
- * <br/>
+ * <br />
  * If the operation fails, an error notification is shown.
  *
  * @returns {Promise} the action promise
@@ -332,24 +332,24 @@ export const getCarsAction = () => {
         dispatch(getCarsStart());
 
         return axios.get(`${WEB_SERVICE_BASE_URL}/cars/all?sortedBy=${getState().cars.sortedBy}`)
-            .then(res => {
-                if (OK_STATUS === res.status) {
-                    dispatch(getCarsSuccess(res.data));
-                } else if (NO_CONTENT_STATUS === res.status) {
-                    dispatch(getCarsSuccess([]));
-                }
-            })
-            .catch(e => {
-                dispatch(getCarsFailure());
-                dispatch(enqueueNotificationAction({
-                    message: 'Une erreur est survenue lors du chargement des voitures.',
-                    options: {
-                        content: <ErrorNotificationContent error={e} />,
-                        persist: true,
-                        variant: 'error'
+                .then(res => {
+                    if (OK_STATUS === res.status) {
+                        dispatch(getCarsSuccess(res.data));
+                    } else if (NO_CONTENT_STATUS === res.status) {
+                        dispatch(getCarsSuccess([]));
                     }
-                }));
-            });
+                })
+                .catch(e => {
+                    dispatch(getCarsFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors du chargement des voitures.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
     };
 };
 

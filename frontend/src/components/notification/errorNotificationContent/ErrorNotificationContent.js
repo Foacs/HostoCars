@@ -52,7 +52,7 @@ function generateErrorMail(statusText = '', status = '', message = '', url = '',
                     <i>Le fichier de log est disponible en pièce jointe.</i>
                 </body>
             </html>`,
-        attachments: [ LOG_FILE_PATH ]
+        attachmentArray: [ LOG_FILE_PATH ]
     };
 }
 

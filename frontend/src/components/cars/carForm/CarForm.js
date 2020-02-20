@@ -2,21 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    FormControl,
-    Grid,
-    IconButton,
-    InputAdornment,
-    InputLabel,
-    OutlinedInput,
-    TextField
+    Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, IconButton, InputAdornment, InputLabel,
+    OutlinedInput, TextField
 } from '@material-ui/core';
-import { FolderOpenRounded as BrowseIcon, CancelRounded as CancelIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
+import { CancelRounded as CancelIcon, FolderOpenRounded as BrowseIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 import { DatePicker } from '@material-ui/pickers';
 
 import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, extractFileNameFromURL, formatDateLabel, loadFileAsByteArray } from 'resources';
@@ -358,7 +347,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                                    error={registrationRequired || registrationUnique}
                                    fullWidth
                                    helperText={registrationRequired ? registrationRequiredHelperText : registrationUnique
-                                       && registrationUniqueHelperText}
+                                           && registrationUniqueHelperText}
                                    label="Numéro d'immatriculation"
                                    onChange={e => onFieldValueChanged(e, 'registration')}
                                    required

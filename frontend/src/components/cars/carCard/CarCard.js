@@ -27,7 +27,7 @@ function CarCard({ car, className }) {
 
     // Defines the picture of the card depending on its value
     const picture = car.picture ? <img alt={`Car n°${car.id}`} src={`data:image/jpeg;base64,${car.picture}`} className='Picture' /> :
-        <DefaultCarPicture className='Picture Picture_default' />;
+            <DefaultCarPicture className='Picture Picture_default' />;
 
     return (<Card className={className} id='CarCard'>
         <CardActionArea component={Link} to={`/cars/${car.id}`}>
