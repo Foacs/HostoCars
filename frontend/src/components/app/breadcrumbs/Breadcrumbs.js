@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-import { Link, Breadcrumbs as MuiBreadcrumbs, Typography } from '@material-ui/core';
+import { Breadcrumbs as MuiBreadcrumbs, Link, Typography } from '@material-ui/core';
 import { HomeRounded as HomeIcon, NavigateNextRounded as NextIcon } from '@material-ui/icons';
 
 import './Breadcrumbs.scss';
@@ -27,7 +27,7 @@ const separator = <NextIcon fontSize='small' />;
  */
 function Breadcrumbs({ className, currentNavigationPath, currentPageName }) {
     return (<MuiBreadcrumbs className={className} id='Breadcrumbs' separator={separator}>
-        <Link className='HomeLink' component={RouterLink} to='/cars'>
+        <Link className='HomeLink' component={RouterLink} to='/cars' replace>
             <HomeIcon />
         </Link>
 

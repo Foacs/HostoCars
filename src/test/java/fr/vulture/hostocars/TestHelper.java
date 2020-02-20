@@ -5,19 +5,31 @@ import static java.util.Objects.isNull;
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
 import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.rule.impl.EqualsAndHashCodeMatchRule;
 import com.openpojo.validation.rule.impl.GetterMustExistRule;
+import com.openpojo.validation.rule.impl.NoFieldShadowingRule;
+import com.openpojo.validation.rule.impl.NoNestedClassRule;
+import com.openpojo.validation.rule.impl.NoPrimitivesRule;
+import com.openpojo.validation.rule.impl.NoPublicFieldsRule;
+import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
+import com.openpojo.validation.rule.impl.SerializableMustHaveSerialVersionUIDRule;
 import com.openpojo.validation.rule.impl.SetterMustExistRule;
+import com.openpojo.validation.rule.impl.TestClassMustBeProperlyNamedRule;
+import com.openpojo.validation.test.impl.DefaultValuesNullTester;
 import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SerializableTester;
 import com.openpojo.validation.test.impl.SetterTester;
-import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Helper class for testing.
  */
+@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TestHelper {
+public final class TestHelper {
 
     private static Validator beanValidator;
 
@@ -27,7 +39,8 @@ public class TestHelper {
      * @param beanClass
      *     The bean class to validate
      */
-    public static void validateBean(@NotNull final Class beanClass) {
+    public static void validateBean(@NonNull final Class beanClass) {
+        log.trace("Validating the bean class : {}", beanClass.getSimpleName());
         getBeanValidator().validate(PojoClassFactory.getPojoClass(beanClass));
     }
 
@@ -38,11 +51,22 @@ public class TestHelper {
      */
     private static Validator getBeanValidator() {
         if (isNull(beanValidator)) {
+            log.trace("Initializing the bean validator");
             beanValidator = ValidatorBuilder.create()
-                .with(new SetterMustExistRule())
+                .with(new DefaultValuesNullTester())
+                .with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())
-                .with(new SetterTester())
                 .with(new GetterTester())
+                .with(new NoFieldShadowingRule())
+                .with(new NoNestedClassRule())
+                .with(new NoPrimitivesRule())
+                .with(new NoPublicFieldsRule())
+                .with(new NoStaticExceptFinalRule())
+                .with(new SerializableMustHaveSerialVersionUIDRule())
+                .with(new SerializableTester())
+                .with(new SetterMustExistRule())
+                .with(new SetterTester())
+                .with(new TestClassMustBeProperlyNamedRule())
                 .build();
         }
 

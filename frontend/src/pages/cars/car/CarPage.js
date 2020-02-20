@@ -5,23 +5,11 @@ import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
 import {
-    Box,
-    Button,
-    CircularProgress,
-    ExpansionPanel,
-    ExpansionPanelDetails,
-    ExpansionPanelSummary,
-    Grid,
-    IconButton,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableRow,
-    Typography
+    Box, Button, CircularProgress, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Grid, IconButton, Paper, Table, TableBody, TableCell,
+    TableRow, Typography
 } from '@material-ui/core';
 import {
-    SearchRounded as DisplayIcon, EditRounded as EditIcon, ErrorOutlineRounded as ErrorIcon, SentimentDissatisfiedRounded as SmileyIcon
+    EditRounded as EditIcon, ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon
 } from '@material-ui/icons';
 
 import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
@@ -205,7 +193,7 @@ class CarPage extends PureComponent {
                 } else {
                     // If there is no car but they have not been loaded, loads them
                     getCars()
-                        .then(this.setState({ haveCarsBeenLoaded: true }));
+                            .then(this.setState({ haveCarsBeenLoaded: true }));
                     content = <CircularProgress size={20} thickness={4} />;
                 }
             } else {
@@ -222,7 +210,7 @@ class CarPage extends PureComponent {
                 } else {
                     // If the current car has not been found but the cars have not been loaded, loads them
                     getCars()
-                        .then(this.setState({ haveCarsBeenLoaded: true }));
+                            .then(this.setState({ haveCarsBeenLoaded: true }));
                     content = <CircularProgress size={20} thickness={4} />;
                 }
             }
@@ -251,7 +239,7 @@ class CarPage extends PureComponent {
         } else if (car) {
             // If the car has been found, displays the car content
             const picture = car.picture ? <img alt={`Car n°${car.id}`} className='CarPicture' src={`data:image/jpeg;base64,${car.picture}`} /> :
-                <DefaultCarPicture className='CarPicture CarPicture_default' />;
+                    <DefaultCarPicture className='CarPicture CarPicture_default' />;
 
             const certificateButton = <IconButton className='CertificateButton' onClick={this.onOpenCertificateModal}>
                 <DisplayIcon />
@@ -268,10 +256,10 @@ class CarPage extends PureComponent {
             </Fragment>);
 
             const registrations = cars && cars.filter(currentCar => car.registration !== currentCar.registration)
-                .map(currentCar => currentCar.registration);
+                    .map(currentCar => currentCar.registration);
 
             const serialNumbers = cars && cars.filter(currentCar => car.serialNumber !== currentCar.serialNumber)
-                .map(currentCar => currentCar.serialNumber);
+                    .map(currentCar => currentCar.serialNumber);
 
             content = (<Fragment>
                 <Grid container spacing={4}>

@@ -32,12 +32,12 @@ function Menu({ changeSelectedIndex, className, selectedIndex }) {
 
         <List>
             {menuItems.map((menuItem, index) => (
-                <ListItem button component={Link} key={menuItem.label} onClick={() => changeSelectedIndex(index)} selected={selectedIndex === index}
-                          to={menuItem.link}>
-                    <ListItemIcon className='Icon'>{menuItem.icon}</ListItemIcon>
+                    <ListItem button component={Link} key={menuItem.label} onClick={() => changeSelectedIndex(index)}
+                              selected={selectedIndex === index} to={menuItem.link} replace>
+                        <ListItemIcon className='Icon'>{menuItem.icon}</ListItemIcon>
 
-                    <ListItemText className='Label' primary={menuItem.label} />
-                </ListItem>))}
+                        <ListItemText className='Label' primary={menuItem.label} />
+                    </ListItem>))}
         </List>
 
         <Typography className='Footer non-selectable'>{footerText}</Typography>

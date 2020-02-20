@@ -3,11 +3,8 @@ import PropTypes from 'prop-types';
 
 import { Box, Divider, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, IconButton } from '@material-ui/core';
 import {
-    CloseRounded as CloseIcon,
-    HighlightOffRounded as ErrorIcon,
-    InfoOutlined as InfoIcon,
-    CheckCircleOutlineRounded as SuccessIcon,
-    ErrorOutlineRounded as WarningIcon
+    CheckCircleOutlineRounded as SuccessIcon, CloseRounded as CloseIcon, ErrorOutlineRounded as WarningIcon, HighlightOffRounded as ErrorIcon,
+    InfoOutlined as InfoIcon
 } from '@material-ui/icons';
 
 import { NOTIFICATION_ERROR_VARIANT, NOTIFICATION_INFO_VARIANT, NOTIFICATION_SUCCESS_VARIANT, NOTIFICATION_WARNING_VARIANT } from 'resources';
@@ -16,9 +13,9 @@ import './Notification.scss';
 
 /**
  * Resolves the icon to display in the notification for the given variant.
- * <br/>
+ * <br />
  * The known variants are : <i>info</i>, <i>success</i>, <i>warning</i> and <i>error</i>.
- * <br/>
+ * <br />
  * If an unknown variant is given, no icon is returned.
  *
  * @param {string} variant
@@ -63,7 +60,7 @@ const resolveNotificationIcon = (variant) => {
  */
 function Notification({ children, className, id, message, onClose, variant }) {
     // Defines the notification panel class name depending on the variant
-    const panelClassName = 'Panel' + (variant ? ' Panel_' + variant : '');
+    const panelClassName = `Panel${variant ? ` Panel_${variant}` : ''}`;
 
     // Defines the notification title class name depending on the children
     const titleClassName = 'Title' + (children ? ' Title_expandable' : '');
@@ -86,7 +83,7 @@ function Notification({ children, className, id, message, onClose, variant }) {
             {children && <Divider variant='middle' />}
 
             {children && <ExpansionPanelDetails className='Content'>
-                {React.cloneElement(children, { id: id })}
+                {React.cloneElement(children, { id })}
             </ExpansionPanelDetails>}
         </ExpansionPanel>
     </Box>);

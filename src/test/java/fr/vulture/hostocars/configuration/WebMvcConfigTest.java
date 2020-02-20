@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -49,7 +50,7 @@ class WebMvcConfigTest {
         Mockito.when(registry.addResourceHandler("/**/*")).thenReturn(registryRegistration);
         Mockito.when(registryRegistration.addResourceLocations("classpath:/static/")).thenReturn(registryRegistration);
         Mockito.when(registryRegistration.resourceChain(true)).thenReturn(chainRegistration);
-        Mockito.when(chainRegistration.addResolver(Mockito.any(CustomPathResourceResolver.class))).thenReturn(chainRegistration);
+        Mockito.when(chainRegistration.addResolver(ArgumentMatchers.any(CustomPathResourceResolver.class))).thenReturn(chainRegistration);
 
         webMvcConfig.addResourceHandlers(registry);
 
@@ -58,8 +59,7 @@ class WebMvcConfigTest {
         final ResourceResolver resourceResolver = argumentCaptor.getValue();
 
         assertNotNull(resourceResolver, "Added resource resolver unexpectedly null");
-        assertSame(CustomPathResourceResolver.class, resourceResolver.getClass(),
-            "Added resource resolver class different from expected");
+        assertSame(CustomPathResourceResolver.class, resourceResolver.getClass(), "Added resource resolver class different from expected");
 
         Mockito.verify(registry, Mockito.times(1)).addResourceHandler("/**/*");
         Mockito.verify(registryRegistration, Mockito.times(1)).addResourceLocations("classpath:/static/");

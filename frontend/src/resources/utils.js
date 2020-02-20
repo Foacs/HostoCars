@@ -52,7 +52,7 @@ export const loadFileAsByteArray = (file) => {
 
     const reader = new FileReader();
     reader.readAsArrayBuffer(file);
-    reader.onloadend = function (e) {
+    reader.onloadend = e => {
         if (FileReader.DONE === e.target.readyState) {
             const array = new Uint8Array(e.target.result);
             for (let i = 0; i < array.length; i++) {
