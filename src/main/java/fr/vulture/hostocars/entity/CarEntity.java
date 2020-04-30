@@ -1,10 +1,11 @@
 package fr.vulture.hostocars.entity;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import lombok.Data;
@@ -16,12 +17,12 @@ import lombok.ToString.Exclude;
 @Entity
 @Data
 @Table(name = "Cars")
-public class Car implements Serializable {
+public class CarEntity implements Serializable {
 
-    private static final long serialVersionUID = -926253460136617865L;
+    private static final long serialVersionUID = -8531072274006990095L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id",
         unique = true,
         nullable = false,

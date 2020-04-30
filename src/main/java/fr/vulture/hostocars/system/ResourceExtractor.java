@@ -2,11 +2,12 @@ package fr.vulture.hostocars.system;
 
 import static fr.vulture.hostocars.configuration.ProfileEnum.DEV;
 import static fr.vulture.hostocars.configuration.ProfileEnum.PROD;
+import static java.util.Comparator.comparing;
+import static java.util.regex.Pattern.compile;
 
 import fr.vulture.hostocars.configuration.ProfileEnum;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -17,7 +18,6 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +47,7 @@ public class ResourceExtractor {
      * @throws IOException
      *     if an I/O error occurs while extracting the resource URL
      */
-    final URL extractIcon() throws IOException {
+    static URL extractApplicationTrayIcon() throws IOException {
         return new PathMatchingResourcePatternResolver().getResources("classpath:*icon.png")[0].getURL();
     }
 
@@ -65,8 +65,8 @@ public class ResourceExtractor {
      * @throws IOException
      *     if an I/O error occurs while extracting the resources
      */
-    public final SortedMap<Version, SortedSet<Resource>> extractSQLResources(@NonNull final Version currentVersion,
-        @NonNull final Version targetVersion) throws IOException {
+    public SortedMap<Version, SortedSet<Resource>> extractSQLResources(@NonNull final Version currentVersion, @NonNull final Version targetVersion)
+        throws IOException {
         log.debug("Extracting the executable SQL resources from version {} to {}", currentVersion, targetVersion);
 
         // Extracts the resources from the classpath
@@ -78,7 +78,7 @@ public class ResourceExtractor {
         final Map<String, Resource> resourceByPathMap = this.extractResourcePaths(resourceArray);
 
         // Extracts the versions and groups the resources by their corresponding ones
-        return this.groupResourcesByVersions(resourceByPathMap, currentVersion, targetVersion);
+        return groupResourcesByVersions(resourceByPathMap, currentVersion, targetVersion);
     }
 
     /**
@@ -151,7 +151,7 @@ public class ResourceExtractor {
      *
      * @return a sorted map of the sorted resources by their corresponding versions
      */
-    private SortedMap<Version, SortedSet<Resource>> groupResourcesByVersions(final @NonNull Map<String, ? extends Resource> resourceByPathMap,
+    private static SortedMap<Version, SortedSet<Resource>> groupResourcesByVersions(final @NonNull Map<String, ? extends Resource> resourceByPathMap,
         @NonNull final Version currentVersion, @NonNull final Version targetVersion) {
         log.debug("Grouping the found resources by version");
 
@@ -165,7 +165,7 @@ public class ResourceExtractor {
             final String resourcePath = entry.getKey();
 
             // Tries to find a version in the current path
-            final Matcher matcher = Pattern.compile(versionRegex).matcher(resourcePath);
+            final Matcher matcher = compile(versionRegex).matcher(resourcePath);
 
             // If a version has been found, tries to add the resource to the result map
             if (matcher.find()) {
@@ -178,7 +178,7 @@ public class ResourceExtractor {
                 if (0 < version.compareTo(currentVersion) || 0 >= version.compareTo(targetVersion)) {
                     // If no previous resource has been added to the current version, initialize the set of resources
                     if (!resultMap.containsKey(version)) {
-                        resultMap.put(version, new TreeSet<>(Comparator.comparing(Resource::getFilename)));
+                        resultMap.put(version, new TreeSet<>(comparing(Resource::getFilename)));
                     }
 
                     // Adds the resource to the result map

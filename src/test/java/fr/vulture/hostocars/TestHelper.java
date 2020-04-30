@@ -1,10 +1,10 @@
 package fr.vulture.hostocars;
 
+import static com.openpojo.validation.ValidatorBuilder.create;
 import static java.util.Objects.isNull;
 
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
-import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.rule.impl.EqualsAndHashCodeMatchRule;
 import com.openpojo.validation.rule.impl.GetterMustExistRule;
 import com.openpojo.validation.rule.impl.NoFieldShadowingRule;
@@ -52,8 +52,7 @@ public final class TestHelper {
     private static Validator getBeanValidator() {
         if (isNull(beanValidator)) {
             log.trace("Initializing the bean validator");
-            beanValidator = ValidatorBuilder.create()
-                .with(new DefaultValuesNullTester())
+            beanValidator = create().with(new DefaultValuesNullTester())
                 .with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())
                 .with(new GetterTester())

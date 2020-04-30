@@ -56,7 +56,7 @@ public class MailController {
      * @return an HTTP response
      */
     @PostMapping("/send")
-    public final ResponseEntity<?> sendMail(@RequestBody @NonNull final Mail mail) {
+    public ResponseEntity<?> sendMail(@RequestBody @NonNull final Mail mail) {
         log.info("[sendMail <= Calling] With body = {}", mail);
 
         try {
@@ -99,8 +99,8 @@ public class MailController {
             return ResponseEntity.ok().build();
         }
 
-        // If an unknown exception has been thrown, returns a 500 status
-        catch (final Exception e) {
+        // If an unknown throwable has been thrown, returns a 500 status
+        catch (final Throwable e) {
             log.error("[sendMail => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));

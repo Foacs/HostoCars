@@ -27,7 +27,7 @@ export const extractFileNameFromURL = (url) => {
  */
 export const formatDateLabel = (date) => {
     const dateObject = new Date(date);
-    return null === date ? undefined : `${lodash.capitalize(dateObject.toLocaleString('default', { month: 'long' }))} ${dateObject.getFullYear()}`;
+    return null === date ? undefined : `${lodash.capitalize(dateObject.toLocaleString('fr', { month: 'long' }))} ${dateObject.getFullYear()}`;
 };
 
 /**

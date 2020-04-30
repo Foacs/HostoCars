@@ -1,22 +1,21 @@
 package fr.vulture.hostocars.controller;
 
-import static fr.vulture.hostocars.utils.ControllerUtils.DEFAULT_MATCHER;
-import static java.util.Objects.nonNull;
-import static org.springframework.data.domain.Sort.by;
+import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import fr.vulture.hostocars.entity.Car;
+import fr.vulture.hostocars.dao.CarDao;
+import fr.vulture.hostocars.dto.Car;
+import fr.vulture.hostocars.entity.CarEntity;
 import fr.vulture.hostocars.pojo.Response;
-import fr.vulture.hostocars.repository.CarRepository;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,27 +31,28 @@ import org.springframework.web.bind.annotation.RestController;
  * REST controller for cars.
  */
 @Slf4j
+@Transactional
 @RestController
 @RequestMapping("/cars")
 @CrossOrigin(origins = "*")
 public class CarController {
 
     @NonNull
-    private final CarRepository carRepository;
+    private final CarDao carDao;
 
     /**
      * Valued autowired constructor.
      *
-     * @param carRepository
-     *     The autowired {@link CarRepository} component
+     * @param carDao
+     *     The autowired {@link CarDao} component
      */
     @Autowired
-    public CarController(@NonNull final CarRepository carRepository) {
-        this.carRepository = carRepository;
+    public CarController(@NonNull final CarDao carDao) {
+        this.carDao = carDao;
     }
 
     /**
-     * Retrieves the list of all the {@link Car} entities from the database. A sorting field can also be specified.
+     * Retrieves the list of all the {@link Car} from the database. A sorting field can also be specified.
      *
      * @param sortedBy
      *     The optional sorting clause field
@@ -60,20 +60,20 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public final ResponseEntity<?> getCars(@RequestParam(required = false) final String sortedBy) {
+    public ResponseEntity<?> getCars(@RequestParam(required = false) final String sortedBy) {
         log.info("[getCars <= Calling] With sorting field = {}", sortedBy);
 
         try {
-            // Calls the repository to retrieve the list of cars, sorted by the given field if it is not null
-            final List<Car> resultList = nonNull(sortedBy) ? this.carRepository.findAll(by(sortedBy)) : this.carRepository.findAll();
+            // Calls the DAO to retrieve the list of all the cars from the database
+            final List<Car> resultList = this.carDao.getCars(sortedBy);
 
-            // If no entity was found, returns a 204 status
+            // If no result was found, returns a 204 status
             if (resultList.isEmpty()) {
                 log.info("[getCars => {}] No car found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
-            // If at least one entity has been found, returns the list with a 200 status
+            // If at least one result has been found, returns the list with a 200 status
             log.info("[getCars => {}] {} car(s) found", OK.value(), resultList.size());
             return ResponseEntity.ok(resultList);
         }
@@ -87,31 +87,30 @@ public class CarController {
     }
 
     /**
-     * Retrieves the {@link Car} entity with the given ID from the database.
+     * Retrieves the {@link Car} with the given ID from the database.
      *
      * @param id
-     *     The {@link Car} ID
+     *     The {@link CarEntity} ID
      *
      * @return an HTTP response
      */
     @GetMapping("/{id}")
-    public final ResponseEntity<?> getCarById(@PathVariable @NonNull final Integer id) {
+    public ResponseEntity<?> getCarById(@PathVariable @NonNull final Integer id) {
         log.info("[getCarByID <= Calling] With ID = {}", id);
 
         try {
-            // Calls the repository to retrieve the car with the given ID
-            final Optional<Car> result = this.carRepository.findById(id);
+            // Calls the DAO to retrieve the car with the given ID from the database
+            final Car result = this.carDao.getCarById(id);
 
-            // If an entity has been found, retrieves it
-            if (result.isPresent()) {
-                // Returns the extracted entity with a 200 status
-                log.info("[getCarByID => {}] Car found for ID = {}", OK.value(), id);
-                return ResponseEntity.ok(result.get());
+            // If no result has been found, returns a 204 status
+            if (isNull(result)) {
+                log.info("[getCarByID => {}] No car found for ID = {}", NO_CONTENT.value(), id);
+                return ResponseEntity.noContent().build();
             }
 
-            // If no entity has been found, returns a 204 status
-            log.info("[getCarByID => {}] No car found for ID = {}", NO_CONTENT.value(), id);
-            return ResponseEntity.noContent().build();
+            // If a result has been found, returns it with a 200 status
+            log.info("[getCarByID => {}] Car found for ID = {}", OK.value(), id);
+            return ResponseEntity.ok(result);
         }
 
         // If an unknown exception has been thrown, returns a 500 status
@@ -123,7 +122,39 @@ public class CarController {
     }
 
     /**
-     * Retrieves the list of {@link Car} entities matching the given body from the database.
+     * Retrieves the list of all distinct {@link Car} registration numbers from the database.
+     *
+     * @return an HTTP response
+     */
+    @GetMapping("/registrations")
+    public ResponseEntity<?> getCarRegistrations() {
+        log.info("[getCarRegistrations <= Calling]");
+
+        try {
+            // Calls the DAO to retrieve the list of all distinct car registration numbers from the database
+            final Set<String> resultList = this.carDao.getCarRegistrations();
+
+            // If no result has been found, returns a 204 status
+            if (isNull(resultList) || resultList.isEmpty()) {
+                log.info("[getCarRegistrations => {}] No registration number found", NO_CONTENT.value());
+                return ResponseEntity.noContent().build();
+            }
+
+            // If at least one result has been found, returns the list with a 200 status
+            log.info("[getCarRegistrations => {}] {} registration number(s) found", OK.value(), resultList.size());
+            return ResponseEntity.ok(resultList);
+        }
+
+        // If an unknown exception has been thrown, returns a 500 status
+        catch (final RuntimeException e) {
+            log.error("[getCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            final String responseMessage = e.getClass().getSimpleName();
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
+        }
+    }
+
+    /**
+     * Retrieves the list of {@link Car} matching the given body from the database.
      *
      * @param body
      *     The body
@@ -131,20 +162,20 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/search")
-    public final ResponseEntity<?> searchCars(@RequestBody @NonNull final Car body) {
+    public ResponseEntity<?> searchCars(@RequestBody @NonNull final Car body) {
         log.info("[searchCars <= Calling] With body = {}", body);
 
         try {
-            // Calls the repository to retrieve the cars matching the given body
-            final List<Car> resultList = this.carRepository.findAll(Example.of(body, DEFAULT_MATCHER.withIgnorePaths("certificate", "picture")));
+            // Calls the DAO to retrieve the car matching the given body from the database
+            final List<Car> resultList = this.carDao.searchCars(body);
 
-            // If no entity was found, returns a 204 status
+            // If no result was found, returns a 204 status
             if (resultList.isEmpty()) {
                 log.info("[searchCars => {}] No car found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
-            // If at least one entity has been found, returns the list with a 200 status
+            // If at least one result has been found, returns the list with a 200 status
             log.info("[searchCars => {}] {} car(s) found", OK.value(), resultList.size());
             return ResponseEntity.ok(resultList);
         }
@@ -158,7 +189,7 @@ public class CarController {
     }
 
     /**
-     * Inserts a new {@link Car} entity in the database, generated from the given body.
+     * Inserts a new {@link Car} in the database, generated from the given body.
      *
      * @param body
      *     The body
@@ -166,15 +197,12 @@ public class CarController {
      * @return an HTTP response
      */
     @PostMapping("/save")
-    public final ResponseEntity<?> saveCar(@RequestBody @NonNull final Car body) {
+    public ResponseEntity<?> saveCar(@RequestBody @NonNull final Car body) {
         log.info("[saveCar <= Calling] With body = {}", body);
 
         try {
-            // Calls the repository to save the given body
-            final Car result = this.carRepository.save(body);
-
-            // Retrieves the generated key
-            final int generatedId = result.getId();
+            // Calls the DAO to insert a new car in the database
+            final Integer generatedId = this.carDao.saveCar(body);
 
             // Returns the generated key with a 200 status
             log.info("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedId);
@@ -190,41 +218,36 @@ public class CarController {
     }
 
     /**
-     * Updates a {@link Car} entity with the given body in the database by its ID.
+     * Updates a {@link Car} with the given body in the database.
      *
-     * @param id
-     *     The {@link Car} ID
      * @param body
      *     The body
      *
      * @return an HTTP response
      */
-    @PutMapping("/{id}/update")
-    public final ResponseEntity<?> updateCarByID(@PathVariable @NonNull final Integer id, @RequestBody @NonNull final Car body) {
-        log.info("[updateCarByID <= Calling] With ID = {} and body = {}", id, body);
+    @PutMapping("/update")
+    public ResponseEntity<?> updateCar(@RequestBody @NonNull final Car body) {
+        log.info("[updateCar <= Calling] With body = {}", body);
 
         try {
-            // Sets the given ID to the given body
-            body.setId(id);
-
-            // Calls the repository to update the given body
-            this.carRepository.save(body);
+            // Calls the DAO to update the given car in the database
+            this.carDao.updateCar(body);
 
             // Returns a 200 status
-            log.info("[updateCarByID => {}] Car updated", OK.value());
+            log.info("[updateCar => {}] Car updated", OK.value());
             return ResponseEntity.ok().build();
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[updateCarByID => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[updateCar => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Deletes a {@link Car} entity in the database by its ID.
+     * Deletes a {@link Car} in the database by its ID.
      *
      * @param id
      *     The {@link Car} ID
@@ -232,21 +255,18 @@ public class CarController {
      * @return an HTTP response
      */
     @DeleteMapping("/{id}/delete")
-    public final ResponseEntity<?> deleteCarByID(@PathVariable @NonNull final Integer id) {
+    public ResponseEntity<?> deleteCarById(@PathVariable @NonNull final Integer id) {
         log.info("[deleteCarByID <= Calling] With ID = {}", id);
 
         try {
-            // Calls the car repository to check if the given ID exists in the database
-            if (this.carRepository.existsById(id)) {
-                // If the ID exists, calls the car repository to delete the car corresponding to the given ID
-                this.carRepository.deleteById(id);
-
-                // Returns a 200 status
+            // Calls the DAO to delete the car with the given ID from the database
+            if (this.carDao.deleteCarById(id)) {
+                // If the ID existed, returns a 200 status
                 log.info("[deleteCarByID => {}] Car deleted", OK.value());
                 return ResponseEntity.ok().build();
             }
 
-            // If the ID doesn't exist, returns a 204 status
+            // If the ID didn't exist, returns a 204 status
             log.info("[deleteCarByID => {}] No car found to delete", NO_CONTENT.value());
             return ResponseEntity.noContent().build();
         }

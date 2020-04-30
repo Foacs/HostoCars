@@ -1,5 +1,9 @@
 package fr.vulture.hostocars.database;
 
+import static java.time.LocalDate.now;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.util.Comparator.comparingInt;
+import static java.util.Comparator.comparingLong;
 import static java.util.Objects.isNull;
 
 import java.io.File;
@@ -9,9 +13,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 import lombok.NonNull;
@@ -25,8 +27,8 @@ import org.springframework.stereotype.Component;
  * Manager component for the database backups.
  */
 @Slf4j
-@Component("backupManager")
-public class BackupManager {
+@Component
+class BackupManager {
 
     private static final String BACKUP_FILE_NAME_PREFIX = "data.backup.";
     private static final String BACKUP_FILE_NAME_UPDATE_PREFIX = "data.update.backup.";
@@ -58,7 +60,7 @@ public class BackupManager {
      * @throws IOException
      *     if an error occurs while reading the database file or writing the backup file
      */
-    final void backupDatabaseIfNeeded() throws IOException {
+    void backupDatabaseIfNeeded() throws IOException {
         if (this.isBackupNeeded()) {
             log.debug("Creating a backup of the database");
             this.backupDatabase(BACKUP_FILE_NAME_PREFIX, this.databaseBackupNumber);
@@ -89,9 +91,8 @@ public class BackupManager {
         log.trace("{} backup file(s) found", backupFileArray.length);
 
         // Retrieves the latest backup file
-        final Optional<File> latestBackupFile = Stream.of(backupFileArray)
-            .filter(file -> file.getName().startsWith(BACKUP_FILE_NAME_PREFIX))
-            .min(Comparator.comparingLong(File::lastModified));
+        final Optional<File> latestBackupFile =
+            Stream.of(backupFileArray).filter(file -> file.getName().startsWith(BACKUP_FILE_NAME_PREFIX)).min(comparingLong(File::lastModified));
 
         // If there is no backup file, returns true (should not occur at this point)
         if (!latestBackupFile.isPresent()) {
@@ -101,10 +102,10 @@ public class BackupManager {
         // Retrieves the creation date of the latest backup file
         final LocalDate oldestBackupDate = Instant.ofEpochMilli(latestBackupFile.get().lastModified()).atZone(ZoneId.systemDefault()).toLocalDate();
 
-        log.trace("Latest backup file date found : {}", oldestBackupDate.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        log.trace("Latest backup file date found : {}", oldestBackupDate.format(ISO_LOCAL_DATE));
 
         // Returns if the latest backup file's date is too old or not
-        return ChronoUnit.DAYS.between(oldestBackupDate, LocalDate.now()) >= this.databaseBackupDelay;
+        return ChronoUnit.DAYS.between(oldestBackupDate, now()) >= this.databaseBackupDelay;
     }
 
     /**
@@ -132,7 +133,7 @@ public class BackupManager {
         // Computes the path of the backup file being created
         final String backupFilePath = this.databaseLocation.concat("/")
             .concat(backupFileNamePrefix)
-            .concat(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE))
+            .concat(now().format(ISO_LOCAL_DATE))
             .concat(".")
             .concat(String.valueOf(next))
             .concat(BACKUP_FILE_NAME_SUFFIX);
@@ -172,14 +173,14 @@ public class BackupManager {
         log.trace("{} backup file(s) found", backupFileArray.length);
 
         // Adds today's date to the given prefix
-        final String todayBackupFileNamePrefix = backupFileNamePrefix.concat(LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)).concat(".");
+        final String todayBackupFileNamePrefix = backupFileNamePrefix.concat(now().format(ISO_LOCAL_DATE)).concat(".");
 
         // Returns the highest existing index incremented by one, or 0 if it can't be found (should not occur at this point)
         return Stream.of(backupFileArray)
             .map(File::getName)
             .filter(fileName -> fileName.startsWith(todayBackupFileNamePrefix))
             .map(fileName -> Integer.valueOf(fileName.replaceAll(todayBackupFileNamePrefix, "").split("[.]")[0]))
-            .max(Comparator.comparingInt(Integer::valueOf))
+            .max(comparingInt(Integer::valueOf))
             .map(maxIndex -> maxIndex + 1)
             .orElse(0);
     }
@@ -225,9 +226,7 @@ public class BackupManager {
             log.trace("{} backup file(s) found", backupFileArray.length);
 
             // Deletes the oldest found backup file
-            Stream.of(backupFileArray)
-                .filter(file -> file.getName().startsWith(backupFileNamePrefix))
-                .min(Comparator.comparingLong(File::lastModified))
+            Stream.of(backupFileArray).filter(file -> file.getName().startsWith(backupFileNamePrefix)).min(comparingLong(File::lastModified))
                 .ifPresent(File::delete);
         }
     }
@@ -238,7 +237,7 @@ public class BackupManager {
      * @throws IOException
      *     if an error occurs while reading the database file or writing the backup file
      */
-    final void backupDatabaseForUpdate() throws IOException {
+    void backupDatabaseForUpdate() throws IOException {
         log.debug("Creating a backup of the database before updating");
         this.backupDatabase(BACKUP_FILE_NAME_UPDATE_PREFIX, this.databaseUpdateBackupNumber);
     }
