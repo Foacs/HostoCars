@@ -1,8 +1,11 @@
 package fr.vulture.hostocars.database;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.sql.DriverManager.getConnection;
 import static java.util.Objects.nonNull;
+import static org.slf4j.helpers.MessageFormatter.arrayFormat;
 
+import fr.vulture.hostocars.entity.PropertyEntity;
 import fr.vulture.hostocars.repository.PropertyRepository;
 import fr.vulture.hostocars.system.ResourceExtractor;
 import java.io.BufferedReader;
@@ -10,28 +13,27 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.helpers.MessageFormatter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.data.util.Version;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 /**
  * Initializer for the SQLite database.
  */
 @Slf4j
-@Controller
-public class DatabaseInitializer implements InitializingBean {
+@Component
+class DatabaseInitializer implements InitializingBean {
 
     /**
      * The initial database version to use in case of initialization ({@code 0.0.0.0}).
@@ -75,7 +77,7 @@ public class DatabaseInitializer implements InitializingBean {
      *     The {@code project.version} property
      */
     @Autowired
-    public DatabaseInitializer(@NonNull final PropertyRepository propertyRepository, @NonNull final ResourceExtractor resourceExtractor,
+    DatabaseInitializer(@NonNull final PropertyRepository propertyRepository, @NonNull final ResourceExtractor resourceExtractor,
         @NonNull final BackupManager backupManager, @NonNull @Value("${project.version}") final String projectVersion) {
         this.propertyRepository = propertyRepository;
         this.resourceExtractor = resourceExtractor;
@@ -87,7 +89,7 @@ public class DatabaseInitializer implements InitializingBean {
      * {@inheritDoc}
      */
     @Override
-    public final void afterPropertiesSet() throws IOException, SQLException {
+    public void afterPropertiesSet() throws IOException, SQLException {
         log.info("Initializing the database");
 
         // If the folder doesn't exist, creates it
@@ -98,12 +100,18 @@ public class DatabaseInitializer implements InitializingBean {
         }
 
         if (new File(this.databasePath).exists()) {
-            // Retrieves the current database version
-            final Version databaseVersion = Version.parse(this.propertyRepository.findByKey("version").getValue());
+            // Retrieves the current database version property
+            final Optional<PropertyEntity> databaseVersionProperty = this.propertyRepository.findByKey("version");
+
+            // If the database version property is missing, throws an exception
+            assert databaseVersionProperty.isPresent() : "The database version property is missing from the database";
+
+            // Extracts the database version from its property
+            final Version databaseVersion = Version.parse(databaseVersionProperty.get().getValue());
 
             // If the database version is higher than the project version, throws an exception
-            assert 0 >= databaseVersion.compareTo(this.projectVersion) : MessageFormatter.arrayFormat(
-                "The database version ({}) is higher than the project one ({})", new Object[] {databaseVersion, this.projectVersion}).getMessage();
+            assert 0 >= databaseVersion.compareTo(this.projectVersion) : arrayFormat("The database version ({}) is higher than the project one ({})",
+                new Object[] {databaseVersion, this.projectVersion}).getMessage();
 
             if (0 > databaseVersion.compareTo(this.projectVersion)) {
                 // If the database version is lower than the project version, updates the database
@@ -190,7 +198,7 @@ public class DatabaseInitializer implements InitializingBean {
                         queryString = queryString.trim().replaceAll("\\p{Blank}+", " ");
 
                         // Opens a connection and disables the auto-commit feature
-                        try (final Connection connection = DriverManager.getConnection(this.databaseUrl)) {
+                        try (final Connection connection = getConnection(this.databaseUrl)) {
                             connection.setAutoCommit(false);
 
                             // Creates a statement

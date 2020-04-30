@@ -1,12 +1,10 @@
 package fr.vulture.hostocars;
 
-import fr.vulture.hostocars.system.SystemTrayHelper;
-import java.awt.SystemTray;
-import javax.swing.SwingUtilities;
+import static java.util.Arrays.asList;
+import static org.springframework.boot.SpringApplication.run;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * Application launcher with arguments.
@@ -23,14 +21,9 @@ public class Application {
      */
     public static void main(final String[] args) {
         // Defines and starts the application context
-        final ConfigurableApplicationContext context = new SpringApplicationBuilder(Application.class).run();
+        run(Application.class, args);
 
-        // If the system tray is supported, adds the application tray icon
-        if (SystemTray.isSupported()) {
-            SwingUtilities.invokeLater(() -> SystemTrayHelper.addTrayIcon(context));
-        } else {
-            log.warn("System tray not supported on this platform");
-        }
+        log.debug("Started application with args : {}", asList(args));
     }
 
 }

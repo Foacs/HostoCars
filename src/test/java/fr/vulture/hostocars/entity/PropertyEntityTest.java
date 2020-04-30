@@ -1,22 +1,23 @@
 package fr.vulture.hostocars.entity;
 
-import fr.vulture.hostocars.TestHelper;
+import static fr.vulture.hostocars.TestHelper.validateBean;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for the {@link Property} entity.
+ * Test class for the {@link PropertyEntity} entity.
  */
 @DisplayName("Property entity")
-class PropertyTest {
+class PropertyEntityTest {
 
     /**
-     * Tests the {@link Property} entity.
+     * Tests the {@link PropertyEntity} entity.
      */
     @Test
     @DisplayName("Testing the entity")
     final void testBean() {
-        TestHelper.validateBean(Property.class);
+        validateBean(PropertyEntity.class);
     }
 
 }

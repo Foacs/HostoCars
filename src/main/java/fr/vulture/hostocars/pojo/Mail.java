@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class Mail implements Serializable {
 
-    private static final long serialVersionUID = -2882906547823345275L;
+    private static final long serialVersionUID = -7124304390294101733L;
 
     private String recipient;
     private String subject;

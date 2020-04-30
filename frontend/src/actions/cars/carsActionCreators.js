@@ -188,7 +188,7 @@ export const editCarAction = (car) => {
     return dispatch => {
         dispatch(editCarStart());
 
-        return axios.put(`${WEB_SERVICE_BASE_URL}/cars/${car.id}/update`, car)
+        return axios.put(`${WEB_SERVICE_BASE_URL}/cars/update`, car)
                 .then(() => {
                     dispatch(editCarSuccess());
                     dispatch(enqueueNotificationAction({
@@ -327,6 +327,79 @@ const getCarFailure = () => ({
  *
  * @returns {Promise} the action promise
  */
+export const getCarRegistrationsAction = () => {
+    return dispatch => {
+        dispatch(getCarRegistrationsStart());
+
+        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/registrations`)
+                .then(res => {
+                    if (OK_STATUS === res.status) {
+                        dispatch(getCarRegistrationsSuccess(res.data));
+                    } else if (NO_CONTENT_STATUS === res.status) {
+                        dispatch(getCarRegistrationsNoContent());
+                    }
+                })
+                .catch(e => {
+                    dispatch(getCarRegistrationsFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors du chargement des numéros d\'immatriculation.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
+    };
+};
+
+/**
+ * Returns the action object for the {@link GET_CAR_REGISTRATIONS} action type.
+ *
+ * @returns {object} the action object
+ */
+const getCarRegistrationsStart = () => ({
+    type: types.GET_CAR_REGISTRATIONS
+});
+
+/**
+ * Returns the action object for the {@link GET_CAR_REGISTRATIONS_NO_CONTENT} action type.
+ *
+ * @returns {object} the action object
+ */
+const getCarRegistrationsNoContent = () => ({
+    type: types.GET_CAR_REGISTRATIONS_NO_CONTENT
+});
+
+/**
+ * Returns the action object for the {@link GET_CAR_REGISTRATIONS_OK} action type.
+ *
+ * @param {string[]} registrations
+ *     The loaded car registration numbers
+ *
+ * @returns {object} the action object
+ */
+const getCarRegistrationsSuccess = (registrations) => ({
+    registrations,
+    type: types.GET_CAR_REGISTRATIONS_OK
+});
+
+/**
+ * Returns the action object for the {@link GET_CAR_REGISTRATIONS_ERROR} action type.
+ *
+ * @returns {object} the action object
+ */
+const getCarRegistrationsFailure = () => ({
+    type: types.GET_CAR_REGISTRATIONS_ERROR
+});
+
+/**
+ * Loads all existing cars and returns the action promise.
+ * <br />
+ * If the operation fails, an error notification is shown.
+ *
+ * @returns {Promise} the action promise
+ */
 export const getCarsAction = () => {
     return (dispatch, getState) => {
         dispatch(getCarsStart());
@@ -336,7 +409,7 @@ export const getCarsAction = () => {
                     if (OK_STATUS === res.status) {
                         dispatch(getCarsSuccess(res.data));
                     } else if (NO_CONTENT_STATUS === res.status) {
-                        dispatch(getCarsSuccess([]));
+                        dispatch(getCarsNoContent());
                     }
                 })
                 .catch(e => {
@@ -360,6 +433,15 @@ export const getCarsAction = () => {
  */
 const getCarsStart = () => ({
     type: types.GET_CARS
+});
+
+/**
+ * Returns the action object for the {@link GET_CARS_NO_CONTENT} action type.
+ *
+ * @returns {object} the action object
+ */
+const getCarsNoContent = () => ({
+    type: types.GET_CARS_NO_CONTENT
 });
 
 /**

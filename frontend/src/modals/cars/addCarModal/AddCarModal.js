@@ -28,7 +28,7 @@ const formTitle = 'Ajout d\'une voiture';
  */
 function AddCarModal({ className, onClose, onValidate, open, registrations, serialNumbers }) {
     return <CarForm onClose={onClose} onValidate={onValidate} open={open} registrations={registrations} serialNumbers={serialNumbers}
-                    title={formTitle} />;
+                    title={formTitle} validateButtonLabel='Ajouter' />;
 }
 
 AddCarModal.propTypes = {

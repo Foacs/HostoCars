@@ -13,6 +13,9 @@ const initialState = {
     isGetAllInProgress: false,
     isGetInError: false,
     isGetInProgress: false,
+    isGetRegistrationsInError: false,
+    isGetRegistrationsInProgress: false,
+    registrations: [],
     sortedBy: 'registration'
 };
 
@@ -104,15 +107,46 @@ const carsReducer = (state = initialState, action) => {
             return {
                 ...state,
                 cars: state.cars.filter(car => action.id !== car.id),
-                isGetInError: true,
+                isGetInError: initialState.isGetInError,
                 isGetInProgress: initialState.isGetInProgress
             };
         case types.GET_CAR_OK:
             return {
                 ...state,
-                cars: state.cars.map(car => action.car.id === car.id ? action.car : car),
+                cars: state.cars.map(car => car.id)
+                        .includes(action.car.id)
+                        ? state.cars.map(car => action.car.id === car.id ? action.car : car)
+                        : [ ...state.cars, action.car ],
                 isGetInError: initialState.isGetInError,
                 isGetInProgress: initialState.isGetInProgress
+            };
+        case types.GET_CAR_REGISTRATIONS:
+            return {
+                ...state,
+                registrations: initialState.registrations,
+                isGetRegistrationsInError: initialState.isGetRegistrationsInError,
+                isGetRegistrationsInProgress: true
+            };
+        case types.GET_CAR_REGISTRATIONS_ERROR:
+            return {
+                ...state,
+                registrations: initialState.registrations,
+                isGetRegistrationsInError: true,
+                isGetRegistrationsInProgress: initialState.isGetRegistrationsInProgress
+            };
+        case types.GET_CAR_REGISTRATIONS_NO_CONTENT:
+            return {
+                ...state,
+                registrations: initialState.registrations,
+                isGetRegistrationsInError: initialState.isGetRegistrationsInError,
+                isGetRegistrationsInProgress: initialState.isGetRegistrationsInProgress
+            };
+        case types.GET_CAR_REGISTRATIONS_OK:
+            return {
+                ...state,
+                registrations: action.registrations,
+                isGetRegistrationsInError: initialState.isGetRegistrationsInError,
+                isGetRegistrationsInProgress: initialState.isGetRegistrationsInProgress
             };
         case types.GET_CARS:
             return {
@@ -126,6 +160,13 @@ const carsReducer = (state = initialState, action) => {
                 ...state,
                 cars: initialState.cars,
                 isGetAllInError: true,
+                isGetAllInProgress: initialState.isGetAllInProgress
+            };
+        case types.GET_CARS_NO_CONTENT:
+            return {
+                ...state,
+                cars: initialState.cars,
+                isGetAllInError: initialState.isGetAllInError,
                 isGetAllInProgress: initialState.isGetAllInProgress
             };
         case types.GET_CARS_OK:

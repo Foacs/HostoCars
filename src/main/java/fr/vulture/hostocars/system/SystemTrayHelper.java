@@ -1,5 +1,8 @@
 package fr.vulture.hostocars.system;
 
+import static fr.vulture.hostocars.system.ResourceExtractor.extractApplicationTrayIcon;
+import static org.springframework.boot.SpringApplication.exit;
+
 import java.awt.AWTException;
 import java.awt.Desktop;
 import java.awt.MenuItem;
@@ -11,9 +14,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -22,77 +27,101 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
-public final class SystemTrayHelper {
-
-    private static ResourceExtractor resourceExtractor;
+public class SystemTrayHelper implements InitializingBean {
 
     static {
         // Sets the java.awt.headless system property to enable the tray icon
         System.setProperty("java.awt.headless", "false");
     }
 
+    @NonNull
+    private final ApplicationContext applicationContext;
+    @NonNull
+    @Value("${server.address}")
+    private String serverAddress;
+    @NonNull
+    @Value("${spring.application.name}")
+    private String applicationName;
+    @NonNull
+    @Value("${server.port}")
+    private String serverPort;
+
     /**
      * Valued autowired constructor.
      *
-     * @param resourceExtractor
-     *     The autowired {@link ResourceExtractor} component
+     * @param applicationContext
+     *     The autowired {@link ApplicationContext} component
      */
     @Autowired
-    public SystemTrayHelper(final ResourceExtractor resourceExtractor) {
-        SystemTrayHelper.resourceExtractor = resourceExtractor;
+    public SystemTrayHelper(@NonNull final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     /**
-     * Adds an application tray icon to the system tray.
-     *
-     * @param context
-     *     The application context
+     * {@inheritDoc}
      */
-    public static void addTrayIcon(final ApplicationContext context) {
-        try {
-            // Gets the system tray factory
-            final SystemTray tray = SystemTray.getSystemTray();
+    @Override
+    public void afterPropertiesSet() {
+        // Checks if the current system supports the system tray
+        if (SystemTray.isSupported()) {
+            log.debug("Adding the application tray icon to the system tray");
 
-            // Extracts the URL of the tray icon resource file
-            final URL resource = resourceExtractor.extractIcon();
+            try {
+                // Gets the system tray factory
+                final SystemTray tray = SystemTray.getSystemTray();
 
-            // Creates the tray icon with the icon
-            final TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(resource), "HostoCars");
+                // Extracts the URL of the tray icon resource file
+                final URL resource = extractApplicationTrayIcon();
 
-            // Generates the application URI
-            final URI applicationUri = new URI("http://localhost:8080/");
+                // Creates the tray icon with the icon
+                final TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(resource), this.applicationName);
 
-            // Adds an event listener to open a tab on the default browser with the application URI
-            trayIcon.addActionListener(e -> {
-                try {
-                    Desktop.getDesktop().browse(applicationUri);
-                } catch (final IOException exception) {
-                    log.error("Failed to open new tab in default browser", exception);
-                }
-            });
+                // Generates the application URI
+                final URI applicationUri = new URI("http://" + this.serverAddress + ':' + this.serverPort);
 
-            // Creates a menu item for the tray icon in order to exit the application
-            final MenuItem exitItem = new MenuItem("Quitter");
+                // Adds an event listener to open a tab on the default browser with the application URI
+                trayIcon.addActionListener(e -> {
+                    try {
+                        log.debug("Opening a new tab in the default browser with the URL : {}", applicationUri);
 
-            // Adds an event listener to the exit menu item to exit the application and remove the tray icon
-            exitItem.addActionListener(e -> {
-                tray.remove(trayIcon);
-                SpringApplication.exit(context, () -> 0);
-            });
+                        Desktop.getDesktop().browse(applicationUri);
+                    } catch (final IOException exception) {
+                        log.error("Failed to open a new tab in the default browser", exception);
+                    }
+                });
 
-            // Creates a popup menu for the tray icon
-            final PopupMenu popupMenu = new PopupMenu();
+                // Creates a menu item for the tray icon in order to exit the application
+                final MenuItem exitItem = new MenuItem("Quitter");
 
-            // Adds the exit menu item to the popup menu
-            popupMenu.add(exitItem);
+                // Adds an event listener to the exit menu item to remove the tray icon and exit the application
+                exitItem.addActionListener(e -> {
+                    log.debug("Removing the application tray icon from the system tray");
 
-            // Adds the popup menu to the tray icon
-            trayIcon.setPopupMenu(popupMenu);
+                    // Removes the tray icon
+                    SystemTray.getSystemTray().remove(trayIcon);
 
-            // Adds the tray icon to the system tray
-            tray.add(trayIcon);
-        } catch (final AWTException | IOException | URISyntaxException exception) {
-            log.error("Tray icon could not to be added", exception);
+                    log.info("Exiting the application");
+
+                    // Exits the application
+                    exit(this.applicationContext, () -> 0);
+                });
+
+                // Creates a popup menu for the tray icon
+                final PopupMenu popupMenu = new PopupMenu();
+
+                // Adds the exit menu item to the popup menu
+                popupMenu.add(exitItem);
+
+                // Adds the popup menu to the tray icon
+                trayIcon.setPopupMenu(popupMenu);
+
+                // Adds the tray icon to the system tray
+                tray.add(trayIcon);
+            } catch (final AWTException | IOException | URISyntaxException exception) {
+                log.error("Tray icon could not to be added", exception);
+            }
+        } else {
+            log.warn("System tray not supported on this platform");
         }
     }
 

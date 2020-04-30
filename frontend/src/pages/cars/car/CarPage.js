@@ -12,7 +12,9 @@ import {
     EditRounded as EditIcon, ErrorOutlineRounded as ErrorIcon, SearchRounded as DisplayIcon, SentimentDissatisfiedRounded as SmileyIcon
 } from '@material-ui/icons';
 
-import { changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarsAction } from 'actions';
+import {
+    changeCurrentPageAction, changeSelectedMenuIndexAction, deleteCarAction, editCarAction, getCarAction, getCarRegistrationsAction
+} from 'actions';
 import { ErrorPanel, LoadingPanel } from 'components';
 import { CertificateModal, DeleteCarModal, EditCarModal } from 'modals';
 import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
@@ -36,10 +38,14 @@ import './CarPage.scss';
  *     If the car loading is in error
  * @param {boolean} isLoading
  *     If the car loading is in progress
- * @param {func} getCars
- *     The {@link getCarsAction} action
+ * @param {func} getCar
+ *     The {@link getCarAction} action
+ * @param {func} getCarRegistrations
+ *     The {@link getCarRegistrationsAction} action
  * @param {object} match
  *     The URL parameters
+ * @param {string[]} registrations
+ *     The list of all the distinct car registration numbers
  *
  * @class
  */
@@ -58,7 +64,7 @@ class CarPage extends PureComponent {
         // Initializes the component state
         this.state = {
             car: undefined,
-            haveCarsBeenLoaded: false,
+            hasCarBeenLoaded: false,
             isCertificateModalOpen: false,
             isDeleteModalOpen: false,
             isEditModalOpen: false,
@@ -101,7 +107,7 @@ class CarPage extends PureComponent {
         if (id !== prevId) {
             this.setState({
                 car: undefined,
-                haveCarsBeenLoaded: false
+                hasCarBeenLoaded: false
             });
         }
 
@@ -174,26 +180,27 @@ class CarPage extends PureComponent {
      * Updates the car page.
      */
     updateComponent() {
-        const { haveCarsBeenLoaded } = this.state;
-        const { cars, changeCurrentPage, getCars, isInError, isLoading, match: { params: { id } } } = this.props;
+        const { hasCarBeenLoaded } = this.state;
+        const { cars, changeCurrentPage, getCar, getCarRegistrations, isInError, isLoading, match: { params: { id } } } = this.props;
 
         let content;
         if (isInError) {
-            // If the cars failed to be loaded, displays an error icon
+            // If the car or the registrations failed to be loaded, displays an error icon
             content = <ErrorIcon />;
         } else if (isLoading) {
-            // If the cars are being loaded, displays a circular progress
+            // If the car or the registrations are being loaded, displays a circular progress
             content = <CircularProgress size={20} thickness={4} />;
         } else {
-            // If the cars are not being loaded nor failed to be, checks if they do have been loaded
+            // If the car or the registrations are not being loaded nor failed to be, checks if they do have been loaded
             if (!cars || 0 === cars.length) {
-                if (haveCarsBeenLoaded) {
+                if (hasCarBeenLoaded) {
                     // If there is no car even after loading, displays the smiley icon
                     content = <SmileyIcon />;
                 } else {
-                    // If there is no car but they have not been loaded, loads them
-                    getCars()
-                            .then(this.setState({ haveCarsBeenLoaded: true }));
+                    // If there is no car but it has yet to be loaded, loads it
+                    getCar(id)
+                            .then(getCarRegistrations())
+                            .then(this.setState({ hasCarBeenLoaded: true }));
                     content = <CircularProgress size={20} thickness={4} />;
                 }
             } else {
@@ -204,13 +211,14 @@ class CarPage extends PureComponent {
                     // If the current car has been found, displays its registration
                     this.setState({ car });
                     content = car.registration;
-                } else if (haveCarsBeenLoaded) {
+                } else if (hasCarBeenLoaded) {
                     // If the current car has not been found even after loading, displays the smiley icon
                     content = <SmileyIcon />;
                 } else {
-                    // If the current car has not been found but the cars have not been loaded, loads them
-                    getCars()
-                            .then(this.setState({ haveCarsBeenLoaded: true }));
+                    // If the current car has not been found but has yet to be loaded, loads it
+                    getCar(id)
+                            .then(getCarRegistrations())
+                            .then(this.setState({ hasCarBeenLoaded: true }));
                     content = <CircularProgress size={20} thickness={4} />;
                 }
             }
@@ -224,8 +232,8 @@ class CarPage extends PureComponent {
     }
 
     render() {
-        const { cars, isInError, isLoading } = this.props;
-        const { car, haveCarsBeenLoaded, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, redirect } = this.state;
+        const { cars, isInError, isLoading, registrations } = this.props;
+        const { car, hasCarBeenLoaded, isCertificateModalOpen, isDeleteModalOpen, isEditModalOpen, redirect } = this.state;
 
         let content;
         if (redirect) {
@@ -255,8 +263,7 @@ class CarPage extends PureComponent {
                 </Grid>
             </Fragment>);
 
-            const registrations = cars && cars.filter(currentCar => car.registration !== currentCar.registration)
-                    .map(currentCar => currentCar.registration);
+            const existingRegistrations = registrations && registrations.filter(registration => car.registration !== registration);
 
             const serialNumbers = cars && cars.filter(currentCar => car.serialNumber !== currentCar.serialNumber)
                     .map(currentCar => currentCar.serialNumber);
@@ -357,11 +364,11 @@ class CarPage extends PureComponent {
                                                       open={isCertificateModalOpen} />}
 
                 <EditCarModal car={car} onClose={this.onCloseEditCarModal} open={isEditModalOpen} onValidate={this.onValidateEditCarModal}
-                              registrations={registrations} serialNumbers={serialNumbers} />
+                              registrations={existingRegistrations} serialNumbers={serialNumbers} />
 
                 <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteModalOpen} onValidate={this.onValidateDeleteCarModal} />
             </Fragment>);
-        } else if (!haveCarsBeenLoaded) {
+        } else if (!hasCarBeenLoaded) {
             // If the car has not been found but the cars have not been loaded yet, displays the loading panel
             content = <LoadingPanel />;
         } else {
@@ -381,8 +388,9 @@ class CarPage extends PureComponent {
 
 const mapStateToProps = (state) => ({
     cars: state.cars.cars,
-    isInError: state.cars.isGetAllInError,
-    isLoading: state.cars.isGetAllInProgress
+    isInError: state.cars.isGetInError || state.cars.isGetRegistrationsInError,
+    isLoading: state.cars.isGetInProgress || state.cars.isGetRegistrationsInProgress,
+    registrations: state.cars.registrations
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
@@ -390,7 +398,8 @@ const mapDispatchToProps = (dispatch) => bindActionCreators({
     changeSelectedMenuIndex: changeSelectedMenuIndexAction,
     deleteCar: deleteCarAction,
     editCar: editCarAction,
-    getCars: getCarsAction
+    getCar: getCarAction,
+    getCarRegistrations: getCarRegistrationsAction,
 }, dispatch);
 
 CarPage.propTypes = {
@@ -401,12 +410,14 @@ CarPage.propTypes = {
     editCar: PropTypes.func.isRequired,
     isInError: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    getCars: PropTypes.func.isRequired,
+    getCar: PropTypes.func.isRequired,
+    getCarRegistrations: PropTypes.func.isRequired,
     match: PropTypes.shape({
         params: PropTypes.shape({
             id: PropTypes.string.isRequired
         }).isRequired
-    }).isRequired
+    }).isRequired,
+    registrations: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CarPage);

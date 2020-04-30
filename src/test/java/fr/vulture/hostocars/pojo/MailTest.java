@@ -1,6 +1,7 @@
 package fr.vulture.hostocars.pojo;
 
-import fr.vulture.hostocars.TestHelper;
+import static fr.vulture.hostocars.TestHelper.validateBean;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ class MailTest {
     @Test
     @DisplayName("Testing the POJO")
     final void testBean() {
-        TestHelper.validateBean(Mail.class);
+        validateBean(Mail.class);
     }
 
 }

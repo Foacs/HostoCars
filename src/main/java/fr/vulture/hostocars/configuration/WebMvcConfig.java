@@ -3,7 +3,6 @@ package fr.vulture.hostocars.configuration;
 import static java.util.Objects.nonNull;
 
 import java.io.IOException;
-import javax.annotation.Nullable;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +23,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * {@inheritDoc}
      */
     @Override
-    public final void addResourceHandlers(@NonNull final ResourceHandlerRegistry registry) {
+    public void addResourceHandlers(@NonNull final ResourceHandlerRegistry registry) {
         log.trace("Adding resources to registry");
 
         registry.addResourceHandler("/**/*")
@@ -45,7 +44,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
          * {@inheritDoc}
          */
         @Override
-        public final Resource getResource(@Nullable final String resourcePath, @NonNull final Resource location) throws IOException {
+        public final Resource getResource(final String resourcePath, @NonNull final Resource location) throws IOException {
             log.trace("Getting resource from path : {}", resourcePath);
 
             if (nonNull(resourcePath)) {

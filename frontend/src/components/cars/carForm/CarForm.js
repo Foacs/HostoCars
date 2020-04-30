@@ -53,10 +53,12 @@ const ownerRequiredHelperText = 'Veuillez renseigner le nom du propriétaire';
  *     The list of forbidden serial numbers
  * @param {string} title
  *     The form title
+ * @param {string} validateButtonLabel
+ *     The form validate button label
  *
  * @constructor
  */
-function CarForm({ car, className, onClose, onValidate, open, registrations, serialNumbers, title }) {
+function CarForm({ car, className, onClose, onValidate, open, registrations, serialNumbers, title, validateButtonLabel }) {
     // Initializes the help flag
     const [ help, setHelp ] = React.useState(false);
 
@@ -198,7 +200,11 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 setEngineCode(e.target.value);
                 break;
             case 'releaseDate':
-                setReleaseDate(e);
+                setReleaseDate(`${e.getFullYear()}-${(e.getMonth() + 1)
+                        .toLocaleString('fr', {
+                            minimumIntegerDigits: 2,
+                            useGrouping: false
+                        })}`);
                 break;
             case 'certificate':
                 const certificateDocument = document.getElementById('CertificateInput');
@@ -273,7 +279,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 model: emptyValue === model ? null : model,
                 motorization: emptyValue === motorization ? null : motorization,
                 engineCode: emptyValue === engineCode ? null : engineCode,
-                releaseDate,
+                releaseDate: emptyValue === releaseDate ? null : releaseDate,
                 certificate,
                 picture,
                 comments: emptyValue === comments ? null : comments
@@ -447,7 +453,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
             </Button>
 
             <Button autoFocus className='ValidateButton' color='primary' onClick={onValidateAction}>
-                Ajouter
+                {validateButtonLabel}
             </Button>
         </DialogActions>
     </Dialog>);
@@ -460,7 +466,9 @@ CarForm.propTypes = {
     onValidate: PropTypes.func.isRequired,
     open: PropTypes.bool.isRequired,
     registrations: PropTypes.arrayOf(PropTypes.string),
-    serialNumbers: PropTypes.arrayOf(PropTypes.string)
+    serialNumbers: PropTypes.arrayOf(PropTypes.string),
+    title: PropTypes.string.isRequired,
+    validateButtonLabel: PropTypes.string.isRequired
 };
 
 CarForm.defaultProps = {

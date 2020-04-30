@@ -1,8 +1,9 @@
 package fr.vulture.hostocars.pojo;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import lombok.NonNull;
 import lombok.Value;
 
@@ -14,10 +15,8 @@ public class Response implements Serializable {
 
     private static final long serialVersionUID = 939456732837818264L;
 
-    @NonNull
-    private final String message;
+    @NonNull String message;
 
-    @NonNull
-    private final String timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    @NonNull String timestamp = LocalDateTime.now().format(ISO_LOCAL_DATE_TIME);
 
 }
