@@ -6,6 +6,7 @@ import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableSet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -96,7 +97,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).getCars(null);
@@ -158,7 +159,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).getCars(sortedBy);
@@ -219,7 +220,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).getCarById(id);
@@ -294,7 +295,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).getCarRegistrations();
@@ -356,7 +357,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).searchCars(body);
@@ -398,7 +399,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).saveCar(body);
@@ -437,7 +438,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).updateCar(body);
@@ -497,7 +498,7 @@ class CarControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.carDao, times(1)).deleteCarById(id);

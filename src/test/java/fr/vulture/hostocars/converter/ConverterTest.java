@@ -29,7 +29,7 @@ class ConverterTest {
      * Tests the {@link Converter#toEntityList} method.
      */
     @Test
-    @DisplayName("Convert to entity list")
+    @DisplayName("Converting to entity list")
     void testConvertToEntityList() {
         final Integer dto0 = 0;
         final String entity0 = "0";
@@ -54,7 +54,7 @@ class ConverterTest {
      * Tests the {@link Converter#toEntityList} method with a null list.
      */
     @Test
-    @DisplayName("Convert to entity list (null list)")
+    @DisplayName("Converting to entity list (null list)")
     void testConvertNullListToEntityList() {
         final List<String> entityList = this.converter.toEntityList(null);
 
@@ -66,7 +66,7 @@ class ConverterTest {
      * Tests the {@link Converter#toDtoList} method.
      */
     @Test
-    @DisplayName("Convert to DTO list")
+    @DisplayName("Converting to DTO list")
     void testConvertToDtoList() {
         final String entity0 = "0";
         final Integer dto0 = 0;
@@ -91,7 +91,7 @@ class ConverterTest {
      * Tests the {@link Converter#toDtoList} method with a null list.
      */
     @Test
-    @DisplayName("Convert to DTO list (null list)")
+    @DisplayName("Converting to DTO list (null list)")
     void testConvertNullListToDtoList() {
         final List<Integer> dtoList = this.converter.toDtoList(null);
 
