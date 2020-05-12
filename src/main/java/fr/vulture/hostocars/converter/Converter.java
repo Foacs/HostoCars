@@ -1,9 +1,9 @@
 package fr.vulture.hostocars.converter;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,7 +44,7 @@ public abstract class Converter<Entity, Dto> {
         // If the input DTO list is null, returns an empty list
         if (isNull(dtoList)) {
             log.trace("[DTO list => Entity list] With null DTO list");
-            return new ArrayList<>(0);
+            return emptyList();
         }
 
         // Converts all DTOs to entities
@@ -78,7 +78,7 @@ public abstract class Converter<Entity, Dto> {
         // If the input entity list is null, returns an empty list
         if (isNull(entityList)) {
             log.trace("[DTO list <= Entity list] With null entity list");
-            return new ArrayList<>(0);
+            return emptyList();
         }
 
         // Converts all entities to DTOs
