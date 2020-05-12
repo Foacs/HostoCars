@@ -1,12 +1,14 @@
 package fr.vulture.hostocars.dao;
 
 import static fr.vulture.hostocars.utils.ControllerUtils.DEFAULT_MATCHER;
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,7 +17,6 @@ import fr.vulture.hostocars.converter.CarConverter;
 import fr.vulture.hostocars.dto.Car;
 import fr.vulture.hostocars.entity.CarEntity;
 import fr.vulture.hostocars.repository.CarRepository;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -52,10 +53,10 @@ class CarDaoTest {
     @Test
     @DisplayName("Getting all cars")
     void testGetCars() {
-        final List<CarEntity> entityList = new ArrayList<>(0);
+        final List<CarEntity> entityList = emptyList();
         when(this.carRepository.findAll()).thenReturn(entityList);
 
-        final List<Car> dtoList = new ArrayList<>(0);
+        final List<Car> dtoList = emptyList();
         when(this.carConverter.toDtoList(entityList)).thenReturn(dtoList);
 
         assertEquals(dtoList, this.carDao.getCars(null), "Result list different from expected");
@@ -70,10 +71,10 @@ class CarDaoTest {
     @Test
     @DisplayName("Getting all cars with a sorting field")
     void testGetCarsWithSortingField() {
-        final List<CarEntity> entityList = new ArrayList<>(0);
+        final List<CarEntity> entityList = emptyList();
         when(this.carRepository.findAll(any(Sort.class))).thenReturn(entityList);
 
-        final List<Car> dtoList = new ArrayList<>(0);
+        final List<Car> dtoList = emptyList();
         when(this.carConverter.toDtoList(entityList)).thenReturn(dtoList);
 
         final String sortingField = "sortedBy";
@@ -135,10 +136,10 @@ class CarDaoTest {
         final CarEntity entity = new CarEntity();
         when(this.carConverter.toEntity(body)).thenReturn(entity);
 
-        final List<CarEntity> entityList = new ArrayList<>(0);
+        final List<CarEntity> entityList = emptyList();
         when(this.carRepository.findAll(any(Example.class))).thenReturn(entityList);
 
-        final List<Car> dtoList = new ArrayList<>(0);
+        final List<Car> dtoList = emptyList();
         when(this.carConverter.toDtoList(entityList)).thenReturn(dtoList);
 
         assertEquals(dtoList, this.carDao.searchCars(body), "Result list different from expected");
@@ -204,10 +205,12 @@ class CarDaoTest {
     void testDeleteExistingCarById() {
         final Integer id = 0;
         when(this.carRepository.existsById(id)).thenReturn(true);
+        doNothing().when(this.carRepository).deleteById(id);
 
         assertTrue(this.carDao.deleteCarById(id), "Result different from expected");
 
         verify(this.carRepository, times(1)).existsById(id);
+        verify(this.carRepository, times(1)).deleteById(id);
     }
 
     /**
@@ -222,6 +225,7 @@ class CarDaoTest {
         assertFalse(this.carDao.deleteCarById(id), "Result different from expected");
 
         verify(this.carRepository, times(1)).existsById(id);
+        verify(this.carRepository, times(0)).deleteById(id);
     }
 
 }

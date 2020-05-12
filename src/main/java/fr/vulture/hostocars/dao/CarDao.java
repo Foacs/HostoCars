@@ -79,9 +79,9 @@ public class CarDao {
     }
 
     /**
-     * Retrieves the list of all distinct {@link Car} registration numbers from the database.
+     * Retrieves the set of all distinct {@link Car} registration numbers from the database.
      *
-     * @return a list of registration numbers
+     * @return a set of registration numbers
      */
     public Set<String> getCarRegistrations() {
         log.trace("[getCarRegistrations <= Calling]");
