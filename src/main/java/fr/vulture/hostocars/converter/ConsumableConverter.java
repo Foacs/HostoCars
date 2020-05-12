@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementation of the {@link Converter} interface for the {@link ConsumableEntity} entity and {@link Consumable} DTO.
+ * Implementation of the {@link Converter} abstract class for the {@link ConsumableEntity} entity and {@link Consumable} DTO.
  */
 @Slf4j
 @Component

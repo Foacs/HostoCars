@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementation of the {@link Converter} interface for the {@link CarEntity} entity and {@link Car} DTO.
+ * Implementation of the {@link Converter} abstract class for the {@link CarEntity} entity and {@link Car} DTO.
  */
 @Slf4j
 @Component

@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * Implementation of the {@link Converter} interface for unit tests.
+ * Implementation of the {@link Converter} abstract class for unit tests.
  */
 @Slf4j
 @Component
