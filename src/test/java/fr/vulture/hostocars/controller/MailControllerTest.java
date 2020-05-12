@@ -121,7 +121,7 @@ class MailControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(AssertionError.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(AssertionError.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
     }
 
@@ -147,7 +147,7 @@ class MailControllerTest {
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
         assertNotNull(response.getBody(), "Response body unexpectedly null");
         assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
+        assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
         verify(this.mailSender, times(1)).createMimeMessage();
