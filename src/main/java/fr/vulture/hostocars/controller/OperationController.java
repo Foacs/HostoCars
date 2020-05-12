@@ -5,11 +5,11 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
-import fr.vulture.hostocars.dao.CarDao;
-import fr.vulture.hostocars.dto.Car;
+import fr.vulture.hostocars.dao.OperationDao;
+import fr.vulture.hostocars.dto.Intervention;
+import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.pojo.Response;
 import java.util.List;
-import java.util.Set;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,31 +27,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * REST controller for cars.
+ * REST controller for operations.
  */
 @Slf4j
 @Transactional
 @RestController
-@RequestMapping("/cars")
+@RequestMapping("/operations")
 @CrossOrigin(origins = "*")
-public class CarController {
+public class OperationController {
 
     @NonNull
-    private final CarDao carDao;
+    private final OperationDao operationDao;
 
     /**
      * Valued autowired constructor.
      *
-     * @param carDao
-     *     The autowired {@link CarDao} component
+     * @param operationDao
+     *     The autowired {@link OperationDao} component
      */
     @Autowired
-    public CarController(@NonNull final CarDao carDao) {
-        this.carDao = carDao;
+    public OperationController(@NonNull final OperationDao operationDao) {
+        this.operationDao = operationDao;
     }
 
     /**
-     * Retrieves the list of all the {@link Car} from the database. A sorting field can also be specified.
+     * Retrieves the list of all the {@link Operation} from the database. A sorting field can also be specified.
      *
      * @param sortedBy
      *     The optional sorting clause field
@@ -59,101 +59,104 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getCars(@RequestParam(required = false) final String sortedBy) {
-        log.info("[getCars <= Calling] With sorting field = {}", sortedBy);
+    public ResponseEntity<?> getOperations(@RequestParam(required = false) final String sortedBy) {
+        log.info("[getOperations <= Calling] With sorting field = {}", sortedBy);
 
         try {
-            // Calls the DAO to retrieve the list of all the cars from the database
-            final List<Car> resultList = this.carDao.getCars(sortedBy);
+            // Calls the DAO to retrieve the list of all the operations from the database
+            final List<Operation> resultList = this.operationDao.getOperations(sortedBy);
 
             // If no result has been found, returns a 204 status
             if (resultList.isEmpty()) {
-                log.info("[getCars => {}] No car found", NO_CONTENT.value());
+                log.info("[getOperations => {}] No operation found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
             // If at least one result has been found, returns the list with a 200 status
-            log.info("[getCars => {}] {} car(s) found", OK.value(), resultList.size());
+            log.info("[getOperations => {}] {} operation(s) found", OK.value(), resultList.size());
             return ResponseEntity.ok(resultList);
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[getCars => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[getOperations => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Retrieves the {@link Car} with the given ID from the database.
+     * Retrieves the {@link Operation} with the given ID from the database.
      *
      * @param id
-     *     The {@link Car} ID
+     *     The {@link Operation} ID
      *
      * @return an HTTP response
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCarById(@PathVariable @NonNull final Integer id) {
-        log.info("[getCarById <= Calling] With ID = {}", id);
+    public ResponseEntity<?> getOperationById(@PathVariable @NonNull final Integer id) {
+        log.info("[getOperationById <= Calling] With ID = {}", id);
 
         try {
-            // Calls the DAO to retrieve the car with the given ID from the database
-            final Car result = this.carDao.getCarById(id);
+            // Calls the DAO to retrieve the operation with the given ID from the database
+            final Operation result = this.operationDao.getOperationById(id);
 
             // If no result has been found, returns a 204 status
             if (isNull(result)) {
-                log.info("[getCarById => {}] No car found for ID = {}", NO_CONTENT.value(), id);
+                log.info("[getOperationById => {}] No operation found for ID = {}", NO_CONTENT.value(), id);
                 return ResponseEntity.noContent().build();
             }
 
             // If a result has been found, returns it with a 200 status
-            log.info("[getCarById => {}] Car found for ID = {}", OK.value(), id);
+            log.info("[getOperationById => {}] Operation found for ID = {}", OK.value(), id);
             return ResponseEntity.ok(result);
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[getCarById => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[getOperationById => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Retrieves the list of all distinct {@link Car} registration numbers from the database.
+     * Retrieves the list of {@link Operation}s with the given {@link Intervention} ID from the database.
+     *
+     * @param interventionId
+     *     The {@link Intervention} ID
      *
      * @return an HTTP response
      */
-    @GetMapping("/registrations")
-    public ResponseEntity<?> getCarRegistrations() {
-        log.info("[getCarRegistrations <= Calling]");
+    @GetMapping("/intervention/{interventionId}")
+    public ResponseEntity<?> getOperationsByInterventionId(@PathVariable @NonNull final Integer interventionId) {
+        log.info("[getOperationsByInterventionId <= Calling] With intervention ID = {}", interventionId);
 
         try {
-            // Calls the DAO to retrieve the set of all distinct car registration numbers from the database
-            final Set<String> resultList = this.carDao.getCarRegistrations();
+            // Calls the DAO to retrieve the list of operations with the given intervention ID from the database
+            final List<Operation> resultList = this.operationDao.getOperationsByInterventionId(interventionId);
 
             // If no result has been found, returns a 204 status
-            if (isNull(resultList) || resultList.isEmpty()) {
-                log.info("[getCarRegistrations => {}] No registration number found", NO_CONTENT.value());
+            if (resultList.isEmpty()) {
+                log.info("[getOperationById => {}] No operation found for intervention ID = {}", NO_CONTENT.value(), interventionId);
                 return ResponseEntity.noContent().build();
             }
 
             // If at least one result has been found, returns the list with a 200 status
-            log.info("[getCarRegistrations => {}] {} registration number(s) found", OK.value(), resultList.size());
+            log.info("[getOperationById => {}] {} operation(s) found for ID = {}", OK.value(), resultList.size(), interventionId);
             return ResponseEntity.ok(resultList);
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[getCarById => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[getOperationsByInterventionId => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Retrieves the list of {@link Car} matching the given body from the database.
+     * Retrieves the list of {@link Operation} matching the given body from the database.
      *
      * @param body
      *     The body
@@ -161,34 +164,34 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/search")
-    public ResponseEntity<?> searchCars(@RequestBody @NonNull final Car body) {
-        log.info("[searchCars <= Calling] With body = {}", body);
+    public ResponseEntity<?> searchOperations(@RequestBody @NonNull final Operation body) {
+        log.info("[searchOperations <= Calling] With body = {}", body);
 
         try {
-            // Calls the DAO to retrieve the car matching the given body from the database
-            final List<Car> resultList = this.carDao.searchCars(body);
+            // Calls the DAO to retrieve the operation matching the given body from the database
+            final List<Operation> resultList = this.operationDao.searchOperations(body);
 
             // If no result has been found, returns a 204 status
             if (resultList.isEmpty()) {
-                log.info("[searchCars => {}] No car found", NO_CONTENT.value());
+                log.info("[searchOperations => {}] No operation found", NO_CONTENT.value());
                 return ResponseEntity.noContent().build();
             }
 
             // If at least one result has been found, returns the list with a 200 status
-            log.info("[searchCars => {}] {} car(s) found", OK.value(), resultList.size());
+            log.info("[searchOperations => {}] {} operation(s) found", OK.value(), resultList.size());
             return ResponseEntity.ok(resultList);
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[searchCars => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[searchOperations => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Inserts a new {@link Car} in the database, generated from the given body.
+     * Inserts a new {@link Operation} in the database, generated from the given body.
      *
      * @param body
      *     The body
@@ -196,28 +199,28 @@ public class CarController {
      * @return an HTTP response
      */
     @PostMapping("/save")
-    public ResponseEntity<?> saveCar(@RequestBody @NonNull final Car body) {
-        log.info("[saveCar <= Calling] With body = {}", body);
+    public ResponseEntity<?> saveOperation(@RequestBody @NonNull final Operation body) {
+        log.info("[saveOperation <= Calling] With body = {}", body);
 
         try {
-            // Calls the DAO to insert a new car in the database
-            final Integer generatedId = this.carDao.saveCar(body);
+            // Calls the DAO to insert a new operation in the database
+            final Integer generatedId = this.operationDao.saveOperation(body);
 
             // Returns the generated key with a 200 status
-            log.info("[saveCar => {}] New car saved with ID = {}", OK.value(), generatedId);
+            log.info("[saveOperation => {}] New operation saved with ID = {}", OK.value(), generatedId);
             return ResponseEntity.ok(generatedId);
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[saveCar => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[saveOperation => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Updates a {@link Car} with the given body in the database.
+     * Updates a {@link Operation} with the given body in the database.
      *
      * @param body
      *     The body
@@ -225,54 +228,54 @@ public class CarController {
      * @return an HTTP response
      */
     @PutMapping("/update")
-    public ResponseEntity<?> updateCar(@RequestBody @NonNull final Car body) {
-        log.info("[updateCar <= Calling] With body = {}", body);
+    public ResponseEntity<?> updateOperation(@RequestBody @NonNull final Operation body) {
+        log.info("[updateOperation <= Calling] With body = {}", body);
 
         try {
-            // Calls the DAO to update the given car in the database
-            this.carDao.updateCar(body);
+            // Calls the DAO to update the given operation in the database
+            this.operationDao.updateOperation(body);
 
             // Returns a 200 status
-            log.info("[updateCar => {}] Car updated", OK.value());
+            log.info("[updateOperation => {}] Operation updated", OK.value());
             return ResponseEntity.ok().build();
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[updateCar => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[updateOperation => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }
     }
 
     /**
-     * Deletes a {@link Car} in the database by its ID.
+     * Deletes a {@link Operation} in the database by its ID.
      *
      * @param id
-     *     The {@link Car} ID
+     *     The {@link Operation} ID
      *
      * @return an HTTP response
      */
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteCarById(@PathVariable @NonNull final Integer id) {
-        log.info("[deleteCarById <= Calling] With ID = {}", id);
+    public ResponseEntity<?> deleteOperationById(@PathVariable @NonNull final Integer id) {
+        log.info("[deleteOperationById <= Calling] With ID = {}", id);
 
         try {
-            // Calls the DAO to delete the car with the given ID from the database
-            if (this.carDao.deleteCarById(id)) {
+            // Calls the DAO to delete the operation with the given ID from the database
+            if (this.operationDao.deleteOperationById(id)) {
                 // If the ID existed, returns a 200 status
-                log.info("[deleteCarById => {}] Car deleted", OK.value());
+                log.info("[deleteOperationById => {}] Operation deleted", OK.value());
                 return ResponseEntity.ok().build();
             }
 
             // If the ID didn't exist, returns a 204 status
-            log.info("[deleteCarById => {}] No car found to delete", NO_CONTENT.value());
+            log.info("[deleteOperationById => {}] No operation found to delete", NO_CONTENT.value());
             return ResponseEntity.noContent().build();
         }
 
         // If an unknown exception has been thrown, returns a 500 status
         catch (final RuntimeException e) {
-            log.error("[deleteCarById => {}]", INTERNAL_SERVER_ERROR.value(), e);
+            log.error("[deleteOperationById => {}]", INTERNAL_SERVER_ERROR.value(), e);
             final String responseMessage = e.getClass().getSimpleName();
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Response.from(responseMessage));
         }

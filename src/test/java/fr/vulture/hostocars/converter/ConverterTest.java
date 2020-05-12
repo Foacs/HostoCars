@@ -16,7 +16,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Test class for the {@link Converter} interface.
+ * Test class for the {@link Converter} abstract class.
  */
 @DisplayName("Converter")
 @ExtendWith(MockitoExtension.class)

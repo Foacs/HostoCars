@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 public interface CarRepository extends JpaRepository<CarEntity, Integer> {
 
     /**
-     * Returns the list of all distinct car registration numbers from the database.
+     * Returns the set of all distinct car registration numbers from the database.
      *
-     * @return a list of distinct car registration numbers
+     * @return a set of distinct car registration numbers
      */
     @Query("SELECT DISTINCT car.registration FROM CarEntity car")
     Set<String> findDistinctRegistrationNumbers();
