@@ -19,69 +19,11 @@ class CarConverterTest {
     private final CarConverter converter = new CarConverter();
 
     /**
-     * Tests the {@link CarConverter#toDto} method.
-     */
-    @Test
-    @DisplayName("Convert to DTO")
-    void testConvertToEntity() {
-        final CarEntity entity = new CarEntity();
-        final Integer id = 0;
-        entity.setId(id);
-        final String registration = "registration";
-        entity.setRegistration(registration);
-        final String serialNumber = "serialNumber";
-        entity.setSerialNumber(serialNumber);
-        final String owner = "owner";
-        entity.setOwner(owner);
-        final String brand = "brand";
-        entity.setBrand(brand);
-        final String model = "model";
-        entity.setModel(model);
-        final String motorization = "motorization";
-        entity.setMotorization(motorization);
-        final String engineCode = "engineCode";
-        entity.setEngineCode(engineCode);
-        final String releaseDate = "releaseDate";
-        entity.setReleaseDate(releaseDate);
-        final String comments = "comments";
-        entity.setComments(comments);
-        final byte[] certificate = new byte[] {(byte) 0};
-        entity.setCertificate(certificate);
-        final byte[] picture = new byte[] {(byte) 1};
-        entity.setPicture(picture);
-
-        final Car dto = this.converter.toDto(entity);
-
-        assertNotNull(dto, "DTO unexpectedly not null");
-        assertEquals(id, dto.getId(), "ID different from expected");
-        assertEquals(registration, dto.getRegistration(), "Registration different from expected");
-        assertEquals(serialNumber, dto.getSerialNumber(), "Serial number different from expected");
-        assertEquals(owner, dto.getOwner(), "Owner different from expected");
-        assertEquals(brand, dto.getBrand(), "Brand different from expected");
-        assertEquals(model, dto.getModel(), "Model different from expected");
-        assertEquals(motorization, dto.getMotorization(), "Motorization different from expected");
-        assertEquals(engineCode, dto.getEngineCode(), "Engine code different from expected");
-        assertEquals(releaseDate, dto.getReleaseDate(), "Release date different from expected");
-        assertEquals(comments, dto.getComments(), "Comments different from expected");
-        assertArrayEquals(certificate, dto.getCertificate(), "Certificate different from expected");
-        assertArrayEquals(picture, dto.getPicture(), "Picture different from expected");
-    }
-
-    /**
-     * Tests the {@link CarConverter#toDto} method with a null entity.
-     */
-    @Test
-    @DisplayName("Convert to DTO (null entity)")
-    void testConvertNullDtoToEntity() {
-        assertNull(this.converter.toDto(null), "DTO unexpectedly not null");
-    }
-
-    /**
      * Tests the {@link CarConverter#toEntity} method.
      */
     @Test
-    @DisplayName("Convert to entity")
-    void testConvertToDto() {
+    @DisplayName("Converting to entity")
+    void testConvertToEntity() {
         final Car dto = new Car();
         final Integer id = 0;
         dto.setId(id);
@@ -129,9 +71,67 @@ class CarConverterTest {
      * Tests the {@link CarConverter#toEntity} method with a null DTO.
      */
     @Test
-    @DisplayName("Convert to entity (null DTO)")
-    void testConvertNullEntityToDto() {
+    @DisplayName("Converting to entity (null DTO)")
+    void testConvertNullDtoToEntity() {
         assertNull(this.converter.toEntity(null), "Entity unexpectedly not null");
+    }
+
+    /**
+     * Tests the {@link CarConverter#toDto} method.
+     */
+    @Test
+    @DisplayName("Converting to DTO")
+    void testConvertToDto() {
+        final CarEntity entity = new CarEntity();
+        final Integer id = 0;
+        entity.setId(id);
+        final String registration = "registration";
+        entity.setRegistration(registration);
+        final String serialNumber = "serialNumber";
+        entity.setSerialNumber(serialNumber);
+        final String owner = "owner";
+        entity.setOwner(owner);
+        final String brand = "brand";
+        entity.setBrand(brand);
+        final String model = "model";
+        entity.setModel(model);
+        final String motorization = "motorization";
+        entity.setMotorization(motorization);
+        final String engineCode = "engineCode";
+        entity.setEngineCode(engineCode);
+        final String releaseDate = "releaseDate";
+        entity.setReleaseDate(releaseDate);
+        final String comments = "comments";
+        entity.setComments(comments);
+        final byte[] certificate = new byte[] {(byte) 0};
+        entity.setCertificate(certificate);
+        final byte[] picture = new byte[] {(byte) 1};
+        entity.setPicture(picture);
+
+        final Car dto = this.converter.toDto(entity);
+
+        assertNotNull(dto, "DTO unexpectedly not null");
+        assertEquals(id, dto.getId(), "ID different from expected");
+        assertEquals(registration, dto.getRegistration(), "Registration different from expected");
+        assertEquals(serialNumber, dto.getSerialNumber(), "Serial number different from expected");
+        assertEquals(owner, dto.getOwner(), "Owner different from expected");
+        assertEquals(brand, dto.getBrand(), "Brand different from expected");
+        assertEquals(model, dto.getModel(), "Model different from expected");
+        assertEquals(motorization, dto.getMotorization(), "Motorization different from expected");
+        assertEquals(engineCode, dto.getEngineCode(), "Engine code different from expected");
+        assertEquals(releaseDate, dto.getReleaseDate(), "Release date different from expected");
+        assertEquals(comments, dto.getComments(), "Comments different from expected");
+        assertArrayEquals(certificate, dto.getCertificate(), "Certificate different from expected");
+        assertArrayEquals(picture, dto.getPicture(), "Picture different from expected");
+    }
+
+    /**
+     * Tests the {@link CarConverter#toDto} method with a null entity.
+     */
+    @Test
+    @DisplayName("Converting to DTO (null entity)")
+    void testConvertNullEntityToDto() {
+        assertNull(this.converter.toDto(null), "DTO unexpectedly not null");
     }
 
 }

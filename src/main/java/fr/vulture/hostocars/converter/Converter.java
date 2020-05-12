@@ -19,6 +19,18 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class Converter<Entity, Dto> {
 
     /**
+     * Converts a {@link Dto} to an {@link Entity}.
+     * <br/>
+     * If the input {@link Dto} is {@code null}, returns a {@code null} {@link Entity}.
+     *
+     * @param dto
+     *     The {@link Dto} to convert
+     *
+     * @return an {@link Entity}
+     */
+    abstract Entity toEntity(final Dto dto);
+
+    /**
      * Converts a {@link List} of {@link Dto} to a {@link List} of {@link Entity}.
      * <br/>
      * If the input {@link List} is {@code null}, returns an empty {@link List} of {@link Entity}.
@@ -41,16 +53,16 @@ public abstract class Converter<Entity, Dto> {
     }
 
     /**
-     * Converts a {@link Dto} to an {@link Entity}.
+     * Converts an {@link Entity} to a {@link Dto}.
      * <br/>
-     * If the input {@link Dto} is {@code null}, returns a {@code null} {@link Entity}.
+     * If the input {@link Entity} is {@code null}, returns a {@code null} {@link Dto}.
      *
-     * @param dto
-     *     The {@link Dto} to convert
+     * @param entity
+     *     The {@link Entity} to convert
      *
-     * @return an {@link Entity}
+     * @return a {@link Dto}
      */
-    abstract Entity toEntity(final Dto dto);
+    abstract Dto toDto(final Entity entity);
 
     /**
      * Converts a {@link List} of {@link Entity} to a {@link List} of {@link Dto}.
@@ -73,17 +85,5 @@ public abstract class Converter<Entity, Dto> {
         log.trace("[DTO list <= Entity list] With entity list size = {}", entityList.size());
         return entityList.stream().map(this::toDto).collect(toList());
     }
-
-    /**
-     * Converts an {@link Entity} to a {@link Dto}.
-     * <br/>
-     * If the input {@link Entity} is {@code null}, returns a {@code null} {@link Dto}.
-     *
-     * @param entity
-     *     The {@link Entity} to convert
-     *
-     * @return a {@link Dto}
-     */
-    abstract Dto toDto(final Entity entity);
 
 }
