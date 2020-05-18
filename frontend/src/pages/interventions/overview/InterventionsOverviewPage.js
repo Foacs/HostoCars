@@ -15,18 +15,6 @@ import './InterventionsOverviewPage.scss';
  */
 class InterventionsOverviewPage extends PureComponent {
     /**
-     * Constructor.
-     *
-     * @param {object} props
-     *     The component props
-     *
-     * @constructor
-     */
-    constructor(props) {
-        super(props);
-    }
-
-    /**
      * Method called when the component did mount.
      */
     componentDidMount() {
