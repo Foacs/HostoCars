@@ -10,7 +10,7 @@ import { ThemeProvider } from '@material-ui/styles';
 import { SnackbarProvider } from 'notistack';
 
 import { AppBar, Menu, Notifier } from 'components';
-import { CarPage, CarsOverviewPage, NotFoundPage } from 'pages';
+import { CarPage, CarsOverviewPage, InterventionsOverviewPage, NotFoundPage } from 'pages';
 import { theme } from 'resources';
 import { store } from 'store';
 
@@ -48,6 +48,7 @@ ReactDOM.render(<ThemeProvider theme={theme}>
                                 <Redirect exact from='/' to='/cars' />
                                 <Route exact path='/cars' component={CarsOverviewPage} />
                                 <Route exact path='/cars/:id' render={props => <CarPage {...props} />} />
+                                <Route exact path='/interventions' component={InterventionsOverviewPage} />} />
                                 <Route exact push component={NotFoundPage} />
                             </Switch>
                         </Box>
