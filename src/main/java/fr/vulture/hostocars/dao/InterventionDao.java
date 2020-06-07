@@ -5,7 +5,6 @@ import static java.util.Objects.nonNull;
 
 import fr.vulture.hostocars.converter.InterventionConverter;
 import fr.vulture.hostocars.dto.Car;
-import fr.vulture.hostocars.dto.Consumable;
 import fr.vulture.hostocars.dto.Intervention;
 import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.entity.InterventionEntity;
@@ -29,9 +28,6 @@ public class InterventionDao {
     private final OperationDao operationDao;
 
     @NonNull
-    private final ConsumableDao consumableDao;
-
-    @NonNull
     private final InterventionRepository interventionRepository;
 
     @NonNull
@@ -42,17 +38,14 @@ public class InterventionDao {
      *
      * @param operationDao
      *     The autowired {@link OperationDao} component
-     * @param consumableDao
-     *     The autowired {@link ConsumableDao} component
      * @param interventionRepository
      *     The autowired {@link InterventionRepository} component
      * @param interventionConverter
      *     The autowired {@link InterventionConverter} component
      */
-    public InterventionDao(@NonNull final OperationDao operationDao, @NonNull final ConsumableDao consumableDao,
-        @NonNull final InterventionRepository interventionRepository, @NonNull final InterventionConverter interventionConverter) {
+    public InterventionDao(@NonNull final OperationDao operationDao, @NonNull final InterventionRepository interventionRepository,
+        @NonNull final InterventionConverter interventionConverter) {
         this.operationDao = operationDao;
-        this.consumableDao = consumableDao;
         this.interventionRepository = interventionRepository;
         this.interventionConverter = interventionConverter;
     }
@@ -80,11 +73,6 @@ public class InterventionDao {
             intervention.setOperationList(this.operationDao.getOperationsByInterventionId(intervention.getId()));
         }
 
-        // Calls the consumable DAO to retrieve the consumables of the loaded interventions
-        for (final Intervention intervention : resultList) {
-            intervention.setConsumableList(this.consumableDao.getConsumablesByInterventionId(intervention.getId()));
-        }
-
         // Returns the list of DTOs
         return resultList;
     }
@@ -108,9 +96,6 @@ public class InterventionDao {
 
         // Calls the operation DAO to retrieve the operations of the loaded intervention
         result.setOperationList(this.operationDao.getOperationsByInterventionId(result.getId()));
-
-        // Calls the consumable DAO to retrieve the consumables of the loaded intervention
-        result.setConsumableList(this.consumableDao.getConsumablesByInterventionId(result.getId()));
 
         // Returns the DTO
         return result;
@@ -136,11 +121,6 @@ public class InterventionDao {
         // Calls the operation DAO to retrieve the operations of the loaded interventions
         for (final Intervention intervention : resultList) {
             intervention.setOperationList(this.operationDao.getOperationsByInterventionId(intervention.getId()));
-        }
-
-        // Calls the consumable DAO to retrieve the consumables of the loaded interventions
-        for (final Intervention intervention : resultList) {
-            intervention.setConsumableList(this.consumableDao.getConsumablesByInterventionId(intervention.getId()));
         }
 
         // Returns the list of DTOs
@@ -173,11 +153,6 @@ public class InterventionDao {
             intervention.setOperationList(this.operationDao.getOperationsByInterventionId(intervention.getId()));
         }
 
-        // Calls the consumable DAO to retrieve the consumables of the loaded interventions
-        for (final Intervention intervention : resultList) {
-            intervention.setConsumableList(this.consumableDao.getConsumablesByInterventionId(intervention.getId()));
-        }
-
         // Returns the list of DTOs
         return resultList;
     }
@@ -196,11 +171,6 @@ public class InterventionDao {
         // Calls the operation DAO to save the list of operations of the given body
         for (final Operation operation : body.getOperationList()) {
             this.operationDao.saveOperation(operation);
-        }
-
-        // Calls the consumable DAO to save the list of consumables of the given body
-        for (final Consumable consumable : body.getConsumableList()) {
-            this.consumableDao.saveConsumable(consumable);
         }
 
         // Converts the given body to an entity
@@ -227,11 +197,6 @@ public class InterventionDao {
             this.operationDao.updateOperation(operation);
         }
 
-        // Calls the consumable DAO to update the list of consumables of the given body
-        for (final Consumable consumable : body.getConsumableList()) {
-            this.consumableDao.updateConsumable(consumable);
-        }
-
         // Converts the given body to an entity
         final InterventionEntity entity = this.interventionConverter.toEntity(body);
 
@@ -255,11 +220,6 @@ public class InterventionDao {
             // Calls the operation DAO to load the list of operations with the given intervention ID, then delete them
             for (final Operation operation : this.operationDao.getOperationsByInterventionId(id)) {
                 this.operationDao.deleteOperationById(operation.getId());
-            }
-
-            // Calls the consumable DAO to load the list of consumables with the given intervention ID, then delete them
-            for (final Consumable consumable : this.consumableDao.getConsumablesByInterventionId(id)) {
-                this.consumableDao.deleteConsumableById(consumable.getId());
             }
 
             // Calls the repository to delete the intervention with the given ID

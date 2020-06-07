@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS Interventions (
     realTime      REAL,
     amount        REAL,
     paidAmount    REAL,
+    comments      TEXT,
     FOREIGN KEY (carId)
         REFERENCES Cars (id),
     UNIQUE (creationYear, number)

@@ -15,7 +15,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import fr.vulture.hostocars.converter.InterventionConverter;
-import fr.vulture.hostocars.dto.Consumable;
 import fr.vulture.hostocars.dto.Intervention;
 import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.entity.InterventionEntity;
@@ -41,9 +40,6 @@ class InterventionDaoTest {
 
     @Mock
     private OperationDao operationDao;
-
-    @Mock
-    private ConsumableDao consumableDao;
 
     @Mock
     private InterventionRepository interventionRepository;
@@ -72,17 +68,12 @@ class InterventionDaoTest {
         final List<Operation> operationList = emptyList();
         when(this.operationDao.getOperationsByInterventionId(dtoId)).thenReturn(operationList);
 
-        final List<Consumable> consumableList = emptyList();
-        when(this.consumableDao.getConsumablesByInterventionId(dtoId)).thenReturn(consumableList);
-
         assertEquals(dtoList, this.interventionDao.getInterventions(null), "Result list different from expected");
         assertEquals(operationList, dto.getOperationList(), "Result operation list different from expected");
-        assertEquals(consumableList, dto.getConsumableList(), "Result consumable list different from expected");
 
         verify(this.interventionRepository, times(1)).findAll();
         verify(this.interventionConverter, times(1)).toDtoList(entityList);
         verify(this.operationDao, times(1)).getOperationsByInterventionId(dtoId);
-        verify(this.consumableDao, times(1)).getConsumablesByInterventionId(dtoId);
     }
 
     /**
@@ -103,14 +94,10 @@ class InterventionDaoTest {
         final List<Operation> operationList = emptyList();
         when(this.operationDao.getOperationsByInterventionId(dtoId)).thenReturn(operationList);
 
-        final List<Consumable> consumableList = emptyList();
-        when(this.consumableDao.getConsumablesByInterventionId(dtoId)).thenReturn(consumableList);
-
         final String sortingField = "sortedBy";
 
         assertEquals(dtoList, this.interventionDao.getInterventions(sortingField), "Result list different from expected");
         assertEquals(operationList, dto.getOperationList(), "Result operation list different from expected");
-        assertEquals(consumableList, dto.getConsumableList(), "Result consumable list different from expected");
 
         final ArgumentCaptor<Sort> argumentCaptor = forClass(Sort.class);
         verify(this.interventionRepository).findAll(argumentCaptor.capture());
@@ -123,7 +110,6 @@ class InterventionDaoTest {
         verify(this.interventionRepository, times(1)).findAll(sort);
         verify(this.interventionConverter, times(1)).toDtoList(entityList);
         verify(this.operationDao, times(1)).getOperationsByInterventionId(dtoId);
-        verify(this.consumableDao, times(1)).getConsumablesByInterventionId(dtoId);
     }
 
     /**
@@ -143,17 +129,12 @@ class InterventionDaoTest {
         final List<Operation> operationList = emptyList();
         when(this.operationDao.getOperationsByInterventionId(id)).thenReturn(operationList);
 
-        final List<Consumable> consumableList = emptyList();
-        when(this.consumableDao.getConsumablesByInterventionId(id)).thenReturn(consumableList);
-
         assertEquals(dto, this.interventionDao.getInterventionById(id), "Result intervention different from expected");
         assertEquals(operationList, dto.getOperationList(), "Result operation list different from expected");
-        assertEquals(consumableList, dto.getConsumableList(), "Result consumable list different from expected");
 
         verify(this.interventionRepository, times(1)).findById(id);
         verify(this.interventionConverter, times(1)).toDto(entity);
         verify(this.operationDao, times(1)).getOperationsByInterventionId(id);
-        verify(this.consumableDao, times(1)).getConsumablesByInterventionId(id);
     }
 
     /**
@@ -175,17 +156,12 @@ class InterventionDaoTest {
         final List<Operation> operationList = emptyList();
         when(this.operationDao.getOperationsByInterventionId(dtoId)).thenReturn(operationList);
 
-        final List<Consumable> consumableList = emptyList();
-        when(this.consumableDao.getConsumablesByInterventionId(dtoId)).thenReturn(consumableList);
-
         assertEquals(dtoList, this.interventionDao.getInterventionsByCarId(carId), "Result list different from expected");
         assertEquals(operationList, dto.getOperationList(), "Result operation list different from expected");
-        assertEquals(consumableList, dto.getConsumableList(), "Result consumable list different from expected");
 
         verify(this.interventionRepository, times(1)).findAllByCarId(carId);
         verify(this.interventionConverter, times(1)).toDtoList(entityList);
         verify(this.operationDao, times(1)).getOperationsByInterventionId(dtoId);
-        verify(this.consumableDao, times(1)).getConsumablesByInterventionId(dtoId);
     }
 
     /**
@@ -210,12 +186,8 @@ class InterventionDaoTest {
         final List<Operation> operationList = emptyList();
         when(this.operationDao.getOperationsByInterventionId(dtoId)).thenReturn(operationList);
 
-        final List<Consumable> consumableList = emptyList();
-        when(this.consumableDao.getConsumablesByInterventionId(dtoId)).thenReturn(consumableList);
-
         assertEquals(dtoList, this.interventionDao.searchInterventions(body), "Result list different from expected");
         assertEquals(operationList, dto.getOperationList(), "Result operation list different from expected");
-        assertEquals(consumableList, dto.getConsumableList(), "Result consumable list different from expected");
 
         final ArgumentCaptor<Example> argumentCaptor = forClass(Example.class);
         verify(this.interventionRepository).findAll(argumentCaptor.capture());
@@ -227,7 +199,6 @@ class InterventionDaoTest {
         verify(this.interventionRepository, times(1)).findAll(example);
         verify(this.interventionConverter, times(1)).toDtoList(entityList);
         verify(this.operationDao, times(1)).getOperationsByInterventionId(dtoId);
-        verify(this.consumableDao, times(1)).getConsumablesByInterventionId(dtoId);
     }
 
     /**
@@ -242,10 +213,6 @@ class InterventionDaoTest {
         body.setOperationList(singletonList(operation));
         when(this.operationDao.saveOperation(operation)).thenReturn(null);
 
-        final Consumable consumable = new Consumable();
-        body.setConsumableList(singletonList(consumable));
-        when(this.consumableDao.saveConsumable(consumable)).thenReturn(null);
-
         final InterventionEntity entity = new InterventionEntity();
         when(this.interventionConverter.toEntity(body)).thenReturn(entity);
 
@@ -259,7 +226,6 @@ class InterventionDaoTest {
         verify(this.interventionConverter, times(1)).toEntity(body);
         verify(this.interventionRepository, times(1)).save(entity);
         verify(this.operationDao, times(1)).saveOperation(operation);
-        verify(this.consumableDao, times(1)).saveConsumable(consumable);
     }
 
     /**
@@ -274,10 +240,6 @@ class InterventionDaoTest {
         body.setOperationList(singletonList(operation));
         doNothing().when(this.operationDao).updateOperation(operation);
 
-        final Consumable consumable = new Consumable();
-        body.setConsumableList(singletonList(consumable));
-        doNothing().when(this.consumableDao).updateConsumable(consumable);
-
         final InterventionEntity entity = new InterventionEntity();
         when(this.interventionConverter.toEntity(body)).thenReturn(entity);
 
@@ -291,7 +253,6 @@ class InterventionDaoTest {
         verify(this.interventionConverter, times(1)).toEntity(body);
         verify(this.interventionRepository, times(1)).save(entity);
         verify(this.operationDao, times(1)).updateOperation(operation);
-        verify(this.consumableDao, times(1)).updateConsumable(consumable);
     }
 
     /**
@@ -310,13 +271,6 @@ class InterventionDaoTest {
         when(this.operationDao.getOperationsByInterventionId(id)).thenReturn(operationList);
         when(this.operationDao.deleteOperationById(operationId)).thenReturn(true);
 
-        final Consumable consumable = new Consumable();
-        final Integer consumableId = 1;
-        consumable.setId(consumableId);
-        final List<Consumable> consumableList = singletonList(consumable);
-        when(this.consumableDao.getConsumablesByInterventionId(id)).thenReturn(consumableList);
-        when(this.consumableDao.deleteConsumableById(consumableId)).thenReturn(true);
-
         doNothing().when(this.interventionRepository).deleteById(id);
 
         assertTrue(this.interventionDao.deleteInterventionById(id), "Result different from expected");
@@ -324,8 +278,6 @@ class InterventionDaoTest {
         verify(this.interventionRepository, times(1)).existsById(id);
         verify(this.operationDao, times(1)).getOperationsByInterventionId(id);
         verify(this.operationDao, times(1)).deleteOperationById(operationId);
-        verify(this.consumableDao, times(1)).getConsumablesByInterventionId(id);
-        verify(this.consumableDao, times(1)).deleteConsumableById(consumableId);
         verify(this.interventionRepository, times(1)).deleteById(id);
     }
 

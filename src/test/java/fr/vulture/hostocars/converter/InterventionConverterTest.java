@@ -46,6 +46,8 @@ class InterventionConverterTest {
         dto.setAmount(amount);
         final Double paidAmount = 8.0;
         dto.setPaidAmount(paidAmount);
+        final String comments = "comments";
+        dto.setComments(comments);
 
         final InterventionEntity entity = this.converter.toEntity(dto);
 
@@ -61,6 +63,7 @@ class InterventionConverterTest {
         assertEquals(realTime, entity.getRealTime(), "Real time different from expected");
         assertEquals(amount, entity.getAmount(), "Amount different from expected");
         assertEquals(paidAmount, entity.getPaidAmount(), "Paid amount different from expected");
+        assertEquals(comments, entity.getComments(), "Comments different from expected");
     }
 
     /**
@@ -101,6 +104,8 @@ class InterventionConverterTest {
         entity.setAmount(amount);
         final Double paidAmount = 8.0;
         entity.setPaidAmount(paidAmount);
+        final String comments = "comments";
+        entity.setComments(comments);
 
         final Intervention dto = this.converter.toDto(entity);
 
@@ -116,6 +121,7 @@ class InterventionConverterTest {
         assertEquals(realTime, dto.getRealTime(), "Real time different from expected");
         assertEquals(amount, dto.getAmount(), "Amount different from expected");
         assertEquals(paidAmount, dto.getPaidAmount(), "Paid amount different from expected");
+        assertEquals(comments, dto.getComments(), "Comments different from expected");
     }
 
     /**
