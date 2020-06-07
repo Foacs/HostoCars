@@ -39,6 +39,7 @@ public class InterventionConverter extends Converter<InterventionEntity, Interve
         result.setRealTime(dto.getRealTime());
         result.setAmount(dto.getAmount());
         result.setPaidAmount(dto.getPaidAmount());
+        result.setComments(dto.getComments());
         return result;
     }
 
@@ -67,6 +68,7 @@ public class InterventionConverter extends Converter<InterventionEntity, Interve
         result.setRealTime(entity.getRealTime());
         result.setAmount(entity.getAmount());
         result.setPaidAmount(entity.getPaidAmount());
+        result.setComments(entity.getComments());
         return result;
     }
 

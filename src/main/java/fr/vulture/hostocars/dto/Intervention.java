@@ -23,8 +23,8 @@ public class Intervention implements Serializable {
     private Double realTime;
     private Double amount;
     private Double paidAmount;
+    private String comments;
 
     private List<Operation> operationList;
-    private List<Consumable> consumableList;
 
 }

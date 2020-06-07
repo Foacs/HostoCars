@@ -76,4 +76,8 @@ public class InterventionEntity implements Serializable {
         columnDefinition = "REAL")
     private Double paidAmount;
 
+    @Column(name = "comments",
+        columnDefinition = "TEXT")
+    private String comments;
+
 }
