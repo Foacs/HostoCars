@@ -36,12 +36,15 @@ public class SystemTrayHelper implements InitializingBean {
 
     @NonNull
     private final ApplicationContext applicationContext;
+
     @NonNull
     @Value("${server.address}")
     private String serverAddress;
+
     @NonNull
     @Value("${spring.application.name}")
     private String applicationName;
+
     @NonNull
     @Value("${server.port}")
     private String serverPort;

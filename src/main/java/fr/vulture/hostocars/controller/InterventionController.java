@@ -1,14 +1,26 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.utils.ControllerUtils.INTERNAL_SERVER_ERROR_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.NO_CONTENT_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.OK_CODE;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import fr.vulture.hostocars.dao.InterventionDao;
 import fr.vulture.hostocars.dto.Car;
 import fr.vulture.hostocars.dto.Intervention;
 import fr.vulture.hostocars.pojo.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Transactional
 @RestController
-@RequestMapping("/interventions")
 @CrossOrigin(origins = "*")
+@RequestMapping("/interventions")
+@Tags(@Tag(name = "Interventions", description = "Services related to interventions."))
 public class InterventionController {
 
     @NonNull
@@ -59,7 +72,14 @@ public class InterventionController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getInterventions(@RequestParam(required = false) final String sortedBy) {
+    @Operation(summary = "Gets all interventions.",
+        description = "Retrieves the list of all the interventions from the database. A sorting field can be specified.",
+        responses = {@ApiResponse(description = "At least one intervention has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Intervention.class)))),
+            @ApiResponse(description = "No intervention has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getInterventions(@Parameter(description = "The sorting field.") @RequestParam(required = false) final String sortedBy) {
         log.info("[getInterventions <= Calling] With sorting field = {}", sortedBy);
 
         try {
@@ -94,7 +114,15 @@ public class InterventionController {
      * @return an HTTP response
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getInterventionById(@PathVariable @NonNull final Integer id) {
+    @Operation(summary = "Gets an intervention by its ID.",
+        description = "Retrieves the intervention corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "A intervention has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Intervention.class))),
+            @ApiResponse(description = "No intervention has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getInterventionById(
+        @Parameter(description = "The intervention ID to search.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[getInterventionById <= Calling] With ID = {}", id);
 
         try {
@@ -129,7 +157,15 @@ public class InterventionController {
      * @return an HTTP response
      */
     @GetMapping("/car/{carId}")
-    public ResponseEntity<?> getInterventionsByCarId(@PathVariable @NonNull final Integer carId) {
+    @Operation(summary = "Gets an intervention by its car ID.",
+        description = "Retrieves the interventions corresponding to the specified car ID from the database.",
+        responses = {@ApiResponse(description = "At least one intervention has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Intervention.class))),
+            @ApiResponse(description = "No intervention has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getInterventionsByCarId(
+        @Parameter(description = "The car ID to search.", required = true) @PathVariable @NonNull final Integer carId) {
         log.info("[getInterventionsByCarId <= Calling] With car ID = {}", carId);
 
         try {
@@ -164,7 +200,14 @@ public class InterventionController {
      * @return an HTTP response
      */
     @GetMapping("/search")
-    public ResponseEntity<?> searchInterventions(@RequestBody @NonNull final Intervention body) {
+    @Operation(summary = "Searches for interventions.",
+        description = "Retrieves the list of interventions that match the specified body from the database.",
+        responses = {@ApiResponse(description = "At least one intervention has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Intervention.class)))),
+            @ApiResponse(description = "No intervention has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> searchInterventions(@Parameter(required = true) @RequestBody @NonNull final Intervention body) {
         log.info("[searchInterventions <= Calling] With body = {}", body);
 
         try {
@@ -199,7 +242,11 @@ public class InterventionController {
      * @return an HTTP response
      */
     @PostMapping("/save")
-    public ResponseEntity<?> saveIntervention(@RequestBody @NonNull final Intervention body) {
+    @Operation(summary = "Saves an intervention.", description = "Inserts a new intervention in the database.",
+        responses = {@ApiResponse(description = "The intervention has been inserted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> saveIntervention(@Parameter(required = true) @RequestBody @NonNull final Intervention body) {
         log.info("[saveIntervention <= Calling] With body = {}", body);
 
         try {
@@ -228,7 +275,11 @@ public class InterventionController {
      * @return an HTTP response
      */
     @PutMapping("/update")
-    public ResponseEntity<?> updateIntervention(@RequestBody @NonNull final Intervention body) {
+    @Operation(summary = "Updates an intervention.", description = "Updates an existing intervention in the database.",
+        responses = {@ApiResponse(description = "The intervention has been updated successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> updateIntervention(@Parameter(required = true) @RequestBody @NonNull final Intervention body) {
         log.info("[updateIntervention <= Calling] With body = {}", body);
 
         try {
@@ -257,7 +308,14 @@ public class InterventionController {
      * @return an HTTP response
      */
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteInterventionById(@PathVariable @NonNull final Integer id) {
+    @Operation(summary = "Deletes an intervention by its ID.",
+        description = "Deletes the intervention corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "The intervention has been deleted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "No intervention has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> deleteInterventionById(
+        @Parameter(description = "The ID of the intervention to delete.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[deleteInterventionById <= Calling] With ID = {}", id);
 
         try {

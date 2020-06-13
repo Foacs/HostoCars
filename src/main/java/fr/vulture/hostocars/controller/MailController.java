@@ -1,12 +1,22 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.utils.ControllerUtils.INTERNAL_SERVER_ERROR_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.OK_CODE;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import fr.vulture.hostocars.pojo.Mail;
 import fr.vulture.hostocars.pojo.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.io.File;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -30,8 +40,9 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @Slf4j
 @RestController
-@RequestMapping("/mail")
 @CrossOrigin(origins = "*")
+@RequestMapping("/mail")
+@Tags(@Tag(name = "Mails", description = "Services related to mails."))
 public class MailController {
 
     private final JavaMailSender sender;
@@ -56,7 +67,11 @@ public class MailController {
      * @return an HTTP response
      */
     @PostMapping("/send")
-    public ResponseEntity<?> sendMail(@RequestBody @NonNull final Mail mail) {
+    @Operation(summary = "Sends a mail.", description = "Sends a mail using the '***REMOVED***' mail address. Some attachments can be added.",
+        responses = {@ApiResponse(description = "The mail has been sent successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> sendMail(@Parameter(required = true) @RequestBody @NonNull final Mail mail) {
         log.info("[sendMail <= Calling] With body = {}", mail);
 
         try {

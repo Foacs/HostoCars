@@ -28,6 +28,7 @@
         "sass-extract-js": "^0.4.0",
         "sass-extract-loader": "^1.1.0",
         "simplebar": "^4.2.3",
+        "swagger-ui-react": "^3.26.2",
         "typeface-roboto": "0.0.54"
     },
     "scripts": {

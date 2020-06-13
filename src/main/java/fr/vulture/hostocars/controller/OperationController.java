@@ -1,14 +1,25 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.utils.ControllerUtils.INTERNAL_SERVER_ERROR_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.NO_CONTENT_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.OK_CODE;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import fr.vulture.hostocars.dao.OperationDao;
 import fr.vulture.hostocars.dto.Intervention;
 import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.pojo.Response;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +43,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Transactional
 @RestController
-@RequestMapping("/operations")
 @CrossOrigin(origins = "*")
+@RequestMapping("/operations")
+@Tags(@Tag(name = "Operations", description = "Services related to operations."))
 public class OperationController {
 
     @NonNull
@@ -59,7 +71,14 @@ public class OperationController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getOperations(@RequestParam(required = false) final String sortedBy) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Gets all operations.",
+        description = "Retrieves the list of all the operations from the database. A sorting field can be specified.",
+        responses = {@ApiResponse(description = "At least one operation has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Operation.class)))),
+            @ApiResponse(description = "No operation has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getOperations(@Parameter(description = "The sorting field.") @RequestParam(required = false) final String sortedBy) {
         log.info("[getOperations <= Calling] With sorting field = {}", sortedBy);
 
         try {
@@ -94,7 +113,15 @@ public class OperationController {
      * @return an HTTP response
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOperationById(@PathVariable @NonNull final Integer id) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Gets a operation by its ID.",
+        description = "Retrieves the operation corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "A operation has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Operation.class))),
+            @ApiResponse(description = "No operation has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getOperationById(
+        @Parameter(description = "The operation ID to search.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[getOperationById <= Calling] With ID = {}", id);
 
         try {
@@ -129,7 +156,14 @@ public class OperationController {
      * @return an HTTP response
      */
     @GetMapping("/intervention/{interventionId}")
-    public ResponseEntity<?> getOperationsByInterventionId(@PathVariable @NonNull final Integer interventionId) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Gets an operation by its intervention ID.",
+        description = "Retrieves the operations corresponding to the specified intervention ID from the database.",
+        responses = {@ApiResponse(description = "At least one operation has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Operation.class))),
+            @ApiResponse(description = "No operation has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getOperationsByInterventionId(@Parameter(required = true) @PathVariable @NonNull final Integer interventionId) {
         log.info("[getOperationsByInterventionId <= Calling] With intervention ID = {}", interventionId);
 
         try {
@@ -164,7 +198,14 @@ public class OperationController {
      * @return an HTTP response
      */
     @GetMapping("/search")
-    public ResponseEntity<?> searchOperations(@RequestBody @NonNull final Operation body) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Searches for operations.",
+        description = "Retrieves the list of operations that match the specified body from the database.",
+        responses = {@ApiResponse(description = "At least one operation has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Operation.class)))),
+            @ApiResponse(description = "No operation has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> searchOperations(@Parameter(required = true) @RequestBody @NonNull final Operation body) {
         log.info("[searchOperations <= Calling] With body = {}", body);
 
         try {
@@ -199,7 +240,11 @@ public class OperationController {
      * @return an HTTP response
      */
     @PostMapping("/save")
-    public ResponseEntity<?> saveOperation(@RequestBody @NonNull final Operation body) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Saves an operation.", description = "Inserts a new operation in the database.",
+        responses = {@ApiResponse(description = "The operation has been inserted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> saveOperation(@Parameter(required = true) @RequestBody @NonNull final Operation body) {
         log.info("[saveOperation <= Calling] With body = {}", body);
 
         try {
@@ -228,7 +273,11 @@ public class OperationController {
      * @return an HTTP response
      */
     @PutMapping("/update")
-    public ResponseEntity<?> updateOperation(@RequestBody @NonNull final Operation body) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Updates an operation.", description = "Updates an existing operation in the database.",
+        responses = {@ApiResponse(description = "The operation has been updated successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> updateOperation(@Parameter(required = true) @RequestBody @NonNull final Operation body) {
         log.info("[updateOperation <= Calling] With body = {}", body);
 
         try {
@@ -257,7 +306,14 @@ public class OperationController {
      * @return an HTTP response
      */
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteOperationById(@PathVariable @NonNull final Integer id) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Deletes an operation by its ID.",
+        description = "Deletes the operation corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "The operation has been deleted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "No operation has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> deleteOperationById(
+        @Parameter(description = "The ID of the operation to delete.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[deleteOperationById <= Calling] With ID = {}", id);
 
         try {

@@ -1,13 +1,25 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.utils.ControllerUtils.INTERNAL_SERVER_ERROR_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.NO_CONTENT_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.OK_CODE;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import fr.vulture.hostocars.dao.CarDao;
 import fr.vulture.hostocars.dto.Car;
 import fr.vulture.hostocars.pojo.Response;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import java.util.Set;
 import lombok.NonNull;
@@ -32,8 +44,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Transactional
 @RestController
-@RequestMapping("/cars")
 @CrossOrigin(origins = "*")
+@RequestMapping("/cars")
+@Tags(@Tag(name = "Cars", description = "Services related to cars."))
 public class CarController {
 
     @NonNull
@@ -59,7 +72,13 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getCars(@RequestParam(required = false) final String sortedBy) {
+    @Operation(summary = "Gets all cars.", description = "Retrieves the list of all the cars from the database. A sorting field can be specified.",
+        responses = {@ApiResponse(description = "At least one car has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))),
+            @ApiResponse(description = "No car has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getCars(@Parameter(description = "The sorting field.") @RequestParam(required = false) final String sortedBy) {
         log.info("[getCars <= Calling] With sorting field = {}", sortedBy);
 
         try {
@@ -94,7 +113,13 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getCarById(@PathVariable @NonNull final Integer id) {
+    @Operation(summary = "Gets a car by its ID.", description = "Retrieves the car corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "A car has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Car.class))),
+            @ApiResponse(description = "No car has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getCarById(@Parameter(description = "The car ID to search.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[getCarById <= Calling] With ID = {}", id);
 
         try {
@@ -126,6 +151,13 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/registrations")
+    @Operation(summary = "Gets all distinct car registrations.",
+        description = "Retrieves the list of all the distinct car registrations from the database.",
+        responses = {@ApiResponse(description = "At least one car registration has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = String.class)))),
+            @ApiResponse(description = "No car registration has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
     public ResponseEntity<?> getCarRegistrations() {
         log.info("[getCarRegistrations <= Calling]");
 
@@ -161,7 +193,13 @@ public class CarController {
      * @return an HTTP response
      */
     @GetMapping("/search")
-    public ResponseEntity<?> searchCars(@RequestBody @NonNull final Car body) {
+    @Operation(summary = "Searches for cars.", description = "Retrieves the list of cars that match the specified body from the database.",
+        responses = {@ApiResponse(description = "At least one car has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))),
+            @ApiResponse(description = "No car has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> searchCars(@Parameter(required = true) @RequestBody @NonNull final Car body) {
         log.info("[searchCars <= Calling] With body = {}", body);
 
         try {
@@ -196,7 +234,11 @@ public class CarController {
      * @return an HTTP response
      */
     @PostMapping("/save")
-    public ResponseEntity<?> saveCar(@RequestBody @NonNull final Car body) {
+    @Operation(summary = "Saves a car.", description = "Inserts a new car in the database.",
+        responses = {@ApiResponse(description = "The car has been inserted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> saveCar(@Parameter(required = true) @RequestBody @NonNull final Car body) {
         log.info("[saveCar <= Calling] With body = {}", body);
 
         try {
@@ -225,7 +267,11 @@ public class CarController {
      * @return an HTTP response
      */
     @PutMapping("/update")
-    public ResponseEntity<?> updateCar(@RequestBody @NonNull final Car body) {
+    @Operation(summary = "Updates a car.", description = "Updates an existing car in the database.",
+        responses = {@ApiResponse(description = "The car has been updated successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> updateCar(@Parameter(required = true) @RequestBody @NonNull final Car body) {
         log.info("[updateCar <= Calling] With body = {}", body);
 
         try {
@@ -254,7 +300,13 @@ public class CarController {
      * @return an HTTP response
      */
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteCarById(@PathVariable @NonNull final Integer id) {
+    @Operation(summary = "Deletes a car by its ID.", description = "Deletes the car corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "The car has been deleted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "No car has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> deleteCarById(
+        @Parameter(description = "The ID of the car to delete.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[deleteCarById <= Calling] With ID = {}", id);
 
         try {

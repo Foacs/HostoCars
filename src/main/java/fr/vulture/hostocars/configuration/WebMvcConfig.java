@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
@@ -32,6 +33,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
             .addResolver(new CustomPathResourceResolver());
 
         log.trace("Resources added to registry");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addCorsMappings(final CorsRegistry registry) {
+        log.trace("Adding CORS mapping");
+
+        registry.addMapping("/**");
     }
 
     /**
