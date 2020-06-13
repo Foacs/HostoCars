@@ -1,14 +1,25 @@
 package fr.vulture.hostocars.controller;
 
+import static fr.vulture.hostocars.utils.ControllerUtils.INTERNAL_SERVER_ERROR_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.NO_CONTENT_CODE;
+import static fr.vulture.hostocars.utils.ControllerUtils.OK_CODE;
 import static java.util.Objects.isNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import fr.vulture.hostocars.dao.OperationLineDao;
 import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.dto.OperationLine;
 import fr.vulture.hostocars.pojo.Response;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.tags.Tags;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +43,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @Transactional
 @RestController
-@RequestMapping("/operationLines")
 @CrossOrigin(origins = "*")
+@RequestMapping("/operationLines")
+@Tags(@Tag(name = "Operation Lines", description = "Services related to operation lines."))
 public class OperationLineController {
 
     @NonNull
@@ -59,7 +71,14 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @GetMapping("/all")
-    public ResponseEntity<?> getOperationLines(@RequestParam(required = false) final String sortedBy) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Gets all operation lines.",
+        description = "Retrieves the list of all the operation lines from the database. A sorting field can be specified.",
+        responses = {@ApiResponse(description = "At least one operation line has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = OperationLine.class)))),
+            @ApiResponse(description = "No operation line has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getOperationLines(@Parameter(description = "The sorting field.") @RequestParam(required = false) final String sortedBy) {
         log.info("[getOperationLines <= Calling] With sorting field = {}", sortedBy);
 
         try {
@@ -94,7 +113,15 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @GetMapping("/{id}")
-    public ResponseEntity<?> getOperationLineById(@PathVariable @NonNull final Integer id) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Gets an operation line by its ID.",
+        description = "Retrieves the operation line corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "A operation line has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OperationLine.class))),
+            @ApiResponse(description = "No operation line has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> getOperationLineById(
+        @Parameter(description = "The operation line ID to search.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[getOperationLineById <= Calling] With ID = {}", id);
 
         try {
@@ -129,7 +156,15 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @GetMapping("/operation/{operationId}")
-    public ResponseEntity<?> getOperationLinesByOperationId(@PathVariable @NonNull final Integer operationId) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Gets an operation line by its operation ID.",
+        description = "Retrieves the operation lines corresponding to the specified operation ID from the database.",
+        responses = {@ApiResponse(description = "At least one operation line has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OperationLine.class))),
+            @ApiResponse(description = "No operation line has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = OperationLine.class)))})
+    public ResponseEntity<?> getOperationLinesByOperationId(
+        @Parameter(description = "The operation ID to search.", required = true) @PathVariable @NonNull final Integer operationId) {
         log.info("[getOperationLinesByOperationId <= Calling] With operation ID = {}", operationId);
 
         try {
@@ -164,7 +199,14 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @GetMapping("/search")
-    public ResponseEntity<?> searchOperationLines(@RequestBody @NonNull final OperationLine body) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Searches for operation lines.",
+        description = "Retrieves the list of operation lines that match the specified body from the database.",
+        responses = {@ApiResponse(description = "At least one operation line has been found.", responseCode = OK_CODE,
+            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = OperationLine.class)))),
+            @ApiResponse(description = "No operation line has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> searchOperationLines(@Parameter(required = true) @RequestBody @NonNull final OperationLine body) {
         log.info("[searchOperationLines <= Calling] With body = {}", body);
 
         try {
@@ -199,7 +241,11 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @PostMapping("/save")
-    public ResponseEntity<?> saveOperationLine(@RequestBody @NonNull final OperationLine body) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Saves an operation line.", description = "Inserts a new operation line in the database.",
+        responses = {@ApiResponse(description = "The operation line has been inserted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> saveOperationLine(@Parameter(required = true) @RequestBody @NonNull final OperationLine body) {
         log.info("[saveOperationLine <= Calling] With body = {}", body);
 
         try {
@@ -228,7 +274,12 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @PutMapping("/update")
-    public ResponseEntity<?> updateOperationLine(@RequestBody @NonNull final OperationLine body) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Updates an operation line.",
+        description = "Updates an existing operation line in the database.",
+        responses = {@ApiResponse(description = "The operation line has been updated successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> updateOperationLine(@Parameter(required = true) @RequestBody @NonNull final OperationLine body) {
         log.info("[updateOperationLine <= Calling] With body = {}", body);
 
         try {
@@ -257,7 +308,14 @@ public class OperationLineController {
      * @return an HTTP response
      */
     @DeleteMapping("/{id}/delete")
-    public ResponseEntity<?> deleteOperationLineById(@PathVariable @NonNull final Integer id) {
+    @io.swagger.v3.oas.annotations.Operation(summary = "Deletes an operation line by its ID.",
+        description = "Deletes the operation line corresponding to the specified ID from the database.",
+        responses = {@ApiResponse(description = "The operation line has been deleted successfully.", responseCode = OK_CODE, content = @Content),
+            @ApiResponse(description = "No operation line has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
+            @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
+                content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
+    public ResponseEntity<?> deleteOperationLineById(
+        @Parameter(description = "The ID of the operation line to delete.", required = true) @PathVariable @NonNull final Integer id) {
         log.info("[deleteOperationLineById <= Calling] With ID = {}", id);
 
         try {
