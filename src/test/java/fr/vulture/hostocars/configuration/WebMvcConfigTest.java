@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceChainRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -60,6 +61,15 @@ class WebMvcConfigTest {
         verify(registryRegistration, times(1)).addResourceLocations("classpath:/static/");
         verify(registryRegistration, times(1)).resourceChain(true);
         verify(chainRegistration, times(1)).addResolver(resourceResolver);
+    }
+
+    /**
+     * Tests the {@link WebMvcConfig#addCorsMappings(CorsRegistry)} method.
+     */
+    @Test
+    @DisplayName("Adding a new CORS mapping")
+    final void testAddCorsMappings() {
+        this.webMvcConfig.addCorsMappings(mock(CorsRegistry.class));
     }
 
     /**

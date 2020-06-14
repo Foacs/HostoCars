@@ -43,6 +43,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         log.trace("Adding CORS mapping");
 
         registry.addMapping("/**");
+
+        log.trace("CORS mapping added to registry");
     }
 
     /**

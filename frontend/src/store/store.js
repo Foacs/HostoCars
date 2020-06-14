@@ -1,8 +1,7 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-// noinspection ES6CheckImport
-import { carsReducer, navigationReducer, notificationReducer } from 'store';
+import { carsReducer, interventionsReducer, navigationReducer, notificationReducer } from 'store';
 
 /**
  * Combines all the application reducers.
