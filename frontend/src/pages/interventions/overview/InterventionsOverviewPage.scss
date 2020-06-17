@@ -1,3 +1,26 @@
 #InterventionsOverviewPage {
+    padding: 32px 32px 32px 32px;
 
+    .FilterPanel {
+        min-width: 210px;
+        position:  fixed;
+        width:     calc(33% - 128px);
+
+        .Header {
+            cursor:     default;
+            min-height: 52px;
+
+            .ClearButton {
+                position: absolute;
+                right:    8px;
+                top:      12px;
+            }
+
+            .FilterPanelTitle {
+                left:     24px;
+                position: absolute;
+                top:      12px;
+            }
+        }
+    }
 }

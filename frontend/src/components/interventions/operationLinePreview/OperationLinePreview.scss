@@ -1,0 +1,11 @@
+@import '../../../resources/colors';
+
+#OperationLinePreview {
+    .CheckedIcon {
+        color: $secondary-color;
+    }
+
+    .UncheckedIcon {
+        color: $primary-color;
+    }
+}

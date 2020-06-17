@@ -10,6 +10,7 @@ import { carsReducer, interventionsReducer, navigationReducer, notificationReduc
  */
 const store = createStore(combineReducers({
     cars: carsReducer,
+    interventions: interventionsReducer,
     navigation: navigationReducer,
     notifications: notificationReducer
 }), composeWithDevTools(applyMiddleware(thunk)));

@@ -1,0 +1,52 @@
+#InterventionPreview {
+    .Header {
+        &:first-child {
+            display: inline-flex;
+            width:   100%;
+
+            * {
+                align-self: center;
+            }
+        }
+
+        & > div {
+            margin:  0;
+            padding: 0;
+        }
+
+        .AmountGauge {
+            margin: 0 -22px;
+            width:  95px;
+        }
+
+        .CarLink, .Number {
+            width: 90px;
+        }
+
+        .Description {
+            padding-left: 12px;
+            width:        calc(100% - 400px);
+        }
+
+        .OperationChip {
+            cursor: pointer;
+            width:  50px;
+        }
+
+        .Status {
+            cursor: inherit;
+            margin: 0 12px;
+            width:  90px;
+        }
+    }
+
+    .Content {
+        .OperationsGrid {
+            padding: 0 12px;
+
+            .Item {
+                width: 100%;
+            }
+        }
+    }
+}
