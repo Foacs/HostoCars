@@ -31,6 +31,20 @@ export const formatDateLabel = (date) => {
 };
 
 /**
+ * Format a number by adding leading zeros in order to match the specified size.
+ *
+ * @param {number} number
+ *     The number to format
+ * @param {number} size
+ *     The target size
+ *
+ * @returns {string} the formatted number as string
+ */
+export const addLeadingZeros = (number, size) => {
+    return lodash.padStart(number, size, 0);
+};
+
+/**
  * Returns a random number generated from the current date time.
  *
  * @returns {number} the generated random number
