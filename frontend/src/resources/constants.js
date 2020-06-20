@@ -20,6 +20,13 @@ export const ERROR_MAIL_ADDRESS = 'brice.kessler@outlook.com';
 export const ESCAPE_KEY_CODE = 27;
 
 /**
+ * The array of the ordered possible intervention statuses.
+ *
+ * @type {string[]}
+ */
+export const INTERVENTION_STATUS_STEPS = [ 'Diagnostic', 'Commande', 'Réception', 'Réalisation', 'Terminé' ];
+
+/**
  * The relative path to the logging file.
  *
  * @type {string}

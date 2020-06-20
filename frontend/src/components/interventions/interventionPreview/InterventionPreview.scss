@@ -1,52 +1,73 @@
+@import '../../../resources/colors';
+
 #InterventionPreview {
+    min-width: 600px;
+
     .Header {
-        &:first-child {
-            display: inline-flex;
-            width:   100%;
-
-            * {
-                align-self: center;
-            }
-        }
-
         & > div {
             margin:  0;
             padding: 0;
         }
 
         .AmountGauge {
-            margin: 0 -22px;
-            width:  95px;
+            align-self: center;
+            margin:     0 -22px;
+            width:      95px;
         }
 
         .CarLink, .Number {
-            width: 90px;
+            align-self: center;
+            width:      90px;
         }
 
         .Description {
-            padding-left: 12px;
-            width:        calc(100% - 400px);
+            align-self: center;
+            padding:    12px 0 12px 12px;
+            width:      calc(100% - 400px);
         }
 
         .OperationChip {
-            cursor: pointer;
-            width:  50px;
+            align-self: center;
+            cursor:     pointer;
+            width:      50px;
         }
 
         .Status {
-            cursor: inherit;
-            margin: 0 12px;
-            width:  90px;
+            align-self: center;
+            cursor:     inherit;
+            margin:     0 12px;
+            width:      90px;
         }
     }
 
     .Content {
-        .OperationsGrid {
-            padding: 0 12px;
+        .Amount, .Mileage, .Time {
+            padding-left: 24px;
+            width:        100%;
+        }
 
-            .Item {
-                width: 100%;
-            }
+        .AmountLabel, .MileageLabel, .TimeLabel {
+            color:         $gray;
+            padding-right: 24px;
+            width:         100%;
+        }
+
+        .Comments {
+            padding: 12px;
+            width:   100%;
+        }
+
+        .OperationList {
+            padding: 8px 12px 0 12px;
+        }
+
+        .OperationListTitle {
+            padding-top: 18px;
+            width:       100%;
+        }
+
+        .StatusStepper {
+            padding: 12px
         }
     }
 }
