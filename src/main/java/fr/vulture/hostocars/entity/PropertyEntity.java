@@ -22,22 +22,13 @@ public class PropertyEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id",
-        unique = true,
-        nullable = false,
-        insertable = false,
-        updatable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
 
-    @Column(name = "key",
-        unique = true,
-        nullable = false,
-        columnDefinition = "TEXT")
+    @Column(name = "key", unique = true, nullable = false, columnDefinition = "TEXT")
     private String key;
 
-    @Column(name = "value",
-        columnDefinition = "TEXT")
+    @Column(name = "value", columnDefinition = "TEXT")
     private String value;
 
 }

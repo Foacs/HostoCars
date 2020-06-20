@@ -67,7 +67,16 @@
         }
 
         .StatusStepper {
-            padding: 12px
+            padding: 12px;
+            width:   100%;
+        }
+
+        .Step {
+            &_finished {
+                & svg {
+                    color: $secondary-color;
+                }
+            }
         }
     }
 }

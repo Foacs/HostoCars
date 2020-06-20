@@ -58,7 +58,7 @@ public class OperationLineController {
      *     The autowired {@link OperationLineDao} component
      */
     @Autowired
-    public OperationLineController(@NonNull final OperationLineDao operationLineDao) {
+    public OperationLineController(final OperationLineDao operationLineDao) {
         this.operationLineDao = operationLineDao;
     }
 

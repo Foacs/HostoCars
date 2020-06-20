@@ -226,7 +226,9 @@ class BackupManager {
             log.trace("{} backup file(s) found", backupFileArray.length);
 
             // Deletes the oldest found backup file
-            Stream.of(backupFileArray).filter(file -> file.getName().startsWith(backupFileNamePrefix)).min(comparingLong(File::lastModified))
+            Stream.of(backupFileArray)
+                .filter(file -> file.getName().startsWith(backupFileNamePrefix))
+                .min(comparingLong(File::lastModified))
                 .ifPresent(File::delete);
         }
     }

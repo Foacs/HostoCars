@@ -13,6 +13,7 @@ public class OperationLine implements Serializable {
 
     private Integer id;
     private Integer operationId;
+    private String type;
     private String description;
     private Boolean done;
 

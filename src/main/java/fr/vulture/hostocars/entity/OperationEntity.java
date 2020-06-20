@@ -22,22 +22,13 @@ public class OperationEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id",
-        unique = true,
-        nullable = false,
-        insertable = false,
-        updatable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
 
-    @Column(name = "interventionId",
-        nullable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "interventionId", nullable = false, columnDefinition = "INTEGER")
     private Integer interventionId;
 
-    @Column(name = "type",
-        nullable = false,
-        columnDefinition = "TEXT")
-    private String type;
+    @Column(name = "label", nullable = false, columnDefinition = "TEXT")
+    private String label;
 
 }

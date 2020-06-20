@@ -43,8 +43,8 @@ public class InterventionDao {
      * @param interventionConverter
      *     The autowired {@link InterventionConverter} component
      */
-    public InterventionDao(@NonNull final OperationDao operationDao, @NonNull final InterventionRepository interventionRepository,
-        @NonNull final InterventionConverter interventionConverter) {
+    public InterventionDao(final OperationDao operationDao, final InterventionRepository interventionRepository,
+        final InterventionConverter interventionConverter) {
         this.operationDao = operationDao;
         this.interventionRepository = interventionRepository;
         this.interventionConverter = interventionConverter;

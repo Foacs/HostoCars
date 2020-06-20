@@ -30,7 +30,7 @@ function OperationPreview({ className, expanded, operation, onClick }) {
 
     return (<ExpansionPanel className={className} elevation={0} expanded={expanded} id='OperationPreview' onChange={onClick}>
         <ExpansionPanelSummary className='Header' expandIcon={<ExpandIcon className='ExpandIcon' />}>
-            <Typography className='Type' noWrap variant='body2'>{operation.type}</Typography>
+            <Typography className='Label' noWrap variant='body2'>{operation.label}</Typography>
 
             <Chip className='LinesChip' color={isFinished ? 'secondary' : 'primary'} label={`${finishedLines} │ ${totalLines}`} size='small'
                   variant={isFinished ? 'outlined' : 'default'} />

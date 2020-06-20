@@ -2,7 +2,7 @@
 CREATE TABLE IF NOT EXISTS Operations (
     id             INTEGER UNIQUE PRIMARY KEY,
     interventionId INTEGER NOT NULL,
-    type           TEXT    NOT NULL,
+    label          TEXT    NOT NULL,
     FOREIGN KEY (interventionId)
         REFERENCES Interventions (id)
 );

@@ -22,27 +22,19 @@ public class OperationLineEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id",
-        unique = true,
-        nullable = false,
-        insertable = false,
-        updatable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
 
-    @Column(name = "operationId",
-        nullable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "operationId", nullable = false, columnDefinition = "INTEGER")
     private Integer operationId;
 
-    @Column(name = "description",
-        nullable = false,
-        columnDefinition = "TEXT")
+    @Column(name = "type", nullable = false, columnDefinition = "TEXT")
+    private String type;
+
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "done",
-        nullable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "done", nullable = false, columnDefinition = "INTEGER")
     private Boolean done;
 
 }

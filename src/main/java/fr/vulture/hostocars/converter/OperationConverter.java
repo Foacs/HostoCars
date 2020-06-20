@@ -30,7 +30,7 @@ public class OperationConverter extends Converter<OperationEntity, Operation> {
         final OperationEntity result = new OperationEntity();
         result.setId(dto.getId());
         result.setInterventionId(dto.getInterventionId());
-        result.setType(dto.getType());
+        result.setLabel(dto.getLabel());
         return result;
     }
 
@@ -50,7 +50,7 @@ public class OperationConverter extends Converter<OperationEntity, Operation> {
         final Operation result = new Operation();
         result.setId(entity.getId());
         result.setInterventionId(entity.getInterventionId());
-        result.setType(entity.getType());
+        result.setLabel(entity.getLabel());
         return result;
     }
 

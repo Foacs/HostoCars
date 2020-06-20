@@ -28,6 +28,8 @@ class OperationLineConverterTest {
         dto.setId(id);
         final Integer operationId = 1;
         dto.setOperationId(operationId);
+        final String type = "type";
+        dto.setType(type);
         final String description = "description";
         dto.setDescription(description);
         final Boolean done = Boolean.TRUE;
@@ -38,6 +40,7 @@ class OperationLineConverterTest {
         assertNotNull(entity, "Entity unexpectedly not null");
         assertEquals(id, entity.getId(), "ID different from expected");
         assertEquals(operationId, entity.getOperationId(), "Operation ID different from expected");
+        assertEquals(type, entity.getType(), "Type different from expected");
         assertEquals(description, entity.getDescription(), "Description different from expected");
         assertEquals(done, entity.getDone(), "Done flag different from expected");
     }
@@ -62,6 +65,8 @@ class OperationLineConverterTest {
         entity.setId(id);
         final Integer operationId = 1;
         entity.setOperationId(operationId);
+        final String type = "type";
+        entity.setType(type);
         final String description = "description";
         entity.setDescription(description);
         final Boolean done = Boolean.TRUE;
@@ -72,6 +77,7 @@ class OperationLineConverterTest {
         assertNotNull(dto, "DTO unexpectedly not null");
         assertEquals(id, dto.getId(), "ID different from expected");
         assertEquals(operationId, dto.getOperationId(), "Operation ID different from expected");
+        assertEquals(type, dto.getType(), "Type different from expected");
         assertEquals(description, dto.getDescription(), "Description different from expected");
         assertEquals(done, dto.getDone(), "Done flag different from expected");
     }

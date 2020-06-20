@@ -59,7 +59,7 @@ public class InterventionController {
      *     The autowired {@link InterventionDao} component
      */
     @Autowired
-    public InterventionController(@NonNull final InterventionDao interventionDao) {
+    public InterventionController(final InterventionDao interventionDao) {
         this.interventionDao = interventionDao;
     }
 

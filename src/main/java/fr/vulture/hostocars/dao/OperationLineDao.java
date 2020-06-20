@@ -37,8 +37,7 @@ public class OperationLineDao {
      * @param operationLineConverter
      *     The autowired {@link OperationLineConverter} component
      */
-    public OperationLineDao(@NonNull final OperationLineRepository operationLineRepository,
-        @NonNull final OperationLineConverter operationLineConverter) {
+    public OperationLineDao(final OperationLineRepository operationLineRepository, final OperationLineConverter operationLineConverter) {
         this.operationLineRepository = operationLineRepository;
         this.operationLineConverter = operationLineConverter;
     }

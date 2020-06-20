@@ -350,8 +350,8 @@ class CarPage extends PureComponent {
                             </Paper>
                         </Grid>
 
-                        <Grid item xs={12}>
-                            <Paper>
+                        <Grid alignItems='flex-end' container item xs={12}>
+                            <Paper className='DeletePanel'>
                                 <Button color='secondary' fullWidth onClick={this.onOpenDeleteCarModal}>
                                     Supprimer
                                 </Button>

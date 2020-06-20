@@ -48,7 +48,7 @@ export const InterventionPropType = PropTypes.shape({
 export const OperationPropType = PropTypes.shape({
     id: PropTypes.number,
     interventionId: PropTypes.number,
-    type: PropTypes.string
+    label: PropTypes.string
 });
 
 /**
@@ -60,5 +60,6 @@ export const OperationLinePropType = PropTypes.shape({
     description: PropTypes.string,
     done: PropTypes.bool,
     id: PropTypes.number,
-    operationId: PropTypes.number
+    operationId: PropTypes.number,
+    type: PropTypes.string
 });
