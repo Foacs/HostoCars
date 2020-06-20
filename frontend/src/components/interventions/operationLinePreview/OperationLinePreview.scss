@@ -1,6 +1,8 @@
 @import '../../../resources/colors';
 
 #OperationLinePreview {
+    padding: 0;
+
     .CheckedIcon {
         color: $secondary-color;
     }
