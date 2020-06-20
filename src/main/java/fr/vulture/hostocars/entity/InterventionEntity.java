@@ -16,68 +16,47 @@ import lombok.Data;
  */
 @Entity
 @Data
-@Table(name = "Interventions",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"creationYear", "number"}))
+@Table(name = "Interventions", uniqueConstraints = @UniqueConstraint(columnNames = {"creationYear", "number"}))
 public class InterventionEntity implements Serializable {
 
     private static final long serialVersionUID = -9130046034547531677L;
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id",
-        unique = true,
-        nullable = false,
-        insertable = false,
-        updatable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
 
-    @Column(name = "carId",
-        nullable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "carId", nullable = false, columnDefinition = "INTEGER")
     private Integer carId;
 
-    @Column(name = "creationYear",
-        nullable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "creationYear", nullable = false, columnDefinition = "INTEGER")
     private Integer creationYear;
 
-    @Column(name = "number",
-        nullable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "number", nullable = false, columnDefinition = "INTEGER")
     private Integer number;
 
-    @Column(name = "status",
-        nullable = false,
-        columnDefinition = "TEXT")
+    @Column(name = "status", nullable = false, columnDefinition = "TEXT")
     private String status;
 
-    @Column(name = "description",
-        columnDefinition = "TEXT")
+    @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "mileage",
-        columnDefinition = "INTEGER")
+    @Column(name = "mileage", columnDefinition = "INTEGER")
     private Integer mileage;
 
-    @Column(name = "estimatedTime",
-        columnDefinition = "REAL")
+    @Column(name = "estimatedTime", columnDefinition = "REAL")
     private Double estimatedTime;
 
-    @Column(name = "realTime",
-        columnDefinition = "REAL")
+    @Column(name = "realTime", columnDefinition = "REAL")
     private Double realTime;
 
-    @Column(name = "amount",
-        columnDefinition = "REAL")
+    @Column(name = "amount", columnDefinition = "REAL")
     private Double amount;
 
-    @Column(name = "paidAmount",
-        columnDefinition = "REAL")
+    @Column(name = "paidAmount", columnDefinition = "REAL")
     private Double paidAmount;
 
-    @Column(name = "comments",
-        columnDefinition = "TEXT")
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
 }

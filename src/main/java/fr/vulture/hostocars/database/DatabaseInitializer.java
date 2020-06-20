@@ -77,8 +77,8 @@ class DatabaseInitializer implements InitializingBean {
      *     The {@code project.version} property
      */
     @Autowired
-    DatabaseInitializer(@NonNull final PropertyRepository propertyRepository, @NonNull final ResourceExtractor resourceExtractor,
-        @NonNull final BackupManager backupManager, @NonNull @Value("${project.version}") final String projectVersion) {
+    DatabaseInitializer(final PropertyRepository propertyRepository, final ResourceExtractor resourceExtractor, final BackupManager backupManager,
+        @Value("${project.version}") final String projectVersion) {
         this.propertyRepository = propertyRepository;
         this.resourceExtractor = resourceExtractor;
         this.backupManager = backupManager;

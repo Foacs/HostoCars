@@ -59,7 +59,7 @@ public class CarController {
      *     The autowired {@link CarDao} component
      */
     @Autowired
-    public CarController(@NonNull final CarDao carDao) {
+    public CarController(final CarDao carDao) {
         this.carDao = carDao;
     }
 

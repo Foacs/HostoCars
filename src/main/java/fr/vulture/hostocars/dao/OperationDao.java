@@ -43,8 +43,8 @@ public class OperationDao {
      * @param operationConverter
      *     The autowired {@link OperationConverter} component
      */
-    public OperationDao(@NonNull final OperationLineDao operationLineDao, @NonNull final OperationRepository operationRepository,
-        @NonNull final OperationConverter operationConverter) {
+    public OperationDao(final OperationLineDao operationLineDao, final OperationRepository operationRepository,
+        final OperationConverter operationConverter) {
         this.operationLineDao = operationLineDao;
         this.operationRepository = operationRepository;
         this.operationConverter = operationConverter;

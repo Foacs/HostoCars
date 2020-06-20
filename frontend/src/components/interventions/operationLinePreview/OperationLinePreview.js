@@ -22,7 +22,8 @@ import './OperationLinePreview.scss';
  */
 function OperationLinePreview({ className, divider, operationLine }) {
     return (<ListItem className={className} divider={divider} id='OperationLinePreview'>
-        <ListItemText className='Description' primary={operationLine.description} primaryTypographyProps={{ variant: 'body2' }} />
+        <ListItemText className='Description' primary={operationLine.description} primaryTypographyProps={{ variant: 'body2' }}
+                      secondary={operationLine.type} secondaryTypographyProps={{ variant: 'caption' }} />
 
         <Checkbox checked={operationLine.done} checkedIcon={<CheckedIcon className='CheckedIcon' />} className='Done' disabled
                   icon={<UncheckedIcon className='UncheckedIcon' />} />

@@ -14,7 +14,7 @@ public class Operation implements Serializable {
 
     private Integer id;
     private Integer interventionId;
-    private String type;
+    private String label;
 
     private List<OperationLine> operationLineList;
 

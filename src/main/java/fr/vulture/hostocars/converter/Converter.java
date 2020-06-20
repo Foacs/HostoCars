@@ -8,7 +8,7 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Converter for entities and DTOs.
+ * Abstract converter for entities and DTOs.
  *
  * @param <Entity>
  *     The entity class
@@ -17,18 +17,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public abstract class Converter<Entity, Dto> {
-
-    /**
-     * Converts a {@link Dto} to an {@link Entity}.
-     * <br/>
-     * If the input {@link Dto} is {@code null}, returns a {@code null} {@link Entity}.
-     *
-     * @param dto
-     *     The {@link Dto} to convert
-     *
-     * @return an {@link Entity}
-     */
-    abstract Entity toEntity(final Dto dto);
 
     /**
      * Converts a {@link List} of {@link Dto} to a {@link List} of {@link Entity}.
@@ -53,16 +41,16 @@ public abstract class Converter<Entity, Dto> {
     }
 
     /**
-     * Converts an {@link Entity} to a {@link Dto}.
+     * Converts a {@link Dto} to an {@link Entity}.
      * <br/>
-     * If the input {@link Entity} is {@code null}, returns a {@code null} {@link Dto}.
+     * If the input {@link Dto} is {@code null}, returns a {@code null} {@link Entity}.
      *
-     * @param entity
-     *     The {@link Entity} to convert
+     * @param dto
+     *     The {@link Dto} to convert
      *
-     * @return a {@link Dto}
+     * @return an {@link Entity}
      */
-    abstract Dto toDto(final Entity entity);
+    abstract Entity toEntity(final Dto dto);
 
     /**
      * Converts a {@link List} of {@link Entity} to a {@link List} of {@link Dto}.
@@ -85,5 +73,17 @@ public abstract class Converter<Entity, Dto> {
         log.trace("[DTO list <= Entity list] With entity list size = {}", entityList.size());
         return entityList.stream().map(this::toDto).collect(toList());
     }
+
+    /**
+     * Converts an {@link Entity} to a {@link Dto}.
+     * <br/>
+     * If the input {@link Entity} is {@code null}, returns a {@code null} {@link Dto}.
+     *
+     * @param entity
+     *     The {@link Entity} to convert
+     *
+     * @return a {@link Dto}
+     */
+    abstract Dto toDto(final Entity entity);
 
 }

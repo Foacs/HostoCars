@@ -30,6 +30,7 @@ public class OperationLineConverter extends Converter<OperationLineEntity, Opera
         final OperationLineEntity result = new OperationLineEntity();
         result.setId(dto.getId());
         result.setOperationId(dto.getOperationId());
+        result.setType(dto.getType());
         result.setDescription(dto.getDescription());
         result.setDone(dto.getDone());
 
@@ -52,6 +53,7 @@ public class OperationLineConverter extends Converter<OperationLineEntity, Opera
         final OperationLine result = new OperationLine();
         result.setId(entity.getId());
         result.setOperationId(entity.getOperationId());
+        result.setType(entity.getType());
         result.setDescription(entity.getDescription());
         result.setDone(entity.getDone());
 

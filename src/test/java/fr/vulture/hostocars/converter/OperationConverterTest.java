@@ -28,15 +28,15 @@ class OperationConverterTest {
         dto.setId(id);
         final Integer interventionId = 1;
         dto.setInterventionId(interventionId);
-        final String type = "type";
-        dto.setType(type);
+        final String label = "label";
+        dto.setLabel(label);
 
         final OperationEntity entity = this.converter.toEntity(dto);
 
         assertNotNull(entity, "Entity unexpectedly not null");
         assertEquals(id, entity.getId(), "ID different from expected");
         assertEquals(interventionId, entity.getInterventionId(), "Intervention ID different from expected");
-        assertEquals(type, entity.getType(), "Type different from expected");
+        assertEquals(label, entity.getLabel(), "Label different from expected");
     }
 
     /**
@@ -59,15 +59,15 @@ class OperationConverterTest {
         entity.setId(id);
         final Integer interventionId = 1;
         entity.setInterventionId(interventionId);
-        final String type = "type";
-        entity.setType(type);
+        final String label = "label";
+        entity.setLabel(label);
 
         final Operation dto = this.converter.toDto(entity);
 
         assertNotNull(dto, "DTO unexpectedly not null");
         assertEquals(id, dto.getId(), "ID different from expected");
         assertEquals(interventionId, dto.getInterventionId(), "Intervention ID different from expected");
-        assertEquals(type, dto.getType(), "Type different from expected");
+        assertEquals(label, dto.getLabel(), "Label different from expected");
     }
 
     /**

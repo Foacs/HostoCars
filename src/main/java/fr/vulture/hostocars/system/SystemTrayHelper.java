@@ -56,7 +56,7 @@ public class SystemTrayHelper implements InitializingBean {
      *     The autowired {@link ApplicationContext} component
      */
     @Autowired
-    public SystemTrayHelper(@NonNull final ApplicationContext applicationContext) {
+    public SystemTrayHelper(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 

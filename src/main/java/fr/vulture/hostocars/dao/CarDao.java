@@ -37,7 +37,7 @@ public class CarDao {
      * @param carConverter
      *     The autowired {@link CarConverter} component
      */
-    public CarDao(@NonNull final CarRepository carRepository, @NonNull final CarConverter carConverter) {
+    public CarDao(final CarRepository carRepository, final CarConverter carConverter) {
         this.carRepository = carRepository;
         this.carConverter = carConverter;
     }

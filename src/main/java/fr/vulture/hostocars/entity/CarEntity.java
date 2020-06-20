@@ -23,61 +23,41 @@ public class CarEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id",
-        unique = true,
-        nullable = false,
-        insertable = false,
-        updatable = false,
-        columnDefinition = "INTEGER")
+    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
 
-    @Column(name = "registration",
-        unique = true,
-        nullable = false,
-        columnDefinition = "TEXT")
+    @Column(name = "registration", unique = true, nullable = false, columnDefinition = "TEXT")
     private String registration;
 
-    @Column(name = "serialNumber",
-        unique = true,
-        columnDefinition = "TEXT")
+    @Column(name = "serialNumber", unique = true, columnDefinition = "TEXT")
     private String serialNumber;
 
-    @Column(name = "owner",
-        nullable = false,
-        columnDefinition = "TEXT")
+    @Column(name = "owner", nullable = false, columnDefinition = "TEXT")
     private String owner;
 
-    @Column(name = "brand",
-        columnDefinition = "TEXT")
+    @Column(name = "brand", columnDefinition = "TEXT")
     private String brand;
 
-    @Column(name = "model",
-        columnDefinition = "TEXT")
+    @Column(name = "model", columnDefinition = "TEXT")
     private String model;
 
-    @Column(name = "motorization",
-        columnDefinition = "TEXT")
+    @Column(name = "motorization", columnDefinition = "TEXT")
     private String motorization;
 
-    @Column(name = "engineCode",
-        columnDefinition = "TEXT")
+    @Column(name = "engineCode", columnDefinition = "TEXT")
     private String engineCode;
 
-    @Column(name = "releaseDate",
-        columnDefinition = "DATE")
+    @Column(name = "releaseDate", columnDefinition = "DATE")
     private String releaseDate;
 
-    @Column(name = "comments",
-        columnDefinition = "TEXT")
+    @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
-    @Column(name = "certificate",
-        columnDefinition = "BLOB")
+    @Column(name = "certificate", columnDefinition = "BLOB")
     @Exclude
     private byte[] certificate;
 
-    @Column(name = "picture",
-        columnDefinition = "BLOB")
+    @Column(name = "picture", columnDefinition = "BLOB")
     @Exclude
     private byte[] picture;
 
