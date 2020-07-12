@@ -3,6 +3,7 @@ package fr.vulture.hostocars.dao;
 import static fr.vulture.hostocars.utils.ControllerUtils.DEFAULT_MATCHER;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -57,7 +58,7 @@ class OperationDaoTest {
     @DisplayName("Getting all operations")
     void testGetOperations() {
         final List<OperationEntity> entityList = emptyList();
-        when(this.operationRepository.findAll()).thenReturn(entityList);
+        when(this.operationRepository.findAll(Sort.unsorted())).thenReturn(entityList);
 
         final Operation dto = new Operation();
         final Integer dtoId = 0;
@@ -68,20 +69,20 @@ class OperationDaoTest {
         final List<OperationLine> operationLineList = emptyList();
         when(this.operationLineDao.getOperationLinesByOperationId(dtoId)).thenReturn(operationLineList);
 
-        assertEquals(dtoList, this.operationDao.getOperations(null), "Result list different from expected");
+        assertEquals(dtoList, this.operationDao.getOperations(), "Result list different from expected");
         assertEquals(operationLineList, dto.getOperationLineList(), "Result operation line list different from expected");
 
-        verify(this.operationRepository, times(1)).findAll();
+        verify(this.operationRepository, times(1)).findAll(Sort.unsorted());
         verify(this.operationConverter, times(1)).toDtoList(entityList);
         verify(this.operationLineDao, times(1)).getOperationLinesByOperationId(dtoId);
     }
 
     /**
-     * Tests the {@link OperationDao#getOperations} method with a sorting field.
+     * Tests the {@link OperationDao#getOperations} method with a sorting fields.
      */
     @Test
-    @DisplayName("Getting all operations with a sorting field")
-    void testGetOperationsWithSortingField() {
+    @DisplayName("Getting all operations with a sorting fields")
+    void testGetOperationsWithSortingFields() {
         final List<OperationEntity> entityList = emptyList();
         when(this.operationRepository.findAll(any(Sort.class))).thenReturn(entityList);
 
@@ -94,9 +95,10 @@ class OperationDaoTest {
         final List<OperationLine> operationLineList = emptyList();
         when(this.operationLineDao.getOperationLinesByOperationId(dtoId)).thenReturn(operationLineList);
 
-        final String sortingField = "sortedBy";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
 
-        assertEquals(dtoList, this.operationDao.getOperations(sortingField), "Result list different from expected");
+        assertEquals(dtoList, this.operationDao.getOperations(sortingField1, sortingField2), "Result list different from expected");
         assertEquals(operationLineList, dto.getOperationLineList(), "Result operation line list different from expected");
 
         final ArgumentCaptor<Sort> argumentCaptor = forClass(Sort.class);
@@ -104,8 +106,10 @@ class OperationDaoTest {
         final Sort sort = argumentCaptor.getValue();
 
         assertNotNull(sort, "Sort clause unexpectedly null");
-        assertEquals(1, sort.toList().size(), "Sort clause size different from expected");
-        assertEquals(sortingField, sort.toList().get(0).getProperty(), "Sort clause property different from expected");
+        assertEquals(2, sort.toList().size(), "Sort clause size different from expected");
+        assertAll("Asserting all sorting fields",
+            () -> assertEquals(sortingField1, sort.toList().get(0).getProperty(), "First sort clause property different from expected"),
+            () -> assertEquals(sortingField2, sort.toList().get(1).getProperty(), "Second sort clause property different from expected"));
 
         verify(this.operationRepository, times(1)).findAll(sort);
         verify(this.operationConverter, times(1)).toDtoList(entityList);

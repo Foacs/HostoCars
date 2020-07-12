@@ -53,15 +53,15 @@ class CarControllerTest {
     final void testGetCarsWithOkStatus() {
         final List<Car> carList = unmodifiableList(singletonList(new Car()));
 
-        when(this.carDao.getCars(null)).thenReturn(carList);
+        when(this.carDao.getCars()).thenReturn(carList);
 
-        final ResponseEntity<?> response = this.carController.getCars(null);
+        final ResponseEntity<?> response = this.carController.getCars();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(OK, response.getStatusCode(), "Response status different from expected");
         assertSame(carList, response.getBody(), "Response body different from expected");
 
-        verify(this.carDao, times(1)).getCars(null);
+        verify(this.carDao, times(1)).getCars();
     }
 
     /**
@@ -72,15 +72,15 @@ class CarControllerTest {
     final void testGetCarsWithNoContent() {
         final List<Car> carList = unmodifiableList(emptyList());
 
-        when(this.carDao.getCars(null)).thenReturn(carList);
+        when(this.carDao.getCars()).thenReturn(carList);
 
-        final ResponseEntity<?> response = this.carController.getCars(null);
+        final ResponseEntity<?> response = this.carController.getCars();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(NO_CONTENT, response.getStatusCode(), "Response status different from expected");
         assertNull(response.getBody(), "Response body unexpectedly not null");
 
-        verify(this.carDao, times(1)).getCars(null);
+        verify(this.carDao, times(1)).getCars();
     }
 
     /**
@@ -89,9 +89,9 @@ class CarControllerTest {
     @Test
     @DisplayName("Getting all the cars with an INTERNAL_SERVER_ERROR status")
     final void testGetCarsWithInternalError() {
-        when(this.carDao.getCars(null)).thenThrow(new RuntimeException(""));
+        when(this.carDao.getCars()).thenThrow(new RuntimeException("Test"));
 
-        final ResponseEntity<?> response = this.carController.getCars(null);
+        final ResponseEntity<?> response = this.carController.getCars();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
@@ -100,7 +100,7 @@ class CarControllerTest {
         assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
-        verify(this.carDao, times(1)).getCars(null);
+        verify(this.carDao, times(1)).getCars();
     }
 
     /**
@@ -109,18 +109,19 @@ class CarControllerTest {
     @Test
     @DisplayName("Getting all the cars with an OK status and a sorting clause")
     final void testGetSortedCarsWithOkStatus() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
         final List<Car> carList = unmodifiableList(singletonList(new Car()));
 
-        when(this.carDao.getCars(sortedBy)).thenReturn(carList);
+        when(this.carDao.getCars(sortingField1, sortingField2)).thenReturn(carList);
 
-        final ResponseEntity<?> response = this.carController.getCars(sortedBy);
+        final ResponseEntity<?> response = this.carController.getCars(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(OK, response.getStatusCode(), "Response status different from expected");
         assertSame(carList, response.getBody(), "Response body different from expected");
 
-        verify(this.carDao, times(1)).getCars(sortedBy);
+        verify(this.carDao, times(1)).getCars(sortingField1, sortingField2);
     }
 
     /**
@@ -129,18 +130,19 @@ class CarControllerTest {
     @Test
     @DisplayName("Getting all the cars with a NO_CONTENT status and a sorting clause")
     final void testGetSortedCarsWithNoContent() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
         final List<Car> carList = unmodifiableList(emptyList());
 
-        when(this.carDao.getCars(sortedBy)).thenReturn(carList);
+        when(this.carDao.getCars(sortingField1, sortingField2)).thenReturn(carList);
 
-        final ResponseEntity<?> response = this.carController.getCars(sortedBy);
+        final ResponseEntity<?> response = this.carController.getCars(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(NO_CONTENT, response.getStatusCode(), "Response status different from expected");
         assertNull(response.getBody(), "Response body unexpectedly not null");
 
-        verify(this.carDao, times(1)).getCars(sortedBy);
+        verify(this.carDao, times(1)).getCars(sortingField1, sortingField2);
     }
 
     /**
@@ -149,11 +151,12 @@ class CarControllerTest {
     @Test
     @DisplayName("Getting all the cars with an INTERNAL_SERVER_ERROR status and a sorting clause")
     final void testGetSortedCarsWithInternalError() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
 
-        when(this.carDao.getCars(sortedBy)).thenThrow(new RuntimeException(""));
+        when(this.carDao.getCars(sortingField1, sortingField2)).thenThrow(new RuntimeException("Test"));
 
-        final ResponseEntity<?> response = this.carController.getCars(sortedBy);
+        final ResponseEntity<?> response = this.carController.getCars(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
@@ -162,7 +165,7 @@ class CarControllerTest {
         assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
-        verify(this.carDao, times(1)).getCars(sortedBy);
+        verify(this.carDao, times(1)).getCars(sortingField1, sortingField2);
     }
 
     /**
@@ -212,7 +215,7 @@ class CarControllerTest {
     final void testGetCarByIdWithInternalError() {
         final int id = 1;
 
-        when(this.carDao.getCarById(id)).thenThrow(new RuntimeException(""));
+        when(this.carDao.getCarById(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.carController.getCarById(id);
 
@@ -287,7 +290,7 @@ class CarControllerTest {
     @Test
     @DisplayName("Getting all the car registrations with an INTERNAL_SERVER_ERROR status")
     final void testGetCarRegistrationsWithInternalError() {
-        when(this.carDao.getCarRegistrations()).thenThrow(new RuntimeException(""));
+        when(this.carDao.getCarRegistrations()).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.carController.getCarRegistrations();
 
@@ -349,7 +352,7 @@ class CarControllerTest {
     final void testSearchCarsWithInternalError() {
         final Car body = new Car();
 
-        when(this.carDao.searchCars(body)).thenThrow(new RuntimeException(""));
+        when(this.carDao.searchCars(body)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.carController.searchCars(body);
 
@@ -391,7 +394,7 @@ class CarControllerTest {
     final void testSaveCarWithInternalError() {
         final Car body = new Car();
 
-        when(this.carDao.saveCar(body)).thenThrow(new RuntimeException(""));
+        when(this.carDao.saveCar(body)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.carController.saveCar(body);
 
@@ -430,7 +433,7 @@ class CarControllerTest {
     final void testUpdateCarWithInternalError() {
         final Car body = new Car();
 
-        doThrow(new RuntimeException("")).when(this.carDao).updateCar(body);
+        doThrow(new RuntimeException("Test")).when(this.carDao).updateCar(body);
 
         final ResponseEntity<?> response = this.carController.updateCar(body);
 
@@ -490,7 +493,7 @@ class CarControllerTest {
     final void testDeleteCarByIdWithInternalError() {
         final int id = 1;
 
-        when(this.carDao.deleteCarById(id)).thenThrow(new RuntimeException(""));
+        when(this.carDao.deleteCarById(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.carController.deleteCarById(id);
 

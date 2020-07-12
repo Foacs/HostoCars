@@ -1,10 +1,16 @@
 #InterventionsOverviewPage {
     padding: 32px 32px 32px 32px;
 
-    .FilterPanel {
-        min-width: 210px;
-        position:  fixed;
-        width:     calc(33% - 128px);
+    .ErrorPanel, .LoadingPanel {
+        left:      unset;
+        margin:    unset;
+        position:  unset;
+        top:       unset;
+        transform: unset;
+    }
+
+    .FilterPanel, .SortPanel {
+        border-radius: 4px;
 
         .Header {
             cursor:     default;
@@ -21,6 +27,18 @@
                 position: absolute;
                 top:      12px;
             }
+
+            .RadioGroup {
+                position: absolute;
+                right:    24px;
+                top:      15px;
+            }
         }
+    }
+
+    .StaticColumn {
+        min-width: 210px;
+        position:  fixed;
+        width:     calc(33% - 128px);
     }
 }

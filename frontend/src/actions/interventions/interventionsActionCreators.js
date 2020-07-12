@@ -6,6 +6,34 @@ import { ErrorNotificationContent } from 'components';
 import { NO_CONTENT_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
 
 /**
+ * Changes the interventions sort order and updates the list of interventions.
+ *
+ * @param {string} sortedBy
+ *     The new sort order
+ */
+export const changeInterventionsSortOrderAction = (sortedBy) => {
+    return dispatch => {
+        dispatch(changeInterventionsSortOrder(sortedBy));
+        getInterventionsAction()(dispatch, () => {
+            return { interventions: { sortedBy } };
+        });
+    };
+};
+
+/**
+ * Returns the action object for the {@link CHANGE_INTERVENTIONS_SORT_ORDER} action type.
+ *
+ * @param {string | string[]} sortedBy
+ *     The new sort order
+ *
+ * @returns {object} the action object
+ */
+const changeInterventionsSortOrder = (sortedBy) => ({
+    type: types.CHANGE_INTERVENTIONS_SORT_ORDER,
+    sortedBy
+});
+
+/**
  * Loads all existing interventions and returns the action promise.
  * <br />
  * If the operation fails, an error notification is shown.

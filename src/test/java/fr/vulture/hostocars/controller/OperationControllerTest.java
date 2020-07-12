@@ -49,15 +49,15 @@ class OperationControllerTest {
     final void testGetOperationsWithOkStatus() {
         final List<Operation> operationList = unmodifiableList(singletonList(new Operation()));
 
-        when(this.operationDao.getOperations(null)).thenReturn(operationList);
+        when(this.operationDao.getOperations()).thenReturn(operationList);
 
-        final ResponseEntity<?> response = this.operationController.getOperations(null);
+        final ResponseEntity<?> response = this.operationController.getOperations();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(OK, response.getStatusCode(), "Response status different from expected");
         assertSame(operationList, response.getBody(), "Response body different from expected");
 
-        verify(this.operationDao, times(1)).getOperations(null);
+        verify(this.operationDao, times(1)).getOperations();
     }
 
     /**
@@ -68,15 +68,15 @@ class OperationControllerTest {
     final void testGetOperationsWithNoContent() {
         final List<Operation> operationList = unmodifiableList(emptyList());
 
-        when(this.operationDao.getOperations(null)).thenReturn(operationList);
+        when(this.operationDao.getOperations()).thenReturn(operationList);
 
-        final ResponseEntity<?> response = this.operationController.getOperations(null);
+        final ResponseEntity<?> response = this.operationController.getOperations();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(NO_CONTENT, response.getStatusCode(), "Response status different from expected");
         assertNull(response.getBody(), "Response body unexpectedly not null");
 
-        verify(this.operationDao, times(1)).getOperations(null);
+        verify(this.operationDao, times(1)).getOperations();
     }
 
     /**
@@ -85,9 +85,9 @@ class OperationControllerTest {
     @Test
     @DisplayName("Getting all the operations with an INTERNAL_SERVER_ERROR status")
     final void testGetOperationsWithInternalError() {
-        when(this.operationDao.getOperations(null)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.getOperations()).thenThrow(new RuntimeException("Test"));
 
-        final ResponseEntity<?> response = this.operationController.getOperations(null);
+        final ResponseEntity<?> response = this.operationController.getOperations();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
@@ -96,7 +96,7 @@ class OperationControllerTest {
         assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
-        verify(this.operationDao, times(1)).getOperations(null);
+        verify(this.operationDao, times(1)).getOperations();
     }
 
     /**
@@ -105,18 +105,19 @@ class OperationControllerTest {
     @Test
     @DisplayName("Getting all the operations with an OK status and a sorting clause")
     final void testGetSortedOperationsWithOkStatus() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
         final List<Operation> operationList = unmodifiableList(singletonList(new Operation()));
 
-        when(this.operationDao.getOperations(sortedBy)).thenReturn(operationList);
+        when(this.operationDao.getOperations(sortingField1, sortingField2)).thenReturn(operationList);
 
-        final ResponseEntity<?> response = this.operationController.getOperations(sortedBy);
+        final ResponseEntity<?> response = this.operationController.getOperations(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(OK, response.getStatusCode(), "Response status different from expected");
         assertSame(operationList, response.getBody(), "Response body different from expected");
 
-        verify(this.operationDao, times(1)).getOperations(sortedBy);
+        verify(this.operationDao, times(1)).getOperations(sortingField1, sortingField2);
     }
 
     /**
@@ -125,18 +126,19 @@ class OperationControllerTest {
     @Test
     @DisplayName("Getting all the operations with a NO_CONTENT status and a sorting clause")
     final void testGetSortedOperationsWithNoContent() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
         final List<Operation> operationList = unmodifiableList(emptyList());
 
-        when(this.operationDao.getOperations(sortedBy)).thenReturn(operationList);
+        when(this.operationDao.getOperations(sortingField1, sortingField2)).thenReturn(operationList);
 
-        final ResponseEntity<?> response = this.operationController.getOperations(sortedBy);
+        final ResponseEntity<?> response = this.operationController.getOperations(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(NO_CONTENT, response.getStatusCode(), "Response status different from expected");
         assertNull(response.getBody(), "Response body unexpectedly not null");
 
-        verify(this.operationDao, times(1)).getOperations(sortedBy);
+        verify(this.operationDao, times(1)).getOperations(sortingField1, sortingField2);
     }
 
     /**
@@ -145,11 +147,12 @@ class OperationControllerTest {
     @Test
     @DisplayName("Getting all the operations with an INTERNAL_SERVER_ERROR status and a sorting clause")
     final void testGetSortedOperationsWithInternalError() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
 
-        when(this.operationDao.getOperations(sortedBy)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.getOperations(sortingField1, sortingField2)).thenThrow(new RuntimeException("Test"));
 
-        final ResponseEntity<?> response = this.operationController.getOperations(sortedBy);
+        final ResponseEntity<?> response = this.operationController.getOperations(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
@@ -158,7 +161,7 @@ class OperationControllerTest {
         assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
-        verify(this.operationDao, times(1)).getOperations(sortedBy);
+        verify(this.operationDao, times(1)).getOperations(sortingField1, sortingField2);
     }
 
     /**
@@ -208,7 +211,7 @@ class OperationControllerTest {
     final void testGetOperationByIdWithInternalError() {
         final int id = 1;
 
-        when(this.operationDao.getOperationById(id)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.getOperationById(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.operationController.getOperationById(id);
 
@@ -269,7 +272,7 @@ class OperationControllerTest {
     final void testGetOperationsByInterventionIdWithInternalError() {
         final int id = 1;
 
-        when(this.operationDao.getOperationsByInterventionId(id)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.getOperationsByInterventionId(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.operationController.getOperationsByInterventionId(id);
 
@@ -331,7 +334,7 @@ class OperationControllerTest {
     final void testSearchOperationsWithInternalError() {
         final Operation body = new Operation();
 
-        when(this.operationDao.searchOperations(body)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.searchOperations(body)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.operationController.searchOperations(body);
 
@@ -373,7 +376,7 @@ class OperationControllerTest {
     final void testSaveOperationWithInternalError() {
         final Operation body = new Operation();
 
-        when(this.operationDao.saveOperation(body)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.saveOperation(body)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.operationController.saveOperation(body);
 
@@ -412,7 +415,7 @@ class OperationControllerTest {
     final void testUpdateOperationWithInternalError() {
         final Operation body = new Operation();
 
-        doThrow(new RuntimeException("")).when(this.operationDao).updateOperation(body);
+        doThrow(new RuntimeException("Test")).when(this.operationDao).updateOperation(body);
 
         final ResponseEntity<?> response = this.operationController.updateOperation(body);
 
@@ -472,7 +475,7 @@ class OperationControllerTest {
     final void testDeleteOperationByIdWithInternalError() {
         final int id = 1;
 
-        when(this.operationDao.deleteOperationById(id)).thenThrow(new RuntimeException(""));
+        when(this.operationDao.deleteOperationById(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.operationController.deleteOperationById(id);
 

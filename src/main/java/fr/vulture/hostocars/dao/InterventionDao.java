@@ -9,6 +9,7 @@ import fr.vulture.hostocars.dto.Intervention;
 import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.entity.InterventionEntity;
 import fr.vulture.hostocars.repository.InterventionRepository;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -51,15 +52,15 @@ public class InterventionDao {
     }
 
     /**
-     * Retrieves the list of all the {@link Intervention} from the database. A sorting field can also be specified.
+     * Retrieves the list of all the {@link Intervention} from the database. A list of sorting fields can also be specified.
      *
      * @param sortedBy
-     *     The optional sorting clause field
+     *     The optional sorting clause fields
      *
      * @return a list of {@link Intervention}
      */
-    public List<Intervention> getInterventions(final String sortedBy) {
-        log.trace("[getInterventions] With sorting field = {}", sortedBy);
+    public List<Intervention> getInterventions(final String... sortedBy) {
+        log.trace("[getInterventions] With sorting fields = {}", nonNull(sortedBy) ? Arrays.asList(sortedBy) : null);
 
         // Calls the intervention repository to retrieve the list of all the interventions from the database
         final List<InterventionEntity> resultEntityList =

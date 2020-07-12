@@ -5,7 +5,7 @@ const initialState = {
     interventions: [],
     isGetAllInError: false,
     isGetAllInProgress: false,
-    sortedBy: 'id'
+    sortedBy: [ 'creationYear', 'number' ]
 };
 
 /**
@@ -20,6 +20,11 @@ const initialState = {
  */
 const interventionsReducer = (state = initialState, action) => {
     switch (action.type) {
+        case types.CHANGE_INTERVENTIONS_SORT_ORDER:
+            return {
+                ...state,
+                sortedBy: action.sortedBy
+            };
         case types.GET_INTERVENTIONS:
             return {
                 ...state,

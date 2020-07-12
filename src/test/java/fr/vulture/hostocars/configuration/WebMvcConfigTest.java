@@ -98,7 +98,7 @@ class WebMvcConfigTest {
     @Test
     @DisplayName("Getting a resource with an inexistant requested resource")
     final void testGetResourceWithInexistantRequestedResource() throws IOException {
-        final String resourcePath = "";
+        final String resourcePath = "resourcePath";
         final Resource resource = mock(Resource.class);
         final Resource requestedResource = mock(Resource.class);
 
@@ -123,7 +123,7 @@ class WebMvcConfigTest {
     @Test
     @DisplayName("Getting a resource with an unreadable requested resource")
     final void testGetResourceWithUnreadableRequestedResource() throws IOException {
-        final String resourcePath = "";
+        final String resourcePath = "resourcePath";
         final Resource resource = mock(Resource.class);
         final Resource requestedResource = mock(Resource.class);
 
@@ -150,7 +150,7 @@ class WebMvcConfigTest {
     @Test
     @DisplayName("Getting a resource with an existent and readable requested resource")
     final void testGetResourceWithExistentAndReadableRequestedResource() throws IOException {
-        final String resourcePath = "";
+        final String resourcePath = "resourcePath";
         final Resource resource = mock(Resource.class);
         final Resource requestedResource = mock(Resource.class);
 

@@ -49,15 +49,15 @@ class InterventionControllerTest {
     final void testGetInterventionsWithOkStatus() {
         final List<Intervention> interventionList = unmodifiableList(singletonList(new Intervention()));
 
-        when(this.interventionDao.getInterventions(null)).thenReturn(interventionList);
+        when(this.interventionDao.getInterventions()).thenReturn(interventionList);
 
-        final ResponseEntity<?> response = this.interventionController.getInterventions(null);
+        final ResponseEntity<?> response = this.interventionController.getInterventions();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(OK, response.getStatusCode(), "Response status different from expected");
         assertSame(interventionList, response.getBody(), "Response body different from expected");
 
-        verify(this.interventionDao, times(1)).getInterventions(null);
+        verify(this.interventionDao, times(1)).getInterventions();
     }
 
     /**
@@ -68,15 +68,15 @@ class InterventionControllerTest {
     final void testGetInterventionsWithNoContent() {
         final List<Intervention> interventionList = unmodifiableList(emptyList());
 
-        when(this.interventionDao.getInterventions(null)).thenReturn(interventionList);
+        when(this.interventionDao.getInterventions()).thenReturn(interventionList);
 
-        final ResponseEntity<?> response = this.interventionController.getInterventions(null);
+        final ResponseEntity<?> response = this.interventionController.getInterventions();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(NO_CONTENT, response.getStatusCode(), "Response status different from expected");
         assertNull(response.getBody(), "Response body unexpectedly not null");
 
-        verify(this.interventionDao, times(1)).getInterventions(null);
+        verify(this.interventionDao, times(1)).getInterventions();
     }
 
     /**
@@ -85,9 +85,9 @@ class InterventionControllerTest {
     @Test
     @DisplayName("Getting all the interventions with an INTERNAL_SERVER_ERROR status")
     final void testGetInterventionsWithInternalError() {
-        when(this.interventionDao.getInterventions(null)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.getInterventions()).thenThrow(new RuntimeException("Test"));
 
-        final ResponseEntity<?> response = this.interventionController.getInterventions(null);
+        final ResponseEntity<?> response = this.interventionController.getInterventions();
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
@@ -96,7 +96,7 @@ class InterventionControllerTest {
         assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
-        verify(this.interventionDao, times(1)).getInterventions(null);
+        verify(this.interventionDao, times(1)).getInterventions();
     }
 
     /**
@@ -105,18 +105,19 @@ class InterventionControllerTest {
     @Test
     @DisplayName("Getting all the interventions with an OK status and a sorting clause")
     final void testGetSortedInterventionsWithOkStatus() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
         final List<Intervention> interventionList = unmodifiableList(singletonList(new Intervention()));
 
-        when(this.interventionDao.getInterventions(sortedBy)).thenReturn(interventionList);
+        when(this.interventionDao.getInterventions(sortingField1, sortingField2)).thenReturn(interventionList);
 
-        final ResponseEntity<?> response = this.interventionController.getInterventions(sortedBy);
+        final ResponseEntity<?> response = this.interventionController.getInterventions(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(OK, response.getStatusCode(), "Response status different from expected");
         assertSame(interventionList, response.getBody(), "Response body different from expected");
 
-        verify(this.interventionDao, times(1)).getInterventions(sortedBy);
+        verify(this.interventionDao, times(1)).getInterventions(sortingField1, sortingField2);
     }
 
     /**
@@ -125,18 +126,19 @@ class InterventionControllerTest {
     @Test
     @DisplayName("Getting all the interventions with a NO_CONTENT status and a sorting clause")
     final void testGetSortedInterventionsWithNoContent() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
         final List<Intervention> interventionList = unmodifiableList(emptyList());
 
-        when(this.interventionDao.getInterventions(sortedBy)).thenReturn(interventionList);
+        when(this.interventionDao.getInterventions(sortingField1, sortingField2)).thenReturn(interventionList);
 
-        final ResponseEntity<?> response = this.interventionController.getInterventions(sortedBy);
+        final ResponseEntity<?> response = this.interventionController.getInterventions(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(NO_CONTENT, response.getStatusCode(), "Response status different from expected");
         assertNull(response.getBody(), "Response body unexpectedly not null");
 
-        verify(this.interventionDao, times(1)).getInterventions(sortedBy);
+        verify(this.interventionDao, times(1)).getInterventions(sortingField1, sortingField2);
     }
 
     /**
@@ -145,11 +147,12 @@ class InterventionControllerTest {
     @Test
     @DisplayName("Getting all the interventions with an INTERNAL_SERVER_ERROR status and a sorting clause")
     final void testGetSortedInterventionsWithInternalError() {
-        final String sortedBy = "";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
 
-        when(this.interventionDao.getInterventions(sortedBy)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.getInterventions(sortingField1, sortingField2)).thenThrow(new RuntimeException("Test"));
 
-        final ResponseEntity<?> response = this.interventionController.getInterventions(sortedBy);
+        final ResponseEntity<?> response = this.interventionController.getInterventions(sortingField1, sortingField2);
 
         assertNotNull(response, "Response unexpectedly null");
         assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
@@ -158,7 +161,7 @@ class InterventionControllerTest {
         assertEquals(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
             "Response body message different from expected");
 
-        verify(this.interventionDao, times(1)).getInterventions(sortedBy);
+        verify(this.interventionDao, times(1)).getInterventions(sortingField1, sortingField2);
     }
 
     /**
@@ -208,7 +211,7 @@ class InterventionControllerTest {
     final void testGetInterventionByIdWithInternalError() {
         final int id = 1;
 
-        when(this.interventionDao.getInterventionById(id)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.getInterventionById(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.interventionController.getInterventionById(id);
 
@@ -269,7 +272,7 @@ class InterventionControllerTest {
     final void testGetInterventionsByCarIdWithInternalError() {
         final int id = 1;
 
-        when(this.interventionDao.getInterventionsByCarId(id)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.getInterventionsByCarId(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.interventionController.getInterventionsByCarId(id);
 
@@ -331,7 +334,7 @@ class InterventionControllerTest {
     final void testSearchInterventionsWithInternalError() {
         final Intervention body = new Intervention();
 
-        when(this.interventionDao.searchInterventions(body)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.searchInterventions(body)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.interventionController.searchInterventions(body);
 
@@ -373,7 +376,7 @@ class InterventionControllerTest {
     final void testSaveInterventionWithInternalError() {
         final Intervention body = new Intervention();
 
-        when(this.interventionDao.saveIntervention(body)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.saveIntervention(body)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.interventionController.saveIntervention(body);
 
@@ -412,7 +415,7 @@ class InterventionControllerTest {
     final void testUpdateInterventionWithInternalError() {
         final Intervention body = new Intervention();
 
-        doThrow(new RuntimeException("")).when(this.interventionDao).updateIntervention(body);
+        doThrow(new RuntimeException("Test")).when(this.interventionDao).updateIntervention(body);
 
         final ResponseEntity<?> response = this.interventionController.updateIntervention(body);
 
@@ -472,7 +475,7 @@ class InterventionControllerTest {
     final void testDeleteInterventionByIdWithInternalError() {
         final int id = 1;
 
-        when(this.interventionDao.deleteInterventionById(id)).thenThrow(new RuntimeException(""));
+        when(this.interventionDao.deleteInterventionById(id)).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.interventionController.deleteInterventionById(id);
 
