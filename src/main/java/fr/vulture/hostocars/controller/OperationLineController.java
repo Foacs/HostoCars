@@ -201,7 +201,7 @@ public class OperationLineController {
      *
      * @return an HTTP response
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     @io.swagger.v3.oas.annotations.Operation(summary = "Searches for operation lines.",
         description = "Retrieves the list of operation lines that match the specified body from the database.",
         responses = {@ApiResponse(description = "At least one operation line has been found.", responseCode = OK_CODE,

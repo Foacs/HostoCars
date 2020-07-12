@@ -202,7 +202,7 @@ public class InterventionController {
      *
      * @return an HTTP response
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     @Operation(summary = "Searches for interventions.",
         description = "Retrieves the list of interventions that match the specified body from the database.",
         responses = {@ApiResponse(description = "At least one intervention has been found.", responseCode = OK_CODE,
