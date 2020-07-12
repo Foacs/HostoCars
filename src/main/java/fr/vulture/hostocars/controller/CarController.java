@@ -195,7 +195,7 @@ public class CarController {
      *
      * @return an HTTP response
      */
-    @GetMapping("/search")
+    @PostMapping("/search")
     @Operation(summary = "Searches for cars.", description = "Retrieves the list of cars that match the specified body from the database.",
         responses = {@ApiResponse(description = "At least one car has been found.", responseCode = OK_CODE,
             content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))),
