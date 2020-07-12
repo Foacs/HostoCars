@@ -4,6 +4,7 @@ import static fr.vulture.hostocars.utils.ControllerUtils.INTERNAL_SERVER_ERROR_C
 import static fr.vulture.hostocars.utils.ControllerUtils.NO_CONTENT_CODE;
 import static fr.vulture.hostocars.utils.ControllerUtils.OK_CODE;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
@@ -21,6 +22,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+import java.util.Arrays;
 import java.util.List;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -64,23 +66,24 @@ public class InterventionController {
     }
 
     /**
-     * Retrieves the list of all the {@link Intervention} from the database. A sorting field can also be specified.
+     * Retrieves the list of all the {@link Intervention} from the database. A list of sorting fields can also be specified.
      *
      * @param sortedBy
-     *     The optional sorting clause field
+     *     The optional sorting clause fields
      *
      * @return an HTTP response
      */
     @GetMapping("/all")
     @Operation(summary = "Gets all interventions.",
-        description = "Retrieves the list of all the interventions from the database. A sorting field can be specified.",
+        description = "Retrieves the list of all the interventions from the database. A list of sorting fields can also be specified.",
         responses = {@ApiResponse(description = "At least one intervention has been found.", responseCode = OK_CODE,
             content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Intervention.class)))),
             @ApiResponse(description = "No intervention has been found.", responseCode = NO_CONTENT_CODE, content = @Content),
             @ApiResponse(description = "An error has occurred.", responseCode = INTERNAL_SERVER_ERROR_CODE,
                 content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Response.class)))})
-    public ResponseEntity<?> getInterventions(@Parameter(description = "The sorting field.") @RequestParam(required = false) final String sortedBy) {
-        log.info("[getInterventions <= Calling] With sorting field = {}", sortedBy);
+    public ResponseEntity<?> getInterventions(
+        @Parameter(description = "The sorting fields.") @RequestParam(required = false) final String... sortedBy) {
+        log.info("[getInterventions <= Calling] With sorting fields = {}", nonNull(sortedBy) ? Arrays.asList(sortedBy) : null);
 
         try {
             // Calls the DAO to retrieve the list of all the interventions from the database

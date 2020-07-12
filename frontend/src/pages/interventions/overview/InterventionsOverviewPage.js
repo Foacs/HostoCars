@@ -1,12 +1,17 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
+import _ from 'underscore';
 
-import { Box, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Grid, IconButton, Typography } from '@material-ui/core';
+import {
+    Box, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, FormControl, FormControlLabel, Grid, IconButton, Radio, RadioGroup, Typography
+} from '@material-ui/core';
 import { ClearRounded as ClearIcon } from '@material-ui/icons';
 
-import { changeCurrentPageAction, changeSelectedMenuIndexAction, getCarsAction, getInterventionsAction } from 'actions';
+import {
+    changeCurrentPageAction, changeInterventionsSortOrderAction, changeSelectedMenuIndexAction, getCarsAction, getInterventionsAction
+} from 'actions';
 import { ErrorPanel, InterventionPreview, LoadingPanel } from 'components';
 import { InterventionPropType } from '../../../resources';
 
@@ -17,6 +22,8 @@ import './InterventionsOverviewPage.scss';
  *
  * @param {func} changeCurrentPage
  *     The {@link changeCurrentPageAction} action
+ * @param {func} changeInterventionsSortOrder
+ *     The {@link changeInterventionsSortOrderAction} action
  * @param {func} changeSelectedMenuIndex
  *     The {@link changeSelectedMenuIndexAction} action
  * @param {func} getCars
@@ -51,6 +58,7 @@ class InterventionsOverviewPage extends PureComponent {
 
         // Binds the local method
         this.onInterventionPreviewClick = this.onInterventionPreviewClick.bind(this);
+        this.onSortChange = this.onSortChange.bind(this);
     }
 
     /**
@@ -78,11 +86,17 @@ class InterventionsOverviewPage extends PureComponent {
         this.setState({ expandedInterventionIndex: this.state.expandedInterventionIndex === index ? false : index });
     }
 
+    onSortChange(sortedBy) {
+        const { changeInterventionsSortOrder } = this.props;
+
+        changeInterventionsSortOrder(sortedBy);
+    }
+
     /**
      * Render method.
      */
     render() {
-        const { cars, interventions, isInError, isLoading } = this.props;
+        const { cars, interventions, isInError, isLoading, sortedBy } = this.props;
         const { expandedInterventionIndex } = this.state;
 
         let content;
@@ -94,9 +108,35 @@ class InterventionsOverviewPage extends PureComponent {
             content = (<LoadingPanel className='LoadingPanel' />);
         } else {
             // If the interventions and the cars have been loaded, displays the page normal content
-            content = (<Fragment>
-                <Grid container spacing={4}>
-                    <Grid item xs={4}>
+            content = interventions.map((intervention, index) => (
+                    <InterventionPreview carRegistration={cars.find(car => car.id === intervention.carId).registration}
+                                         intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
+                                         onClick={() => this.onInterventionPreviewClick(index)} />));
+        }
+
+        return (<Box id='InterventionsOverviewPage'>
+            <Grid container spacing={4}>
+                <Grid item xs={4}>
+                    <Box className='StaticColumn'>
+                        <ExpansionPanel className='SortPanel' expanded={true}>
+                            <ExpansionPanelSummary className='Header'>
+                                <Typography className='Title' color='primary' variant='h6'>Tri</Typography>
+
+                                <FormControl className='RadioGroup' component='fieldset'>
+                                    <RadioGroup row value={sortedBy}>
+                                        <FormControlLabel checked={_.isEqual([ 'creationYear', 'number' ], sortedBy)} control={<Radio />}
+                                                          label='Numéro' labelPlacement='start'
+                                                          onChange={() => this.onSortChange([ 'creationYear', 'number' ])}
+                                                          value={[ 'creationYear', 'number' ]} />
+                                        <FormControlLabel control={<Radio />} onChange={e => this.onSortChange(e.target.value)}
+                                                          label='Description' labelPlacement='start' value='description' />
+                                        <FormControlLabel control={<Radio />} onChange={e => this.onSortChange(e.target.value)}
+                                                          label='Status' labelPlacement='start' value='status' />
+                                    </RadioGroup>
+                                </FormControl>
+                            </ExpansionPanelSummary>
+                        </ExpansionPanel>
+
                         <ExpansionPanel className='FilterPanel' expanded={true}>
                             <ExpansionPanelSummary className='Header'>
                                 <Typography className='Title' color='primary' variant='h6'>Filtres</Typography>
@@ -108,20 +148,13 @@ class InterventionsOverviewPage extends PureComponent {
 
                             <ExpansionPanelDetails />
                         </ExpansionPanel>
-                    </Grid>
-
-                    <Grid item xs={8}>
-                        {interventions.map((intervention, index) => (
-                                <InterventionPreview carRegistration={cars.find(car => car.id === intervention.carId).registration}
-                                                     intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
-                                                     onClick={() => this.onInterventionPreviewClick(index)} />))}
-                    </Grid>
+                    </Box>
                 </Grid>
-            </Fragment>);
-        }
 
-        return (<Box id='InterventionsOverviewPage'>
-            {content}
+                <Grid item xs={8}>
+                    {content}
+                </Grid>
+            </Grid>
         </Box>);
     }
 }
@@ -130,12 +163,14 @@ const mapStateToProps = (state) => ({
     cars: state.cars.cars,
     interventions: state.interventions.interventions,
     isInError: state.interventions.isGetAllInError || state.cars.isGetAllInError,
-    isLoading: state.interventions.isGetAllInProgress || state.cars.isGetAllInProgress
+    isLoading: state.interventions.isGetAllInProgress || state.cars.isGetAllInProgress,
+    sortedBy: state.interventions.sortedBy
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
     changeCurrentPage: changeCurrentPageAction,
     changeSelectedMenuIndex: changeSelectedMenuIndexAction,
+    changeInterventionsSortOrder: changeInterventionsSortOrderAction,
     getCars: getCarsAction,
     getInterventions: getInterventionsAction
 }, dispatch);

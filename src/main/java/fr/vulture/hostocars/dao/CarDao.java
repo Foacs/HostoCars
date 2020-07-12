@@ -7,6 +7,7 @@ import fr.vulture.hostocars.converter.CarConverter;
 import fr.vulture.hostocars.dto.Car;
 import fr.vulture.hostocars.entity.CarEntity;
 import fr.vulture.hostocars.repository.CarRepository;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -43,15 +44,15 @@ public class CarDao {
     }
 
     /**
-     * Retrieves the list of all the {@link Car} from the database. A sorting field can also be specified.
+     * Retrieves the list of all the {@link Car} from the database. A list of sorting fields can also be specified.
      *
      * @param sortedBy
-     *     The optional sorting clause field
+     *     The optional sorting clause fields
      *
      * @return a list of {@link Car}
      */
-    public List<Car> getCars(final String sortedBy) {
-        log.trace("[getCars] With sorting field = {}", sortedBy);
+    public List<Car> getCars(final String... sortedBy) {
+        log.trace("[getCars] With sorting fields = {}", nonNull(sortedBy) ? Arrays.asList(sortedBy) : null);
 
         // Calls the car repository to retrieve the list of all the cars from the database
         final List<CarEntity> resultEntityList = nonNull(sortedBy) ? this.carRepository.findAll(Sort.by(sortedBy)) : this.carRepository.findAll();

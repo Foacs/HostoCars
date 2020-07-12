@@ -2,6 +2,7 @@ package fr.vulture.hostocars.dao;
 
 import static fr.vulture.hostocars.utils.ControllerUtils.DEFAULT_MATCHER;
 import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -54,40 +55,43 @@ class CarDaoTest {
     @DisplayName("Getting all cars")
     void testGetCars() {
         final List<CarEntity> entityList = emptyList();
-        when(this.carRepository.findAll()).thenReturn(entityList);
+        when(this.carRepository.findAll(Sort.unsorted())).thenReturn(entityList);
 
         final List<Car> dtoList = emptyList();
         when(this.carConverter.toDtoList(entityList)).thenReturn(dtoList);
 
-        assertEquals(dtoList, this.carDao.getCars(null), "Result list different from expected");
+        assertEquals(dtoList, this.carDao.getCars(), "Result list different from expected");
 
-        verify(this.carRepository, times(1)).findAll();
+        verify(this.carRepository, times(1)).findAll(Sort.unsorted());
         verify(this.carConverter, times(1)).toDtoList(entityList);
     }
 
     /**
-     * Tests the {@link CarDao#getCars} method with a sorting field.
+     * Tests the {@link CarDao#getCars} method with a sorting fields.
      */
     @Test
-    @DisplayName("Getting all cars with a sorting field")
-    void testGetCarsWithSortingField() {
+    @DisplayName("Getting all cars with a sorting fields")
+    void testGetCarsWithSortingFields() {
         final List<CarEntity> entityList = emptyList();
         when(this.carRepository.findAll(any(Sort.class))).thenReturn(entityList);
 
         final List<Car> dtoList = emptyList();
         when(this.carConverter.toDtoList(entityList)).thenReturn(dtoList);
 
-        final String sortingField = "sortedBy";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
 
-        assertEquals(dtoList, this.carDao.getCars(sortingField), "Result list different from expected");
+        assertEquals(dtoList, this.carDao.getCars(sortingField1, sortingField2), "Result list different from expected");
 
         final ArgumentCaptor<Sort> argumentCaptor = forClass(Sort.class);
         verify(this.carRepository).findAll(argumentCaptor.capture());
         final Sort sort = argumentCaptor.getValue();
 
         assertNotNull(sort, "Sort clause unexpectedly null");
-        assertEquals(1, sort.toList().size(), "Sort clause size different from expected");
-        assertEquals(sortingField, sort.toList().get(0).getProperty(), "Sort clause property different from expected");
+        assertEquals(2, sort.toList().size(), "Sort clause size different from expected");
+        assertAll("Asserting all sorting fields",
+            () -> assertEquals(sortingField1, sort.toList().get(0).getProperty(), "First sort clause property different from expected"),
+            () -> assertEquals(sortingField2, sort.toList().get(1).getProperty(), "Second sort clause property different from expected"));
 
         verify(this.carRepository, times(1)).findAll(sort);
         verify(this.carConverter, times(1)).toDtoList(entityList);

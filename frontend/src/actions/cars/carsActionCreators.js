@@ -91,7 +91,7 @@ export const changeCarsSortOrderAction = (sortedBy) => {
 /**
  * Returns the action object for the {@link CHANGE_CARS_SORT_ORDER} action type.
  *
- * @param {string} sortedBy
+ * @param {string | string[]} sortedBy
  *     The new sort order
  *
  * @returns {object} the action object

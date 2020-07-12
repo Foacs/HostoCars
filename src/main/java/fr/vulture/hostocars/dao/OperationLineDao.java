@@ -8,6 +8,7 @@ import fr.vulture.hostocars.dto.Operation;
 import fr.vulture.hostocars.dto.OperationLine;
 import fr.vulture.hostocars.entity.OperationLineEntity;
 import fr.vulture.hostocars.repository.OperationLineRepository;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
@@ -43,15 +44,15 @@ public class OperationLineDao {
     }
 
     /**
-     * Retrieves the list of all the {@link OperationLine} from the database. A sorting field can also be specified.
+     * Retrieves the list of all the {@link OperationLine} from the database. A list of sorting fields can also be specified.
      *
      * @param sortedBy
-     *     The optional sorting clause field
+     *     The optional sorting clause fields
      *
      * @return a list of {@link OperationLine}
      */
-    public List<OperationLine> getOperationLines(final String sortedBy) {
-        log.trace("[getOperationLines] With sorting field = {}", sortedBy);
+    public List<OperationLine> getOperationLines(final String... sortedBy) {
+        log.trace("[getOperationLines] With sorting fields = {}", nonNull(sortedBy) ? Arrays.asList(sortedBy) : null);
 
         // Calls the operation line repository to retrieve the list of all the operation lines from the database
         final List<OperationLineEntity> resultEntityList =

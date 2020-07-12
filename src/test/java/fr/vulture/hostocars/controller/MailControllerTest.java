@@ -139,7 +139,7 @@ class MailControllerTest {
         final String content = "content";
         mail.setContent(content);
 
-        when(this.mailSender.createMimeMessage()).thenThrow(new RuntimeException(""));
+        when(this.mailSender.createMimeMessage()).thenThrow(new RuntimeException("Test"));
 
         final ResponseEntity<?> response = this.mailController.sendMail(mail);
 

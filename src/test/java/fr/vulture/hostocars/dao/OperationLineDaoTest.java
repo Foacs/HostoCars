@@ -2,6 +2,7 @@ package fr.vulture.hostocars.dao;
 
 import static fr.vulture.hostocars.utils.ControllerUtils.DEFAULT_MATCHER;
 import static java.util.Collections.emptyList;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -52,40 +53,43 @@ class OperationLineDaoTest {
     @DisplayName("Getting all operation lines")
     void testGetOperationLines() {
         final List<OperationLineEntity> entityList = emptyList();
-        when(this.operationLineRepository.findAll()).thenReturn(entityList);
+        when(this.operationLineRepository.findAll(Sort.unsorted())).thenReturn(entityList);
 
         final List<OperationLine> dtoList = emptyList();
         when(this.operationLineConverter.toDtoList(entityList)).thenReturn(dtoList);
 
-        assertEquals(dtoList, this.operationLineDao.getOperationLines(null), "Result list different from expected");
+        assertEquals(dtoList, this.operationLineDao.getOperationLines(), "Result list different from expected");
 
-        verify(this.operationLineRepository, times(1)).findAll();
+        verify(this.operationLineRepository, times(1)).findAll(Sort.unsorted());
         verify(this.operationLineConverter, times(1)).toDtoList(entityList);
     }
 
     /**
-     * Tests the {@link OperationLineDao#getOperationLines} method with a sorting field.
+     * Tests the {@link OperationLineDao#getOperationLines} method with a sorting fields.
      */
     @Test
-    @DisplayName("Getting all operation lines with a sorting field")
-    void testGetOperationLinesWithSortingField() {
+    @DisplayName("Getting all operation lines with a sorting fields")
+    void testGetOperationLinesWithSortingFields() {
         final List<OperationLineEntity> entityList = emptyList();
         when(this.operationLineRepository.findAll(any(Sort.class))).thenReturn(entityList);
 
         final List<OperationLine> dtoList = emptyList();
         when(this.operationLineConverter.toDtoList(entityList)).thenReturn(dtoList);
 
-        final String sortingField = "sortedBy";
+        final String sortingField1 = "sortingField1";
+        final String sortingField2 = "sortingField2";
 
-        assertEquals(dtoList, this.operationLineDao.getOperationLines(sortingField), "Result list different from expected");
+        assertEquals(dtoList, this.operationLineDao.getOperationLines(sortingField1, sortingField2), "Result list different from expected");
 
         final ArgumentCaptor<Sort> argumentCaptor = forClass(Sort.class);
         verify(this.operationLineRepository).findAll(argumentCaptor.capture());
         final Sort sort = argumentCaptor.getValue();
 
         assertNotNull(sort, "Sort clause unexpectedly null");
-        assertEquals(1, sort.toList().size(), "Sort clause size different from expected");
-        assertEquals(sortingField, sort.toList().get(0).getProperty(), "Sort clause property different from expected");
+        assertEquals(2, sort.toList().size(), "Sort clause size different from expected");
+        assertAll("Asserting all sorting fields",
+            () -> assertEquals(sortingField1, sort.toList().get(0).getProperty(), "First sort clause property different from expected"),
+            () -> assertEquals(sortingField2, sort.toList().get(1).getProperty(), "Second sort clause property different from expected"));
 
         verify(this.operationLineRepository, times(1)).findAll(sort);
         verify(this.operationLineConverter, times(1)).toDtoList(entityList);
