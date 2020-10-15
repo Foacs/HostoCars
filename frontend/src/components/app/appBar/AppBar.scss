@@ -5,5 +5,27 @@
     height:           60px;
     margin-left:      256px;
     overflow:         hidden;
+    position:         fixed;
     width:            calc(100% - 256px);
+
+    .MenuButton {
+        position: absolute;
+        right:    10px;
+        top:      6px;
+
+        .MenuIcon {
+            color: $secondary-light-color;
+        }
+    }
+}
+
+#AppBarMenu {
+    .MenuItemIcon {
+        min-width:     0;
+        padding-right: 8px;
+    }
+
+    .MenuItemLabel {
+        padding-right: 2px;
+    }
 }

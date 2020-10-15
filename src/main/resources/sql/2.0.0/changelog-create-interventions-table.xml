@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="liquibase" id="changelog-create-interventions-table">
+        <createTable tableName="interventions">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" unique="true" />
+            </column>
+
+            <column name="carId" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fkInterventionsCars" references="cars(id)" referencedColumnNames="id"
+                             referencedTableName="cars" />
+            </column>
+
+            <column name="year" type="INTEGER" />
+
+            <column name="number" type="INTEGER" />
+
+            <column name="status" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="description" type="TEXT" />
+
+            <column name="mileage" type="INTEGER" />
+
+            <column name="estimatedTime" type="REAL" />
+
+            <column name="realTime" type="REAL" />
+
+            <column name="amount" type="REAL" />
+
+            <column name="paidAmount" type="REAL" />
+
+            <column name="comments" type="TEXT" />
+        </createTable>
+
+        <comment>
+            Creating interventions table
+        </comment>
+    </changeSet>
+</databaseChangeLog>

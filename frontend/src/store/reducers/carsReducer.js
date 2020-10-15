@@ -3,20 +3,16 @@ import { carsActionTypes as types } from 'actions';
 // The reducer's initial state
 const initialState = {
     cars: [],
-    isAddInError: false,
-    isAddInProgress: false,
+    isCreateInError: false,
+    isCreateInProgress: false,
     isDeleteInError: false,
     isDeleteInProgress: false,
-    isEditInError: false,
-    isEditInProgress: false,
-    isGetAllInError: false,
-    isGetAllInProgress: false,
     isGetInError: false,
     isGetInProgress: false,
-    isGetRegistrationsInError: false,
-    isGetRegistrationsInProgress: false,
-    registrations: [],
-    sortedBy: 'registration'
+    isGetByIdInError: false,
+    isGetByIdInProgress: false,
+    isUpdateInError: false,
+    isUpdateInProgress: false
 };
 
 /**
@@ -31,28 +27,23 @@ const initialState = {
  */
 const carsReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.ADD_CAR:
+        case types.CREATE_CAR:
             return {
                 ...state,
-                isAddInError: initialState.isAddInError,
-                isAddInProgress: true
+                isCreateInError: initialState.isCreateInError,
+                isCreateInProgress: true
             };
-        case types.ADD_CAR_ERROR:
+        case types.CREATE_CAR_ERROR:
             return {
                 ...state,
-                isAddInError: true,
-                isAddInProgress: initialState.isAddInProgress
+                isCreateInError: true,
+                isCreateInProgress: initialState.isCreateInProgress
             };
-        case types.ADD_CAR_OK:
+        case types.CREATE_CAR_OK:
             return {
                 ...state,
-                isAddInError: initialState.isAddInError,
-                isAddInProgress: initialState.isAddInProgress
-            };
-        case types.CHANGE_CARS_SORT_ORDER:
-            return {
-                ...state,
-                sortedBy: action.sortedBy
+                isCreateInError: initialState.isCreateInError,
+                isCreateInProgress: initialState.isCreateInProgress
             };
         case types.DELETE_CAR:
             return {
@@ -73,44 +64,26 @@ const carsReducer = (state = initialState, action) => {
                 isDeleteInError: initialState.isDeleteInError,
                 isDeleteInProgress: initialState.isDeleteInProgress
             };
-        case types.EDIT_CAR:
-            return {
-                ...state,
-                isEditInError: initialState.isEditInError,
-                isEditInProgress: true
-            };
-        case types.EDIT_CAR_ERROR:
-            return {
-                ...state,
-                isEditInError: true,
-                isEditInProgress: initialState.isEditInProgress
-            };
-        case types.EDIT_CAR_OK:
-            return {
-                ...state,
-                isEditInError: initialState.isEditInError,
-                isEditInProgress: initialState.isEditInProgress
-            };
-        case types.GET_CAR:
+        case types.GET_CAR_BY_ID:
             return {
                 ...state,
                 isGetInError: initialState.isGetInError,
                 isGetInProgress: true
             };
-        case types.GET_CAR_ERROR:
+        case types.GET_CAR_BY_ID_ERROR:
             return {
                 ...state,
                 isGetInError: true,
                 isGetInProgress: initialState.isGetInProgress
             };
-        case types.GET_CAR_NO_CONTENT:
+        case types.GET_CAR_BY_ID_NOT_FOUND:
             return {
                 ...state,
                 cars: state.cars.filter(car => action.id !== car.id),
                 isGetInError: initialState.isGetInError,
                 isGetInProgress: initialState.isGetInProgress
             };
-        case types.GET_CAR_OK:
+        case types.GET_CAR_BY_ID_OK:
             return {
                 ...state,
                 cars: state.cars.map(car => car.id)
@@ -120,61 +93,51 @@ const carsReducer = (state = initialState, action) => {
                 isGetInError: initialState.isGetInError,
                 isGetInProgress: initialState.isGetInProgress
             };
-        case types.GET_CAR_REGISTRATIONS:
-            return {
-                ...state,
-                registrations: initialState.registrations,
-                isGetRegistrationsInError: initialState.isGetRegistrationsInError,
-                isGetRegistrationsInProgress: true
-            };
-        case types.GET_CAR_REGISTRATIONS_ERROR:
-            return {
-                ...state,
-                registrations: initialState.registrations,
-                isGetRegistrationsInError: true,
-                isGetRegistrationsInProgress: initialState.isGetRegistrationsInProgress
-            };
-        case types.GET_CAR_REGISTRATIONS_NO_CONTENT:
-            return {
-                ...state,
-                registrations: initialState.registrations,
-                isGetRegistrationsInError: initialState.isGetRegistrationsInError,
-                isGetRegistrationsInProgress: initialState.isGetRegistrationsInProgress
-            };
-        case types.GET_CAR_REGISTRATIONS_OK:
-            return {
-                ...state,
-                registrations: action.registrations,
-                isGetRegistrationsInError: initialState.isGetRegistrationsInError,
-                isGetRegistrationsInProgress: initialState.isGetRegistrationsInProgress
-            };
         case types.GET_CARS:
             return {
                 ...state,
                 cars: initialState.cars,
-                isGetAllInError: initialState.isGetAllInError,
-                isGetAllInProgress: true
+                isGetInError: initialState.isGetInError,
+                isGetInProgress: true
             };
         case types.GET_CARS_ERROR:
             return {
                 ...state,
                 cars: initialState.cars,
-                isGetAllInError: true,
-                isGetAllInProgress: initialState.isGetAllInProgress
+                isGetInError: true,
+                isGetInProgress: initialState.isGetInProgress
             };
         case types.GET_CARS_NO_CONTENT:
             return {
                 ...state,
                 cars: initialState.cars,
-                isGetAllInError: initialState.isGetAllInError,
-                isGetAllInProgress: initialState.isGetAllInProgress
+                isGetInError: initialState.isGetInError,
+                isGetInProgress: initialState.isGetInProgress
             };
         case types.GET_CARS_OK:
             return {
                 ...state,
                 cars: action.cars,
-                isGetAllInError: initialState.isGetAllInError,
-                isGetAllInProgress: initialState.isGetAllInProgress
+                isGetInError: initialState.isGetInError,
+                isGetInProgress: initialState.isGetInProgress
+            };
+        case types.UPDATE_CAR:
+            return {
+                ...state,
+                isUpdateInError: initialState.isUpdateInError,
+                isUpdateInProgress: true
+            };
+        case types.UPDATE_CAR_ERROR:
+            return {
+                ...state,
+                isUpdateInError: true,
+                isUpdateInProgress: initialState.isUpdateInProgress
+            };
+        case types.UPDATE_CAR_OK:
+            return {
+                ...state,
+                isUpdateInError: initialState.isUpdateInError,
+                isUpdateInProgress: initialState.isUpdateInProgress
             };
         default:
             return state;

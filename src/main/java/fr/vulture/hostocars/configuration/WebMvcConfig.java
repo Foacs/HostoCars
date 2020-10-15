@@ -2,9 +2,8 @@ package fr.vulture.hostocars.configuration;
 
 import static java.util.Objects.nonNull;
 
-import java.io.IOException;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
+import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -16,50 +15,39 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
 /**
  * Configuration bean used to fix the Spring URL redirection.
  */
-@Slf4j
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
     /**
      * {@inheritDoc}
      */
+    @Loggable(debug = true)
     @Override
     public void addResourceHandlers(@NonNull final ResourceHandlerRegistry registry) {
-        log.trace("Adding resources to registry");
-
-        registry.addResourceHandler("/**/*")
-            .addResourceLocations("classpath:/static/")
-            .resourceChain(true)
-            .addResolver(new CustomPathResourceResolver());
-
-        log.trace("Resources added to registry");
+        registry.addResourceHandler("/**/*").addResourceLocations("classpath:/static/").resourceChain(true).addResolver(new CustomPathResourceResolver());
     }
 
     /**
      * {@inheritDoc}
      */
+    @Loggable(debug = true)
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
-        log.trace("Adding CORS mapping");
-
-        registry.addMapping("/**");
-
-        log.trace("CORS mapping added to registry");
+        registry.addMapping("/**").allowedHeaders("*").exposedHeaders("Location");
     }
 
     /**
      * Custom implementation of the {@link CustomPathResourceResolver} class.
      */
-    @Slf4j
     static class CustomPathResourceResolver extends PathResourceResolver {
 
         /**
          * {@inheritDoc}
          */
+        @Loggable(debug = true)
+        @SneakyThrows
         @Override
-        public final Resource getResource(final String resourcePath, @NonNull final Resource location) throws IOException {
-            log.trace("Getting resource from path : {}", resourcePath);
-
+        public final Resource getResource(final String resourcePath, @NonNull final Resource location) {
             if (nonNull(resourcePath)) {
                 final Resource requestedResource = location.createRelative(resourcePath);
                 return requestedResource.exists() && requestedResource.isReadable() ? requestedResource : new ClassPathResource("static/index.html");

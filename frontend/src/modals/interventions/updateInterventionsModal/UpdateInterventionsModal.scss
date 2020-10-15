@@ -1,0 +1,22 @@
+@import '../../../resources/colors';
+
+#UpdateInterventionsModal {
+    & > div > div {
+        max-width: none;
+    }
+
+    .Instructions_hidden {
+        display: none;
+    }
+
+    .Title {
+        color:     $primary-color;
+        min-width: 600px;
+
+        .HelpButton {
+            position: absolute;
+            right:    12px;
+            top:      8px;
+        }
+    }
+}

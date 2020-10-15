@@ -3,6 +3,14 @@
 #OperationLinePreview {
     padding: 0;
 
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    .Description {
+        padding-left: 9px;
+    }
+
     .CheckedIcon {
         color: $secondary-color;
     }

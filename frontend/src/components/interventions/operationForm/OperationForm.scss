@@ -1,0 +1,34 @@
+@import '../../../resources/colors';
+
+#OperationForm {
+    .DeleteButton {
+        margin-right: 12px;
+    }
+
+    .Header {
+        background-color: transparent;
+    }
+
+    .LinesChip {
+        cursor: pointer;
+        margin: 16px 0 0 180px;
+        width:  50px;
+
+        & > span {
+            align-self: center;
+        }
+    }
+
+    .List {
+        margin:  -12px 0;
+        padding: 0 12px;
+        width:   100%;
+    }
+
+    .Label {
+        align-self:  center;
+        color:       $gray-dark;
+        font-weight: bold;
+        width:       calc(100% - 78px);
+    }
+}

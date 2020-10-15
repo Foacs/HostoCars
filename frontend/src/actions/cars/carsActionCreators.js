@@ -3,41 +3,43 @@ import axios from 'axios';
 
 import { carsActionTypes as types, enqueueNotificationAction } from 'actions';
 import { ErrorNotificationContent } from 'components';
-import { NO_CONTENT_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
+import { extractEntityIdFromUrl, NO_CONTENT_STATUS, NOT_FOUND_STATUS, OK_STATUS, WEB_SERVICE_BASE_URL } from 'resources';
+
+const CARS_SERVICE_BASE_URL = `${WEB_SERVICE_BASE_URL}/cars`;
 
 /**
- * Adds a new car and returns the action promise.
+ * Creates a new car and returns the action promise.
  * <br />
- * If the operation is successful, a success notification is shown and the list of cars is updated.
+ * If the operation is successful, calls the service given in the response location header.
  * <br />
  * If the operation fails, an error notification is shown.
  *
  * @param {object} car
- *     The car to add
+ *     The car to create
  *
  * @returns {Promise} the action promise
  */
-export const addCarAction = (car) => {
+export const createCarAction = (car) => {
     return (dispatch) => {
-        dispatch(addCarStart());
+        dispatch(createCarStart());
 
-        return axios.post(`${WEB_SERVICE_BASE_URL}/cars/save`, car)
-                .then(() => {
-                    dispatch(addCarSuccess());
+        return axios.post(CARS_SERVICE_BASE_URL, car)
+                .then(res => {
+                    dispatch(createCarSuccess());
                     dispatch(enqueueNotificationAction({
                         message: 'Voiture ajoutée avec succès.',
                         options: {
                             variant: 'success'
                         }
                     }));
-                    return dispatch(getCarsAction());
+                    return dispatch(getCarByIdAction(extractEntityIdFromUrl(res.headers.location)));
                 })
                 .catch(e => {
-                    dispatch(addCarFailure());
+                    dispatch(createCarFailure());
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors de l\'ajout d\'une voiture.',
                         options: {
-                            content: <ErrorNotificationContent error={e} />,
+                            content: <ErrorNotificationContent error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }
@@ -47,58 +49,30 @@ export const addCarAction = (car) => {
 };
 
 /**
- * Returns the action object for the {@link ADD_CAR} action type.
+ * Returns the action object for the {@link CREATE_CAR} action type.
  *
  * @returns {object} the action object
  */
-const addCarStart = () => ({
-    type: types.ADD_CAR
+const createCarStart = () => ({
+    type: types.CREATE_CAR
 });
 
 /**
- * Returns the action object for the {@link ADD_CAR_OK} action type.
+ * Returns the action object for the {@link CREATE_CAR_OK} action type.
  *
  * @returns {object} the action object
  */
-const addCarSuccess = () => ({
-    type: types.ADD_CAR_OK
+const createCarSuccess = () => ({
+    type: types.CREATE_CAR_OK
 });
 
 /**
- * Returns the action object for the {@link ADD_CAR_ERROR} action type.
+ * Returns the action object for the {@link CREATE_CAR_ERROR} action type.
  *
  * @returns {object} the action object
  */
-const addCarFailure = () => ({
-    type: types.ADD_CAR_ERROR
-});
-
-/**
- * Changes the cars sort order and updates the list of cars.
- *
- * @param {string} sortedBy
- *     The new sort order
- */
-export const changeCarsSortOrderAction = (sortedBy) => {
-    return dispatch => {
-        dispatch(changeCarsSortOrder(sortedBy));
-        getCarsAction()(dispatch, () => {
-            return { cars: { sortedBy } };
-        });
-    };
-};
-
-/**
- * Returns the action object for the {@link CHANGE_CARS_SORT_ORDER} action type.
- *
- * @param {string | string[]} sortedBy
- *     The new sort order
- *
- * @returns {object} the action object
- */
-const changeCarsSortOrder = (sortedBy) => ({
-    type: types.CHANGE_CARS_SORT_ORDER,
-    sortedBy
+const createCarFailure = () => ({
+    type: types.CREATE_CAR_ERROR
 });
 
 /**
@@ -117,7 +91,7 @@ export const deleteCarAction = (id) => {
     return dispatch => {
         dispatch(deleteCarStart());
 
-        return axios.delete(`${WEB_SERVICE_BASE_URL}/cars/${id}/delete`)
+        return axios.delete(`${CARS_SERVICE_BASE_URL}/${id}`)
                 .then(() => {
                     dispatch(deleteCarSuccess(id));
                     dispatch(enqueueNotificationAction({
@@ -173,75 +147,7 @@ const deleteCarFailure = () => ({
 });
 
 /**
- * Edits an existing car and returns the action promise.
- * <br />
- * If the operation is successful, a success notification is shown and the car is reloaded.
- * <br />
- * If the operation fails, an error notification is shown.
- *
- * @param {object} car
- *     The car to edit
- *
- * @returns {Promise} the action promise
- */
-export const editCarAction = (car) => {
-    return dispatch => {
-        dispatch(editCarStart());
-
-        return axios.put(`${WEB_SERVICE_BASE_URL}/cars/update`, car)
-                .then(() => {
-                    dispatch(editCarSuccess());
-                    dispatch(enqueueNotificationAction({
-                        message: 'Voiture éditée avec succès.',
-                        options: {
-                            variant: 'success'
-                        }
-                    }));
-                    return dispatch(getCarAction(car.id));
-                })
-                .catch(e => {
-                    dispatch(editCarFailure());
-                    dispatch(enqueueNotificationAction({
-                        message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
-                        options: {
-                            content: <ErrorNotificationContent error={e} />,
-                            persist: true,
-                            variant: 'error'
-                        }
-                    }));
-                });
-    };
-};
-
-/**
- * Returns the action object for the {@link EDIT_CAR} action type.
- *
- * @returns {object} the action object
- */
-const editCarStart = () => ({
-    type: types.EDIT_CAR
-});
-
-/**
- * Returns the action object for the {@link EDIT_CAR_OK} action type.
- *
- * @returns {object} the action object
- */
-const editCarSuccess = () => ({
-    type: types.EDIT_CAR_OK
-});
-
-/**
- * Returns the action object for the {@link EDIT_CAR_ERROR} action type.
- *
- * @returns {object} the action object
- */
-const editCarFailure = () => ({
-    type: types.EDIT_CAR_ERROR
-});
-
-/**
- * Loads an existing car and returns the action promise.
+ * Loads an existing car by its ID and returns the action promise.
  * <br />
  * If the operation fails, an error notification is shown.
  *
@@ -250,20 +156,20 @@ const editCarFailure = () => ({
  *
  * @returns {Promise} the action promise
  */
-export const getCarAction = (id) => {
+export const getCarByIdAction = (id) => {
     return dispatch => {
-        dispatch(getCarStart());
+        dispatch(getCarByIdStart());
 
-        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/${id}`)
+        return axios.get(`${CARS_SERVICE_BASE_URL}/${id}`)
                 .then(res => {
                     if (OK_STATUS === res.status) {
-                        dispatch(getCarSuccess(res.data));
-                    } else if (NO_CONTENT_STATUS === res.status) {
-                        dispatch(getCarNoContent(id));
+                        dispatch(getCarByIdSuccess(res.data));
+                    } else if (NOT_FOUND_STATUS === res.status) {
+                        dispatch(getCarByIdNotFound(id));
                     }
                 })
                 .catch(e => {
-                    dispatch(getCarFailure());
+                    dispatch(getCarByIdFailure());
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors du chargement d\'une voiture.',
                         options: {
@@ -277,120 +183,47 @@ export const getCarAction = (id) => {
 };
 
 /**
- * Returns the action object for the {@link GET_CAR} action type.
+ * Returns the action object for the {@link GET_CAR_BY_ID} action type.
  *
  * @returns {object} the action object
  */
-const getCarStart = () => ({
-    type: types.GET_CAR
+const getCarByIdStart = () => ({
+    type: types.GET_CAR_BY_ID
 });
 
 /**
- * Returns the action object for the {@link GET_CAR_NO_CONTENT} action type.
- *
- * @param {number} id
- *     The ID of the inexistant car
- *
- * @returns {object} the action object
- */
-const getCarNoContent = (id) => ({
-    id,
-    type: types.GET_CAR_NO_CONTENT
-});
-
-/**
- * Returns the action object for the {@link GET_CAR_OK} action type.
+ * Returns the action object for the {@link GET_CAR_BY_ID_OK} action type.
  *
  * @param {object} car
  *     The loaded car
  *
  * @returns {object} the action object
  */
-const getCarSuccess = (car) => ({
+const getCarByIdSuccess = (car) => ({
     car,
-    type: types.GET_CAR_OK
+    type: types.GET_CAR_BY_ID_OK
 });
 
 /**
- * Returns the action object for the {@link GET_CAR_ERROR} action type.
+ * Returns the action object for the {@link GET_CAR_BY_ID_NOT_FOUND} action type.
+ *
+ * @param {number} id
+ *     The ID of the inexistant car
  *
  * @returns {object} the action object
  */
-const getCarFailure = () => ({
-    type: types.GET_CAR_ERROR
+const getCarByIdNotFound = (id) => ({
+    id,
+    type: types.GET_CAR_BY_ID_NOT_FOUND
 });
 
 /**
- * Loads all existing cars and returns the action promise.
- * <br />
- * If the operation fails, an error notification is shown.
- *
- * @returns {Promise} the action promise
- */
-export const getCarRegistrationsAction = () => {
-    return dispatch => {
-        dispatch(getCarRegistrationsStart());
-
-        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/registrations`)
-                .then(res => {
-                    if (OK_STATUS === res.status) {
-                        dispatch(getCarRegistrationsSuccess(res.data));
-                    } else if (NO_CONTENT_STATUS === res.status) {
-                        dispatch(getCarRegistrationsNoContent());
-                    }
-                })
-                .catch(e => {
-                    dispatch(getCarRegistrationsFailure());
-                    dispatch(enqueueNotificationAction({
-                        message: 'Une erreur est survenue lors du chargement des numéros d\'immatriculation.',
-                        options: {
-                            content: <ErrorNotificationContent error={e} />,
-                            persist: true,
-                            variant: 'error'
-                        }
-                    }));
-                });
-    };
-};
-
-/**
- * Returns the action object for the {@link GET_CAR_REGISTRATIONS} action type.
+ * Returns the action object for the {@link GET_CAR_BY_ID_ERROR} action type.
  *
  * @returns {object} the action object
  */
-const getCarRegistrationsStart = () => ({
-    type: types.GET_CAR_REGISTRATIONS
-});
-
-/**
- * Returns the action object for the {@link GET_CAR_REGISTRATIONS_NO_CONTENT} action type.
- *
- * @returns {object} the action object
- */
-const getCarRegistrationsNoContent = () => ({
-    type: types.GET_CAR_REGISTRATIONS_NO_CONTENT
-});
-
-/**
- * Returns the action object for the {@link GET_CAR_REGISTRATIONS_OK} action type.
- *
- * @param {string[]} registrations
- *     The loaded car registration numbers
- *
- * @returns {object} the action object
- */
-const getCarRegistrationsSuccess = (registrations) => ({
-    registrations,
-    type: types.GET_CAR_REGISTRATIONS_OK
-});
-
-/**
- * Returns the action object for the {@link GET_CAR_REGISTRATIONS_ERROR} action type.
- *
- * @returns {object} the action object
- */
-const getCarRegistrationsFailure = () => ({
-    type: types.GET_CAR_REGISTRATIONS_ERROR
+const getCarByIdFailure = () => ({
+    type: types.GET_CAR_BY_ID_ERROR
 });
 
 /**
@@ -401,10 +234,10 @@ const getCarRegistrationsFailure = () => ({
  * @returns {Promise} the action promise
  */
 export const getCarsAction = () => {
-    return (dispatch, getState) => {
+    return dispatch => {
         dispatch(getCarsStart());
 
-        return axios.get(`${WEB_SERVICE_BASE_URL}/cars/all?sortedBy=${getState().cars.sortedBy}`)
+        return axios.get(CARS_SERVICE_BASE_URL)
                 .then(res => {
                     if (OK_STATUS === res.status) {
                         dispatch(getCarsSuccess(res.data));
@@ -464,4 +297,72 @@ const getCarsSuccess = (cars) => ({
  */
 const getCarsFailure = () => ({
     type: types.GET_CARS_ERROR
+});
+
+/**
+ * Updates an existing car and returns the action promise.
+ * <br />
+ * If the operation is successful, a success notification is shown and the car is reloaded.
+ * <br />
+ * If the operation fails, an error notification is shown.
+ *
+ * @param {object} car
+ *     The car to update
+ *
+ * @returns {Promise} the action promise
+ */
+export const updateCarAction = (car) => {
+    return dispatch => {
+        dispatch(updateCarStart());
+
+        return axios.put(CARS_SERVICE_BASE_URL, car)
+                .then(() => {
+                    dispatch(updateCarSuccess());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Voiture éditée avec succès.',
+                        options: {
+                            variant: 'success'
+                        }
+                    }));
+                    return dispatch(getCarByIdAction(car.id));
+                })
+                .catch(e => {
+                    dispatch(updateCarFailure());
+                    dispatch(enqueueNotificationAction({
+                        message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
+                        options: {
+                            content: <ErrorNotificationContent error={e} />,
+                            persist: true,
+                            variant: 'error'
+                        }
+                    }));
+                });
+    };
+};
+
+/**
+ * Returns the action object for the {@link UPDATE_CAR} action type.
+ *
+ * @returns {object} the action object
+ */
+const updateCarStart = () => ({
+    type: types.UPDATE_CAR
+});
+
+/**
+ * Returns the action object for the {@link UPDATE_CAR_OK} action type.
+ *
+ * @returns {object} the action object
+ */
+const updateCarSuccess = () => ({
+    type: types.UPDATE_CAR_OK
+});
+
+/**
+ * Returns the action object for the {@link UPDATE_CAR_ERROR} action type.
+ *
+ * @returns {object} the action object
+ */
+const updateCarFailure = () => ({
+    type: types.UPDATE_CAR_ERROR
 });

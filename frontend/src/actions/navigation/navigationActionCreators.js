@@ -1,31 +1,6 @@
 import { navigationActionTypes as types } from 'actions';
 
 /**
- * Changes the selected menu index.
- *
- * @param {number} index
- *     The new index
- */
-export const changeSelectedMenuIndexAction = (index) => {
-    return dispatch => {
-        dispatch(changeSelectedMenuIndex(index));
-    };
-};
-
-/**
- * Returns the action object for the {@link CHANGE_SELECTED_MENU_INDEX} action type.
- *
- * @param {number} index
- *     The new index
- *
- * @returns {object} the action object
- */
-const changeSelectedMenuIndex = (index) => ({
-    index,
-    type: types.CHANGE_SELECTED_MENU_INDEX
-});
-
-/**
  * Updates the breadcrumbs.
  *
  * @param {string} pageName
@@ -33,14 +8,14 @@ const changeSelectedMenuIndex = (index) => ({
  * @param {object} pagePath
  *     The new page path
  */
-export const changeCurrentPageAction = (pageName, pagePath) => {
+export const updateCurrentPageAction = (pageName, pagePath) => {
     return dispatch => {
-        dispatch(changeCurrentPage(pageName, pagePath));
+        dispatch(updateCurrentPage(pageName, pagePath));
     };
 };
 
 /**
- * Returns the action object for the {@link CHANGE_CURRENT_PAGE} action type.
+ * Returns the action object for the {@link UPDATE_CURRENT_PAGE} action type.
  *
  * @param {string} pageName
  *     The new page name
@@ -49,8 +24,58 @@ export const changeCurrentPageAction = (pageName, pagePath) => {
  *
  * @returns {object} the action object
  */
-const changeCurrentPage = (pageName, pagePath) => ({
+const updateCurrentPage = (pageName, pagePath) => ({
     pageName,
     pagePath,
-    type: types.CHANGE_CURRENT_PAGE
+    type: types.UPDATE_CURRENT_PAGE
+});
+
+/**
+ * Updates the application menu items.
+ *
+ * @param {array} items
+ *     The new menu items
+ */
+export const updateMenuItemsAction = (items) => {
+    return dispatch => {
+        dispatch(updateMenuItems(items));
+    };
+};
+
+/**
+ * Returns the action object for the {@link UPDATE_MENU_ITEMS} action type.
+ *
+ * @param {array} items
+ *     The new menu items
+ *
+ * @returns {object} the action object
+ */
+const updateMenuItems = (items) => ({
+    items,
+    type: types.UPDATE_MENU_ITEMS
+});
+
+/**
+ * Updates the selected menu index.
+ *
+ * @param {number} index
+ *     The new index
+ */
+export const updateSelectedMenuIndexAction = (index) => {
+    return dispatch => {
+        dispatch(updateSelectedMenuIndex(index));
+    };
+};
+
+/**
+ * Returns the action object for the {@link UPDATE_SELECTED_MENU_INDEX} action type.
+ *
+ * @param {number} index
+ *     The new index
+ *
+ * @returns {object} the action object
+ */
+const updateSelectedMenuIndex = (index) => ({
+    index,
+    type: types.UPDATE_SELECTED_MENU_INDEX
 });

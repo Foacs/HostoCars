@@ -1,68 +1,25 @@
 @import '../../../resources/colors';
 
 #CarsOverviewPage {
-    padding: 12px 32px 32px 32px;
+    .CarsGrid {
+        padding-top: 20px;
 
-    .CarCard {
-        min-width: 280px;
+        .CarCard {
+            min-width: 280px;
+        }
     }
 
     .ErrorPanel, .LoadingPanel {
         left: calc(50% + 128px);
     }
 
-    .HeaderGrid {
-        padding-bottom: 20px;
-        padding-top:    12px;
-
-        .AddCarButton {
-            border:        2px solid $primary-color;
-            padding-left:  12px;
-            padding-right: 8px;
-
-            .AddCarIcon {
-                margin-left: 4px;
-                padding:     2px;
-            }
-        }
-
-        .SortSection {
-            align-content:   center;
-            align-items:     baseline;
-            display:         flex;
-            justify-content: flex-end;
-            width:           100%;
-
-            .OwnerButton, .RegistrationButton {
-                &:before {
-                    background-color:   $primary-color;
-                    bottom:             10px;
-                    content:            '';
-                    height:             1px;
-                    left:               10%;
-                    position:           absolute;
-                    -webkit-transform:  scaleX(0);
-                    transform:          scaleX(0);
-                    -webkit-transition: all 0.3s ease-in-out 0s;
-                    transition:         all 0.3s ease-in-out 0s;
-                    visibility:         hidden;
-                    width:              80%;
-                }
-
-                &:hover {
-                    background-color: $transparent;
-
-                    &:before {
-                        -webkit-transform: scaleX(1);
-                        transform:         scaleX(1);
-                        visibility:        visible;
-                    }
-                }
-            }
-
-            .Separator {
-                color: $gray;
-            }
-        }
+    .CreateCarButton {
+        bottom:   20px;
+        color:    $white;
+        left:     auto;
+        margin:   0;
+        position: fixed;
+        right:    20px;
+        top:      auto;
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="liquibase" id="changelog-add-engine-code-column-to-cars-table">
+        <addColumn tableName="cars">
+            <column name="serialNumber" type="TEXT">
+                <constraints unique="true" />
+            </column>
+        </addColumn>
+
+        <addColumn tableName="cars">
+            <column name="engineCode" type="TEXT" />
+        </addColumn>
+
+        <comment>
+            Adding engineCode and serialNumber columns to cars table
+        </comment>
+    </changeSet>
+</databaseChangeLog>
