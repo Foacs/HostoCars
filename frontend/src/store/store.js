@@ -1,7 +1,8 @@
 import { applyMiddleware, combineReducers, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
-import { carsReducer, interventionsReducer, navigationReducer, notificationReducer } from 'store';
+
+import { carsReducer, navigationReducer, notificationReducer } from 'store';
 
 /**
  * Combines all the application reducers.
@@ -10,7 +11,6 @@ import { carsReducer, interventionsReducer, navigationReducer, notificationReduc
  */
 const store = createStore(combineReducers({
     cars: carsReducer,
-    interventions: interventionsReducer,
     navigation: navigationReducer,
     notifications: notificationReducer
 }), composeWithDevTools(applyMiddleware(thunk)));

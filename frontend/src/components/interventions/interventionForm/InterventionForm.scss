@@ -1,0 +1,109 @@
+@import '../../../resources/colors';
+
+#InterventionForm {
+    box-shadow: none;
+    min-width:  600px;
+    padding:    12px 0;
+
+    & > .Header {
+        background-color: transparent;
+        padding-bottom:   12px;
+
+        & > div {
+            margin:  0;
+            padding: 0;
+        }
+
+        .AmountGauge {
+            align-self: center;
+            margin:     0 -22px;
+            width:      95px;
+        }
+
+        .Number {
+            align-self: center;
+            width:      90px;
+        }
+
+        .Description {
+            align-self:  center;
+            margin-left: 24px;
+            width:       calc(100% - 400px);
+        }
+
+        .OperationChip {
+            align-self: center;
+            cursor:     pointer;
+            width:      50px;
+        }
+
+        .Status {
+            align-self: center;
+            cursor:     inherit;
+            margin:     0 12px 0 66px;
+            width:      90px;
+        }
+    }
+
+    .Content {
+        .Amount, .EstimatedTime, .Mileage, .PaidAmount, .RealTime {
+            width: 100%;
+
+            & > div > input {
+                padding:    6px 14px;
+                text-align: center;
+            }
+        }
+
+        .AmountLabel, .MileageLabel, .TimeLabel {
+            color:   $gray;
+            padding: 6px 24px 0 0;
+            width:   100%;
+        }
+
+        .Comments {
+            padding-bottom: 24px;
+            width:          100%;
+        }
+
+        .Divider {
+            margin-right: 24px;
+        }
+
+        .OperationList {
+            padding: 0 12px;
+
+            .AddOperationListItem {
+                box-shadow: none;
+                height:     80px;
+                margin-top: 0;
+            }
+        }
+
+        .OperationListTitle {
+            width: 100%;
+        }
+
+        .StatusStepper {
+            padding: 12px 12px 24px 12px;
+            width:   100%;
+        }
+
+        .Step {
+            &_finished {
+                & svg {
+                    color: $secondary-color;
+                }
+            }
+        }
+
+        .StatusStepButton {
+            border-radius: 64px;
+        }
+    }
+
+    .DeleteButton {
+        color:   $error-color;
+        padding: 12px 15px;
+    }
+}

@@ -1,38 +1,19 @@
 #InterventionsOverviewPage {
-    padding: 32px 32px 32px 32px;
-
     .ErrorPanel, .LoadingPanel {
-        left:      unset;
-        margin:    unset;
-        position:  unset;
-        top:       unset;
-        transform: unset;
+        left: calc(50% + 128px);
     }
 
-    .FilterPanel, .SortPanel {
+    .OverviewInfoPanel {
         border-radius: 4px;
 
         .Header {
             cursor:     default;
             min-height: 52px;
+        }
 
-            .ClearButton {
-                position: absolute;
-                right:    8px;
-                top:      12px;
-            }
-
-            .FilterPanelTitle {
-                left:     24px;
-                position: absolute;
-                top:      12px;
-            }
-
-            .RadioGroup {
-                position: absolute;
-                right:    24px;
-                top:      15px;
-            }
+        .TableRowValue {
+            align-self: center;
+            width:      50px;
         }
     }
 

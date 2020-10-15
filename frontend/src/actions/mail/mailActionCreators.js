@@ -19,7 +19,7 @@ import { WEB_SERVICE_BASE_URL } from 'resources';
  */
 export const sendMailAction = (mail) => {
     return (dispatch) => {
-        return axios.post(`${WEB_SERVICE_BASE_URL}/mail/send`, mail)
+        return axios.put(`${WEB_SERVICE_BASE_URL}/mails`, mail)
                 .then(() => {
                     dispatch(enqueueNotificationAction({
                         message: 'Mail envoyé avec succès.',

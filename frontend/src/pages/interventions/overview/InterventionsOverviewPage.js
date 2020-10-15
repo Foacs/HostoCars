@@ -2,42 +2,31 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
-import _ from 'underscore';
 
 import {
-    Box, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, FormControl, FormControlLabel, Grid, IconButton, Radio, RadioGroup, Typography
+    Box, Chip, ExpansionPanel, ExpansionPanelDetails, ExpansionPanelSummary, Grid, Table, TableBody, TableCell, TableRow, Typography
 } from '@material-ui/core';
-import { ClearRounded as ClearIcon } from '@material-ui/icons';
+import { RefreshRounded as RefreshIcon } from '@material-ui/icons';
 
-import {
-    changeCurrentPageAction, changeInterventionsSortOrderAction, changeSelectedMenuIndexAction, getCarsAction, getInterventionsAction
-} from 'actions';
-import { ErrorPanel, InterventionPreview, LoadingPanel } from 'components';
-import { InterventionPropType } from '../../../resources';
+import { getCarsAction, updateCurrentPageAction, updateMenuItemsAction, updateSelectedMenuIndexAction } from 'actions';
+import { ErrorPanel, InterventionPreview, LoadingPanel, Page } from 'components';
+import { INTERVENTION_STATUS_STEPS, InterventionPropType } from '../../../resources';
 
 import './InterventionsOverviewPage.scss';
 
 /**
  * The interventions overview page component.
  *
- * @param {func} changeCurrentPage
- *     The {@link changeCurrentPageAction} action
- * @param {func} changeInterventionsSortOrder
- *     The {@link changeInterventionsSortOrderAction} action
- * @param {func} changeSelectedMenuIndex
- *     The {@link changeSelectedMenuIndexAction} action
- * @param {func} getCars
- *     The {@link getCarsAction} action
- * @param {func} getInterventions
- *     The {@link getInterventionsAction} action
  * @param {object[]} interventions
  *    The list of all the interventions
  * @param {boolean} isInError
  *    If the interventions loading is in error
  * @param {boolean} isLoading
  *    If the interventions loading is in progress
- * @param {string} sortedBy
- *    The sorting clause
+ * @param {func} updateCurrentPage
+ *     The {@link updateCurrentPageAction} action
+ * @param {func} updateSelectedMenuIndex
+ *     The {@link updateSelectedMenuIndexAction} action
  *
  * @class
  */
@@ -58,20 +47,21 @@ class InterventionsOverviewPage extends PureComponent {
 
         // Binds the local method
         this.onInterventionPreviewClick = this.onInterventionPreviewClick.bind(this);
-        this.onSortChange = this.onSortChange.bind(this);
     }
 
     /**
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { changeCurrentPage, changeSelectedMenuIndex, getCars, getInterventions } = this.props;
+        const { getCars, updateCurrentPage, updateMenuItems, updateSelectedMenuIndex } = this.props;
 
-        changeCurrentPage('Interventions', []);
-        changeSelectedMenuIndex(1);
-
-        getCars();
-        getInterventions();
+        updateCurrentPage('Interventions', []);
+        updateMenuItems([ {
+            icon: <RefreshIcon />,
+            label: 'Rafraîchir',
+            onClick: getCars
+        } ]);
+        updateSelectedMenuIndex(1);
     }
 
     /**
@@ -86,17 +76,11 @@ class InterventionsOverviewPage extends PureComponent {
         this.setState({ expandedInterventionIndex: this.state.expandedInterventionIndex === index ? false : index });
     }
 
-    onSortChange(sortedBy) {
-        const { changeInterventionsSortOrder } = this.props;
-
-        changeInterventionsSortOrder(sortedBy);
-    }
-
     /**
      * Render method.
      */
     render() {
-        const { cars, interventions, isInError, isLoading, sortedBy } = this.props;
+        const { interventions, isInError, isLoading } = this.props;
         const { expandedInterventionIndex } = this.state;
 
         let content;
@@ -107,82 +91,109 @@ class InterventionsOverviewPage extends PureComponent {
             // If the interventions or the cars are being loaded, displays the loading panel
             content = (<LoadingPanel className='LoadingPanel' />);
         } else {
-            // If the interventions and the cars have been loaded, displays the page normal content
-            content = interventions.map((intervention, index) => (
-                    <InterventionPreview carRegistration={cars.find(car => car.id === intervention.carId).registration}
-                                         intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
-                                         onClick={() => this.onInterventionPreviewClick(index)} />));
-        }
+            const interventionsNumber = interventions.length;
+            const finishedInterventionsNumber = interventions.filter(intervention => intervention.status === INTERVENTION_STATUS_STEPS[4]).length;
+            const areAllInterventionsFinished = interventionsNumber === finishedInterventionsNumber;
 
-        return (<Box id='InterventionsOverviewPage'>
-            <Grid container spacing={4}>
+            const operations = interventions.flatMap(intervention => intervention.operations);
+            const operationsNumber = operations.length;
+            const finishedOperationsNumber = operations.filter(operation => !operation.operationLines.some(line => !line.done)).length;
+            const areAllOperationsFinished = operationsNumber === finishedOperationsNumber;
+
+            const operationLines = operations.flatMap(operation => operation.operationLines);
+            const operationLinesNumber = operationLines.length;
+            const finishedOperationLinesNumber = operationLines.filter(operationLine => !operationLine.done).length;
+            const areAllOperationLinesFinished = operationLinesNumber === finishedOperationLinesNumber;
+
+            // If the interventions and the cars have been loaded, displays the page normal content
+            content = (<Grid container spacing={4}>
                 <Grid item xs={4}>
                     <Box className='StaticColumn'>
-                        <ExpansionPanel className='SortPanel' expanded={true}>
+                        <ExpansionPanel className='OverviewInfoPanel' expanded={true}>
                             <ExpansionPanelSummary className='Header'>
-                                <Typography className='Title' color='primary' variant='h6'>Tri</Typography>
-
-                                <FormControl className='RadioGroup' component='fieldset'>
-                                    <RadioGroup row value={sortedBy}>
-                                        <FormControlLabel checked={_.isEqual([ 'creationYear', 'number' ], sortedBy)} control={<Radio />}
-                                                          label='Numéro' labelPlacement='start'
-                                                          onChange={() => this.onSortChange([ 'creationYear', 'number' ])}
-                                                          value={[ 'creationYear', 'number' ]} />
-                                        <FormControlLabel control={<Radio />} onChange={e => this.onSortChange(e.target.value)}
-                                                          label='Description' labelPlacement='start' value='description' />
-                                        <FormControlLabel control={<Radio />} onChange={e => this.onSortChange(e.target.value)}
-                                                          label='Status' labelPlacement='start' value='status' />
-                                    </RadioGroup>
-                                </FormControl>
-                            </ExpansionPanelSummary>
-                        </ExpansionPanel>
-
-                        <ExpansionPanel className='FilterPanel' expanded={true}>
-                            <ExpansionPanelSummary className='Header'>
-                                <Typography className='Title' color='primary' variant='h6'>Filtres</Typography>
-
-                                <IconButton className='ClearButton' color='primary' onClick={this.onClearFilters}>
-                                    <ClearIcon />
-                                </IconButton>
+                                <Typography className='Title' color='primary' variant='h6'>Statistiques</Typography>
                             </ExpansionPanelSummary>
 
-                            <ExpansionPanelDetails />
+                            <ExpansionPanelDetails>
+                                <Table className='Table'>
+                                    <TableBody>
+                                        <TableRow className='TableRow' hover>
+                                            <TableCell className='TableRowLabel'>Interventions</TableCell>
+                                            <TableCell align='right' className='TableRowValue'>
+                                                <Chip className='TableRowValue'
+                                                      color={areAllInterventionsFinished ? 'secondary' : 'primary'}
+                                                      label={`${finishedInterventionsNumber} ⋮ ${interventionsNumber}`} size='small'
+                                                      variant={areAllInterventionsFinished ? 'outlined' : 'default'} />
+                                            </TableCell>
+                                        </TableRow>
+
+                                        <TableRow className='TableRow' hover>
+                                            <TableCell className='TableRowLabel'>Opérations</TableCell>
+                                            <TableCell align='right' className='TableRowValue'>
+                                                <Chip className='TableRowValue'
+                                                      color={areAllOperationsFinished ? 'secondary' : 'primary'}
+                                                      label={`${finishedOperationsNumber} ⋮ ${operationsNumber}`} size='small'
+                                                      variant={areAllOperationsFinished ? 'outlined' : 'default'} />
+                                            </TableCell>
+                                        </TableRow>
+
+                                        <TableRow className='TableRow' hover>
+                                            <TableCell className='TableRowLabel'>Lignes d'opération</TableCell>
+                                            <TableCell align='right' className='TableRowValue'>
+                                                <Chip className='TableRowValue'
+                                                      color={areAllOperationLinesFinished ? 'secondary' : 'primary'}
+                                                      label={`${finishedOperationLinesNumber} ⋮ ${operationLinesNumber}`} size='small'
+                                                      variant={areAllOperationLinesFinished ? 'outlined' : 'default'} />
+                                            </TableCell>
+                                        </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </ExpansionPanelDetails>
                         </ExpansionPanel>
                     </Box>
                 </Grid>
 
                 <Grid item xs={8}>
-                    {content}
+                    {interventions.map((intervention, index) =>
+                            <InterventionPreview intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
+                                                 onClick={() => this.onInterventionPreviewClick(index)} />)}
                 </Grid>
-            </Grid>
-        </Box>);
+            </Grid>);
+        }
+
+        return (<Page id='InterventionsOverviewPage'>
+            {content}
+        </Page>);
     }
 }
 
 const mapStateToProps = (state) => ({
-    cars: state.cars.cars,
-    interventions: state.interventions.interventions,
-    isInError: state.interventions.isGetAllInError || state.cars.isGetAllInError,
-    isLoading: state.interventions.isGetAllInProgress || state.cars.isGetAllInProgress,
-    sortedBy: state.interventions.sortedBy
+    interventions: state.cars.cars
+            .flatMap(car => car.interventions.map(intervention => {
+                return {
+                    ...intervention,
+                    carId: car.id,
+                    carRegistration: car.registration
+                };
+            })),
+    isInError: state.cars.isGetInError,
+    isLoading: state.cars.isGetInProgress
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-    changeCurrentPage: changeCurrentPageAction,
-    changeSelectedMenuIndex: changeSelectedMenuIndexAction,
-    changeInterventionsSortOrder: changeInterventionsSortOrderAction,
     getCars: getCarsAction,
-    getInterventions: getInterventionsAction
+    updateCurrentPage: updateCurrentPageAction,
+    updateMenuItems: updateMenuItemsAction,
+    updateSelectedMenuIndex: updateSelectedMenuIndexAction
 }, dispatch);
 
 InterventionsOverviewPage.propTypes = {
-    changeCurrentPage: PropTypes.func.isRequired,
-    changeSelectedMenuIndex: PropTypes.func.isRequired,
-    getCars: PropTypes.func.isRequired,
-    getInterventions: PropTypes.func.isRequired,
     interventions: PropTypes.arrayOf(InterventionPropType).isRequired,
     isInError: PropTypes.bool.isRequired,
-    isLoading: PropTypes.bool.isRequired
+    isLoading: PropTypes.bool.isRequired,
+    updateCurrentPage: PropTypes.func.isRequired,
+    updateMenuItems: PropTypes.func.isRequired,
+    updateSelectedMenuIndex: PropTypes.func.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(InterventionsOverviewPage);

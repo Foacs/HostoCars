@@ -8,13 +8,26 @@ const lodash = require('lodash');
  *
  * @returns {string} the file name
  */
-export const extractFileNameFromURL = (url) => {
+export const extractFileNameFromUrl = (url) => {
     const startIndex = (0 <= url.indexOf('\\') ? url.lastIndexOf('\\') : url.lastIndexOf('/'));
     let filename = url.substring(startIndex);
     if (0 === filename.indexOf('\\') || 0 === filename.indexOf('/')) {
         filename = filename.substring(1);
     }
     return filename;
+};
+
+/**
+ * Extracts the entity ID from its URL.
+ *
+ * @param {string} url
+ *     The file URL
+ *
+ * @returns {string} the entity ID
+ */
+export const extractEntityIdFromUrl = (url) => {
+    const words = url.split('/');
+    return words[words.length - 1];
 };
 
 /**
@@ -50,7 +63,7 @@ export const addLeadingZeros = (number, size) => {
  * @returns {number} the generated random number
  */
 export const generateRandomNumber = () => {
-    return new Date().getTime() + Math.random();
+    return new Date().getTime() * Math.random();
 };
 
 /**

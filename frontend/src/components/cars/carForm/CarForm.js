@@ -8,7 +8,7 @@ import {
 import { CancelRounded as CancelIcon, FolderOpenRounded as BrowseIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 import { DatePicker } from '@material-ui/pickers';
 
-import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, extractFileNameFromURL, formatDateLabel, loadFileAsByteArray } from 'resources';
+import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, extractFileNameFromUrl, formatDateLabel, loadFileAsByteArray } from 'resources';
 
 import './CarForm.scss';
 
@@ -17,10 +17,6 @@ const currentCertificateLabel = 'Carte grise actuelle';
 
 // Defines the certificate field value label when the current car has an image
 const currentImageLabel = 'Image actuelle';
-
-// Defines the help text
-const helpText = <i>Veuillez remplir le formulaire ci-dessous puis cliquer sur 'Ajouter' afin d'ajouter une nouvelle voiture.
-    Les champs annotés du symbole * sont obligatoires.</i>;
 
 // Defines the text to display when the registration is not provided
 const registrationRequiredHelperText = 'Veuillez renseigner l\'immatriculation';
@@ -210,7 +206,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 const certificateDocument = document.getElementById('CertificateInput');
 
                 const certificateUrl = certificateDocument.value;
-                setCertificateFileName(extractFileNameFromURL(certificateUrl));
+                setCertificateFileName(extractFileNameFromUrl(certificateUrl));
 
                 const certificateFile = certificateDocument.files[0];
                 setCertificate(loadFileAsByteArray(certificateFile));
@@ -219,7 +215,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 const pictureDocument = document.getElementById('PictureInput');
 
                 const pictureUrl = pictureDocument.value;
-                setPictureFileName(extractFileNameFromURL(pictureUrl));
+                setPictureFileName(extractFileNameFromUrl(pictureUrl));
 
                 const pictureFile = pictureDocument.files[0];
                 setPicture(loadFileAsByteArray(pictureFile));
@@ -318,13 +314,13 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
         }
 
         // Validates the serial number field
-        if (null !== serialNumber && '' !== serialNumber && serialNumbers.includes(serialNumber)) {
+        if (null != serialNumber && '' !== serialNumber && serialNumbers.includes(serialNumber)) {
             setSerialNumberUnique(true);
             isValid = false;
         }
 
         // Validates the owner field
-        if (null === owner || '' === owner) {
+        if (null == owner || '' === owner) {
             setOwnerRequired(true);
             isValid = false;
         }
@@ -342,12 +338,27 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
         </DialogTitle>
 
         <DialogContent>
-            <DialogContentText className={!help && 'Instructions_hidden'}>
-                {helpText}
+            <DialogContentText className={help ? 'Instructions' : 'Instructions_hidden'}>
+                <i>
+                    {`Veuillez remplir le formulaire ci-dessous puis cliquer sur '${validateButtonLabel}' pour terminer.
+                    Les champs annotés du symbole * sont obligatoires.`}
+                </i>
             </DialogContentText>
 
             <Grid alignItems='center' container direction='column' justify='center'>
                 <Grid alignItems='center' container justify='space-between' spacing={2}>
+                    <Grid item xs>
+                        <TextField className={`Field ${ownerRequired && 'Field_error'}`}
+                                   error={ownerRequired}
+                                   fullWidth
+                                   helperText={ownerRequired && ownerRequiredHelperText}
+                                   label='Propriétaire'
+                                   onChange={e => onFieldValueChanged(e, 'owner')}
+                                   required
+                                   value={owner}
+                                   variant='outlined' />
+                    </Grid>
+
                     <Grid item xs>
                         <TextField className={`Field ${(registrationRequired || registrationUnique) && 'Field_error'}`}
                                    error={registrationRequired || registrationUnique}
@@ -360,7 +371,9 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                                    value={registration}
                                    variant='outlined' />
                     </Grid>
+                </Grid>
 
+                <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
                         <TextField className={`Field ${(serialNumberUnique) && 'Field_error'}`}
                                    error={serialNumberUnique}
@@ -369,20 +382,6 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                                    label='VIN'
                                    onChange={e => onFieldValueChanged(e, 'serialNumber')}
                                    value={serialNumber}
-                                   variant='outlined' />
-                    </Grid>
-                </Grid>
-
-                <Grid alignItems='center' container justify='space-between' spacing={2}>
-                    <Grid item xs>
-                        <TextField className={`Field ${ownerRequired && 'Field_error'}`}
-                                   error={ownerRequired}
-                                   fullWidth
-                                   helperText={ownerRequired && ownerRequiredHelperText}
-                                   label='Propriétaire'
-                                   onChange={e => onFieldValueChanged(e, 'owner')}
-                                   required
-                                   value={owner}
                                    variant='outlined' />
                     </Grid>
 
@@ -452,7 +451,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 Annuler
             </Button>
 
-            <Button autoFocus className='ValidateButton' color='primary' onClick={onValidateAction}>
+            <Button autoFocus className='ValidateButton' color='secondary' onClick={onValidateAction}>
                 {validateButtonLabel}
             </Button>
         </DialogActions>

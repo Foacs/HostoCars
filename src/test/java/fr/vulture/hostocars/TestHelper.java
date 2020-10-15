@@ -22,12 +22,10 @@ import com.openpojo.validation.test.impl.SetterTester;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Helper class for testing.
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestHelper {
 
@@ -40,7 +38,6 @@ public final class TestHelper {
      *     The bean class to validate
      */
     public static void validateBean(@NonNull final Class beanClass) {
-        log.trace("Validating the bean class : {}", beanClass.getSimpleName());
         getBeanValidator().validate(PojoClassFactory.getPojoClass(beanClass));
     }
 
@@ -51,7 +48,6 @@ public final class TestHelper {
      */
     private static Validator getBeanValidator() {
         if (isNull(beanValidator)) {
-            log.trace("Initializing the bean validator");
             beanValidator = create().with(new DefaultValuesNullTester())
                 .with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())

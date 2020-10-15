@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import { Drawer, List, ListItem, ListItemIcon, ListItemText, Typography } from '@material-ui/core';
+import { Drawer, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 
-import { changeSelectedMenuIndexAction } from 'actions';
+import { updateSelectedMenuIndexAction } from 'actions';
 import { Logo, menuItems } from 'resources';
 
 import './Menu.scss';
@@ -14,8 +14,8 @@ import './Menu.scss';
 /**
  * The application menu component.
  *
- * @param {func} changeSelectedIndex
- *     The {@link changeSelectedMenuIndexAction} action
+ * @param {func} updateSelectedIndex
+ *     The {@link updateSelectedMenuIndexAction} action
  * @param {string} [className = '']
  *     The component class name
  * @param {number} selectedIndex
@@ -23,24 +23,19 @@ import './Menu.scss';
  *
  * @constructor
  */
-function Menu({ changeSelectedIndex, className, selectedIndex }) {
-    // Defines the menu footer label
-    const footerText = `${process.env.REACT_APP_NAME} v${process.env.REACT_APP_VERSION}`;
-
+function Menu({ updateSelectedIndex, className, selectedIndex }) {
     return (<Drawer anchor='left' className={className} id='Menu' variant='permanent'>
         <Logo className='Logo non-selectable' />
 
         <List>
             {menuItems.map((menuItem, index) => (
-                    <ListItem button component={Link} key={menuItem.label} onClick={() => changeSelectedIndex(index)}
+                    <ListItem button component={Link} key={menuItem.label} onClick={() => updateSelectedIndex(index)}
                               selected={selectedIndex === index} to={menuItem.link} replace>
                         <ListItemIcon className='Icon'>{menuItem.icon}</ListItemIcon>
 
                         <ListItemText className='Label' primary={menuItem.label} />
                     </ListItem>))}
         </List>
-
-        <Typography className='Footer non-selectable'>{footerText}</Typography>
     </Drawer>);
 }
 
@@ -49,11 +44,11 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-    changeSelectedIndex: changeSelectedMenuIndexAction
+    updateSelectedIndex: updateSelectedMenuIndexAction
 }, dispatch);
 
 Menu.propTypes = {
-    changeSelectedIndex: PropTypes.func.isRequired,
+    updateSelectedIndex: PropTypes.func.isRequired,
     className: PropTypes.string,
     selectedIndex: PropTypes.number.isRequired
 };

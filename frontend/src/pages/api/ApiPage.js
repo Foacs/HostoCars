@@ -3,10 +3,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
 
-import { Box } from '@material-ui/core';
 import SwaggerUI from 'swagger-ui-react';
 
-import { changeCurrentPageAction, changeSelectedMenuIndexAction } from 'actions';
+import { updateCurrentPageAction, updateMenuItemsAction, updateSelectedMenuIndexAction } from 'actions';
+import { Page } from 'components';
 import { WEB_SERVICE_BASE_URL } from '../../resources';
 
 import './ApiPage.scss';
@@ -15,10 +15,12 @@ import 'swagger-ui-react/swagger-ui.css';
 /**
  * The API page component.
  *
- * @param {func} changeCurrentPage
- *     The {@link changeCurrentPageAction} action
- * @param {func} changeSelectedMenuIndex
- *     The {@link changeSelectedMenuIndexAction} action
+ * @param {func} updateCurrentPage
+ *     The {@link updateCurrentPageAction} action
+ * @param {func} updateMenuItems
+ *     The {@link updateMenuItemsAction} action
+ * @param {func} updateSelectedMenuIndex
+ *     The {@link updateSelectedMenuIndexAction} action
  *
  * @class
  */
@@ -27,30 +29,33 @@ class ApiPage extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { changeCurrentPage, changeSelectedMenuIndex } = this.props;
+        const { updateCurrentPage, updateMenuItems, updateSelectedMenuIndex } = this.props;
 
-        changeCurrentPage('API', []);
-        changeSelectedMenuIndex(-1);
+        updateCurrentPage('API', []);
+        updateMenuItems([]);
+        updateSelectedMenuIndex(-1);
     }
 
     /**
      * Render method.
      */
     render() {
-        return (<Box id='ApiPage'>
+        return (<Page id='ApiPage'>
             <SwaggerUI docExpansion='none' url={`${WEB_SERVICE_BASE_URL}/api.yaml`} />
-        </Box>);
+        </Page>);
     }
 }
 
 const mapDispatchToProps = (dispatch) => bindActionCreators({
-    changeCurrentPage: changeCurrentPageAction,
-    changeSelectedMenuIndex: changeSelectedMenuIndexAction
+    updateCurrentPage: updateCurrentPageAction,
+    updateMenuItems: updateMenuItemsAction,
+    updateSelectedMenuIndex: updateSelectedMenuIndexAction
 }, dispatch);
 
 ApiPage.propTypes = {
-    changeCurrentPage: PropTypes.func.isRequired,
-    changeSelectedMenuIndex: PropTypes.func.isRequired
+    updateCurrentPage: PropTypes.func.isRequired,
+    updateMenuItems: PropTypes.func.isRequired,
+    updateSelectedMenuIndex: PropTypes.func.isRequired
 };
 
 export default connect(null, mapDispatchToProps)(ApiPage);

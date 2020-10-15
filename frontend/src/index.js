@@ -4,12 +4,12 @@ import { Provider } from 'react-redux';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import DateFnsUtils from '@date-io/date-fns';
-import { Box, CssBaseline } from '@material-ui/core';
+import { CssBaseline } from '@material-ui/core';
 import { MuiPickersUtilsProvider as DatePickerProvider } from '@material-ui/pickers';
 import { ThemeProvider } from '@material-ui/styles';
 import { SnackbarProvider } from 'notistack';
 
-import { AppBar, Menu, Notifier } from 'components';
+import { AppBar, Application, Menu, Notifier } from 'components';
 import { ApiPage, CarPage, CarsOverviewPage, InterventionsOverviewPage, NotFoundPage } from 'pages';
 import { theme } from 'resources';
 import { store } from 'store';
@@ -43,7 +43,7 @@ ReactDOM.render(<ThemeProvider theme={theme}>
                     <main data-simplebar>
                         <AppBar />
 
-                        <Box className='Page'>
+                        <Application>
                             <Switch>
                                 <Redirect exact from='/' to='/cars' />
                                 <Route exact path='/api' component={ApiPage} />
@@ -52,7 +52,7 @@ ReactDOM.render(<ThemeProvider theme={theme}>
                                 <Route exact path='/interventions' component={InterventionsOverviewPage} />
                                 <Route exact push component={NotFoundPage} />
                             </Switch>
-                        </Box>
+                        </Application>
 
                         <Menu />
                     </main>

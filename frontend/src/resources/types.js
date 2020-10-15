@@ -11,6 +11,7 @@ export const CarPropType = PropTypes.shape({
     comments: PropTypes.string,
     engineCode: PropTypes.string,
     id: PropTypes.number,
+    interventions: PropTypes.arrayOf(PropTypes.object),
     model: PropTypes.string,
     motorization: PropTypes.string,
     owner: PropTypes.string,
@@ -27,17 +28,20 @@ export const CarPropType = PropTypes.shape({
  */
 export const InterventionPropType = PropTypes.shape({
     amount: PropTypes.number,
+    car: PropTypes.object,
     carId: PropTypes.number,
+    carRegistration: PropTypes.string,
     comments: PropTypes.string,
-    creationYear: PropTypes.number,
     description: PropTypes.string,
     estimatedTime: PropTypes.number,
     id: PropTypes.number,
     mileage: PropTypes.number,
     number: PropTypes.number,
+    operations: PropTypes.arrayOf(PropTypes.object),
     paidAmount: PropTypes.number,
     realTime: PropTypes.number,
-    status: PropTypes.string
+    status: PropTypes.string,
+    year: PropTypes.number
 });
 
 /**
@@ -47,8 +51,9 @@ export const InterventionPropType = PropTypes.shape({
  */
 export const OperationPropType = PropTypes.shape({
     id: PropTypes.number,
-    interventionId: PropTypes.number,
-    label: PropTypes.string
+    intervention: PropTypes.object,
+    label: PropTypes.string,
+    operationLines: PropTypes.arrayOf(PropTypes.object)
 });
 
 /**
@@ -60,6 +65,6 @@ export const OperationLinePropType = PropTypes.shape({
     description: PropTypes.string,
     done: PropTypes.bool,
     id: PropTypes.number,
-    operationId: PropTypes.number,
+    operation: PropTypes.object,
     type: PropTypes.string
 });

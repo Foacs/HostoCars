@@ -24,21 +24,21 @@ import './OperationPreview.scss';
  * @constructor
  */
 function OperationPreview({ className, expanded, operation, onClick }) {
-    const finishedLines = operation.operationLineList.filter(line => line.done).length;
-    const totalLines = operation.operationLineList.length;
+    const finishedLines = operation.operationLines.filter(line => line.done).length;
+    const totalLines = operation.operationLines.length;
     const isFinished = finishedLines === totalLines;
 
     return (<ExpansionPanel className={className} elevation={0} expanded={expanded} id='OperationPreview' onChange={onClick}>
         <ExpansionPanelSummary className='Header' expandIcon={<ExpandIcon className='ExpandIcon' />}>
             <Typography className='Label' noWrap variant='body2'>{operation.label}</Typography>
 
-            <Chip className='LinesChip' color={isFinished ? 'secondary' : 'primary'} label={`${finishedLines} │ ${totalLines}`} size='small'
+            <Chip className='LinesChip' color={isFinished ? 'secondary' : 'primary'} label={`${finishedLines} ⋮ ${totalLines}`} size='small'
                   variant={isFinished ? 'outlined' : 'default'} />
         </ExpansionPanelSummary>
 
         <ExpansionPanelDetails className='Content'>
             <List className='List'>
-                {operation.operationLineList.map(
+                {operation.operationLines.map(
                         (line, index) => (<OperationLinePreview divider={totalLines - 1 !== index} key={index} operationLine={line} />))}
             </List>
         </ExpansionPanelDetails>

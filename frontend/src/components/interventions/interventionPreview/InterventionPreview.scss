@@ -3,6 +3,10 @@
 #InterventionPreview {
     min-width: 600px;
 
+    &.InterventionPreview_withoutShadow {
+        box-shadow: none;
+    }
+
     .Header {
         & > div {
             margin:  0;
@@ -37,6 +41,10 @@
             cursor:     inherit;
             margin:     0 12px;
             width:      90px;
+
+            &.Status_withPadding {
+                margin-left: 90px;
+            }
         }
     }
 

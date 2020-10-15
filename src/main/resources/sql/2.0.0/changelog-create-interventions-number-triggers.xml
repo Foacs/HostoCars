@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="liquibase" id="changelog-create-interventions-number-triggers">
+        <sql dbms="sqlite" endDelimiter="/">
+            CREATE TRIGGER newInterventionsSequenceTrigger
+            BEFORE INSERT ON interventions
+            WHEN (SELECT number FROM interventionsSequences WHERE year = CAST(strftime('%Y', 'now') AS INTEGER)) IS NULL
+            BEGIN INSERT INTO interventionsSequences (year, number) VALUES (CAST(strftime('%Y', 'now') AS INTEGER), 1);
+            END;/
+        </sql>
+
+        <sql dbms="sqlite" endDelimiter="/">
+            CREATE TRIGGER updateInterventionsSequenceTrigger
+            BEFORE INSERT ON interventions
+            WHEN (SELECT number FROM interventionsSequences WHERE year = CAST(strftime('%Y', 'now') AS INTEGER)) IS NOT NULL
+            BEGIN UPDATE interventionsSequences SET number = (SELECT number + 1 FROM interventionsSequences
+            WHERE year = CAST(strftime('%Y', 'now') AS INTEGER)) WHERE year = CAST(strftime('%Y', 'now') AS INTEGER);
+            END;/
+        </sql>
+
+        <sql dbms="sqlite" endDelimiter="/">
+            CREATE TRIGGER postInterventionInsertTrigger
+            AFTER INSERT ON interventions
+            BEGIN UPDATE interventions SET year = CAST(strftime('%Y', 'now') AS INTEGER),
+            number = (SELECT number FROM interventionsSequences WHERE year = CAST(strftime('%Y', 'now') AS INTEGER))
+            WHERE id = (SELECT MAX(id) FROM interventions);
+            END;/
+        </sql>
+
+        <comment>
+            Creating interventions number triggers
+        </comment>
+    </changeSet>
+</databaseChangeLog>
