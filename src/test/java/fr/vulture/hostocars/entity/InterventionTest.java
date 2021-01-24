@@ -6,16 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for the {@link Intervention} entity.
+ * Test class for the {@link Intervention} class.
  */
-@DisplayName("Intervention entity")
+@DisplayName("Intervention")
 class InterventionTest {
 
     /**
-     * Tests the {@link Intervention} entity.
+     * Tests the {@link Intervention} class.
      */
     @Test
-    @DisplayName("Testing the entity")
+    @DisplayName("Bean validation")
     final void testBean() {
         validateBean(Intervention.class);
     }

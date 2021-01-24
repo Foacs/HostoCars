@@ -6,16 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for the {@link Mail} POJO.
+ * Test class for the {@link Mail} class.
  */
-@DisplayName("Mail POJO")
+@DisplayName("Mail")
 class MailTest {
 
     /**
-     * Tests the {@link Mail} POJO.
+     * Tests the {@link Mail} class.
      */
     @Test
-    @DisplayName("Testing the POJO")
+    @DisplayName("Bean validation")
     final void testBean() {
         validateBean(Mail.class);
     }

@@ -16,16 +16,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ExceptionInterceptor {
 
     /**
-     * Resolves the intercepted exception by logging it and returning a 500 HTTP response with the exception as the body.
+     * Resolves the intercepted exception by logging it and returning a {@code 500} HTTP response with the exception as the body.
      *
      * @param exception
      *     The intercepted exception
      *
-     * @return a 500 HTTP response
+     * @return a {@code 500} HTTP response
      */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> resolve(final Exception exception) {
         log.error("An error occurred", exception);
+
         final String className = exception.getClass().getSimpleName();
         final String message = exception.getLocalizedMessage();
         return ResponseEntity.status(INTERNAL_SERVER_ERROR).body(Objects.isNull(message) ? className : className + ": " + message);
