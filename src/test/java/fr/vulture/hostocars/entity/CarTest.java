@@ -6,16 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test class for the {@link Car} entity.
+ * Test class for the {@link Car} class.
  */
-@DisplayName("Car entity")
+@DisplayName("Car")
 class CarTest {
 
     /**
-     * Tests the {@link Car} entity.
+     * Tests the {@link Car} class.
      */
     @Test
-    @DisplayName("Testing the entity")
+    @DisplayName("Bean validation")
     final void testBean() {
         validateBean(Car.class);
     }

@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Interceptors for methods annotated with the {@link Loggable} annotation.
+ * Interceptor for methods annotated with the {@link Loggable} annotation.
  */
 @Slf4j
 @Aspect

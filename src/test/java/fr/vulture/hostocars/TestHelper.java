@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
- * Helper class for testing.
+ * Helper class for unit tests.
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestHelper {
