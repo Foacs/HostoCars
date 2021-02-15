@@ -35,7 +35,7 @@ class LoggableMethodInterceptorTest {
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
-        // Prepare the intermediary results
+        // Prepares the intermediary results
         final MethodSignature methodSignature = mock(MethodSignature.class);
         final Method method = mock(Method.class);
         final Loggable loggable = mock(Loggable.class);
@@ -78,7 +78,7 @@ class LoggableMethodInterceptorTest {
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
-        // Prepare the intermediary results
+        // Prepares the intermediary results
         final MethodSignature methodSignature = mock(MethodSignature.class);
         final Method method = mock(Method.class);
         final Loggable loggable = mock(Loggable.class);
@@ -121,7 +121,7 @@ class LoggableMethodInterceptorTest {
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
-        // Prepare the intermediary results
+        // Prepares the intermediary results
         final MethodSignature methodSignature = mock(MethodSignature.class);
         final Method method = mock(Method.class);
         final Loggable loggable = mock(Loggable.class);
@@ -160,7 +160,7 @@ class LoggableMethodInterceptorTest {
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
-        // Prepare the intermediary results
+        // Prepares the intermediary results
         final MethodSignature methodSignature = mock(MethodSignature.class);
         final Method method = mock(Method.class);
         final Loggable loggable = mock(Loggable.class);
@@ -203,7 +203,7 @@ class LoggableMethodInterceptorTest {
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
-        // Prepare the intermediary results
+        // Prepares the intermediary results
         final MethodSignature methodSignature = mock(MethodSignature.class);
         final Method method = mock(Method.class);
         final Loggable loggable = mock(Loggable.class);
@@ -246,7 +246,7 @@ class LoggableMethodInterceptorTest {
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
-        // Prepare the intermediary results
+        // Prepares the intermediary results
         final MethodSignature methodSignature = mock(MethodSignature.class);
         final Method method = mock(Method.class);
         final Loggable loggable = mock(Loggable.class);

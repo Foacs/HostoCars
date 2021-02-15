@@ -29,26 +29,26 @@ import lombok.NonNull;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestHelper {
 
-    private static Validator beanValidator;
+    private static Validator pojoValidator;
 
     /**
-     * Validates a bean class.
+     * Validates a POJO class.
      *
-     * @param beanClass
-     *     The bean class to validate
+     * @param pojoClass
+     *     The POJO class to validate
      */
-    public static void validateBean(@NonNull final Class beanClass) {
-        getBeanValidator().validate(PojoClassFactory.getPojoClass(beanClass));
+    public static void validatePojo(@NonNull final Class pojoClass) {
+        getPojoValidator().validate(PojoClassFactory.getPojoClass(pojoClass));
     }
 
     /**
-     * Returns the static bean validator after initializing it if necessary.
+     * Returns the static POJO validator after initializing it if necessary.
      *
-     * @return a bean validator
+     * @return a POJO validator
      */
-    private static Validator getBeanValidator() {
-        if (isNull(beanValidator)) {
-            beanValidator = create().with(new DefaultValuesNullTester())
+    private static Validator getPojoValidator() {
+        if (isNull(pojoValidator)) {
+            pojoValidator = create().with(new DefaultValuesNullTester())
                 .with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())
                 .with(new GetterTester())
@@ -65,7 +65,7 @@ public final class TestHelper {
                 .build();
         }
 
-        return beanValidator;
+        return pojoValidator;
     }
 
 }

@@ -1,6 +1,6 @@
 package fr.vulture.hostocars.entity;
 
-import static fr.vulture.hostocars.TestHelper.validateBean;
+import static fr.vulture.hostocars.TestHelper.validatePojo;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,9 +15,9 @@ class InterventionTest {
      * Tests the {@link Intervention} class.
      */
     @Test
-    @DisplayName("Bean validation")
-    final void testBean() {
-        validateBean(Intervention.class);
+    @DisplayName("POJO validation")
+    final void testPojo() {
+        validatePojo(Intervention.class);
     }
 
 }
