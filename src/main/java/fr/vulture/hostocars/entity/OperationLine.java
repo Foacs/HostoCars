@@ -13,8 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.EqualsAndHashCode.Include;
 
 /**
  * Entity for the {@code operationLines} table.
@@ -22,13 +20,11 @@ import lombok.EqualsAndHashCode.Include;
 @Entity
 @Data
 @Table(name = "operationLines")
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 class OperationLine implements Serializable {
 
     private static final long serialVersionUID = 7694570052168923210L;
 
     @Id
-    @Include
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
