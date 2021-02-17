@@ -4,7 +4,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import java.io.Serializable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 
 /**
  * Entity for the {@code operationLines} table.
@@ -21,11 +22,13 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "operationLines")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 class OperationLine implements Serializable {
 
     private static final long serialVersionUID = 7694570052168923210L;
 
     @Id
+    @Include
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
@@ -39,9 +42,9 @@ class OperationLine implements Serializable {
     @Column(name = "done", nullable = false, columnDefinition = "INTEGER")
     private Boolean done;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "operationId", referencedColumnName = "id")
     @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "operationId", referencedColumnName = "id")
     private Operation operation;
 
 }

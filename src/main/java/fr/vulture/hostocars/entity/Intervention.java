@@ -5,7 +5,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 
 /**
  * Entity for the {@code interventions} table.
@@ -24,11 +26,13 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "interventions")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 class Intervention implements Serializable {
 
     private static final long serialVersionUID = -9130046034547531677L;
 
     @Id
+    @Include
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
@@ -63,13 +67,13 @@ class Intervention implements Serializable {
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "carId", referencedColumnName = "id")
     @JsonBackReference
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "carId", referencedColumnName = "id")
     private Car car;
 
-    @OneToMany(mappedBy = "intervention", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<Operation> operations;
+    @OneToMany(mappedBy = "intervention", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Operation> operations;
 
 }

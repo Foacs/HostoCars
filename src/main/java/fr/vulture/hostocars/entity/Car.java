@@ -4,7 +4,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Include;
 import lombok.ToString.Exclude;
 
 /**
@@ -22,11 +24,13 @@ import lombok.ToString.Exclude;
 @Entity
 @Data
 @Table(name = "cars")
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Car implements Serializable {
 
     private static final long serialVersionUID = -8531072274006990095L;
 
     @Id
+    @Include
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
@@ -58,16 +62,16 @@ public class Car implements Serializable {
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
-    @Column(name = "certificate", columnDefinition = "BLOB")
     @Exclude
+    @Column(name = "certificate", columnDefinition = "BLOB")
     private byte[] certificate;
 
-    @Column(name = "picture", columnDefinition = "BLOB")
     @Exclude
+    @Column(name = "picture", columnDefinition = "BLOB")
     private byte[] picture;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
-    private List<Intervention> interventions;
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+    private Set<Intervention> interventions;
 
 }
