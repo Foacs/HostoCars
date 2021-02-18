@@ -1,5 +1,6 @@
 export { default as AppBar } from './app/appBar/AppBar';
 export { default as Application } from './app/application/Application';
+export { default as BottomBar } from './app/bottomBar/BottomBar';
 export { default as Breadcrumbs } from './app/breadcrumbs/Breadcrumbs';
 export { default as CarCard } from './cars/carCard/CarCard';
 export { default as CarForm } from './cars/carForm/CarForm';

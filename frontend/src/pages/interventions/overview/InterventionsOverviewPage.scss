@@ -11,9 +11,15 @@
             min-height: 52px;
         }
 
-        .TableRowValue {
-            align-self: center;
-            width:      50px;
+        .TableRow {
+            &:last-child > * {
+                border-bottom: none;
+            }
+
+            .TableRowValue {
+                align-self: center;
+                width:      50px;
+            }
         }
     }
 

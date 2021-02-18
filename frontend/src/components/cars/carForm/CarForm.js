@@ -8,6 +8,7 @@ import {
 import { CancelRounded as CancelIcon, FolderOpenRounded as BrowseIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 import { DatePicker } from '@material-ui/pickers';
 
+import { BottomBar } from 'components';
 import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, extractFileNameFromUrl, formatDateLabel, loadFileAsByteArray } from 'resources';
 
 import './CarForm.scss';
@@ -196,11 +197,14 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 setEngineCode(e.target.value);
                 break;
             case 'releaseDate':
-                setReleaseDate(`${e.getFullYear()}-${(e.getMonth() + 1)
-                        .toLocaleString('fr', {
-                            minimumIntegerDigits: 2,
-                            useGrouping: false
-                        })}`);
+                if (null === e) {
+                    setReleaseDate(e);
+                } else {
+                    setReleaseDate(`${e.getFullYear()}-${(e.getMonth() + 1).toLocaleString('fr', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false
+                    })}`);
+                }
                 break;
             case 'certificate':
                 const certificateDocument = document.getElementById('CertificateInput');
@@ -455,6 +459,8 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 {validateButtonLabel}
             </Button>
         </DialogActions>
+
+        <BottomBar />
     </Dialog>);
 }
 

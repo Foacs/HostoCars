@@ -36,7 +36,7 @@ function InterventionPreview({ className, expanded, intervention, onClick }) {
     const areOperationsFinished = finishedOperations === totalOperations;
 
     const gaugeMaxValue = intervention.amount ? intervention.amount : intervention.paidAmount ? intervention.paidAmount : 1;
-    const gaugeValue = intervention.paidAmount ? intervention.paidAmount : 0;
+    const gaugeValue = intervention.paidAmount ? intervention.paidAmount < gaugeMaxValue ? intervention.paidAmount : gaugeMaxValue : 0;
 
     const currentStatusIndex = INTERVENTION_STATUS_STEPS.indexOf(intervention.status);
     const isInterventionFinished = currentStatusIndex === (INTERVENTION_STATUS_STEPS.length - 1);

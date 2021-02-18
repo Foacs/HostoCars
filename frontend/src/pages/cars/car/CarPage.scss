@@ -33,6 +33,7 @@
     }
 
     .InfoPanel {
+        border-radius: 4px;
         margin-bottom: 32px;
 
         .InfoPanelHeader {
@@ -139,6 +140,8 @@
     }
 
     .TableRow {
+        width: 100%;
+
         &:last-child > * {
             border-bottom: none;
         }

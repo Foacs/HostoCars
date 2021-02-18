@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 
+import { BottomBar } from 'components';
 import { ESCAPE_KEY_CODE } from 'resources';
 
 import './DeleteCarModal.scss';
@@ -53,6 +54,8 @@ function DeleteCarModal({ className, onClose, onValidate, open }) {
                 Oui
             </Button>
         </DialogActions>
+
+        <BottomBar />
     </Dialog>;
 }
 
