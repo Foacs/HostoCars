@@ -9,8 +9,8 @@ import {
 import { RefreshRounded as RefreshIcon } from '@material-ui/icons';
 
 import { getCarsAction, updateCurrentPageAction, updateMenuItemsAction, updateSelectedMenuIndexAction } from 'actions';
-import { ErrorPanel, InterventionPreview, LoadingPanel, Page } from 'components';
-import { INTERVENTION_STATUS_STEPS, InterventionPropType } from '../../../resources';
+import { BottomBar, ErrorPanel, InterventionPreview, LoadingPanel, Page } from 'components';
+import { INTERVENTION_STATUS_STEPS, InterventionPropType } from 'resources';
 
 import './InterventionsOverviewPage.scss';
 
@@ -149,6 +149,8 @@ class InterventionsOverviewPage extends PureComponent {
                                     </TableBody>
                                 </Table>
                             </ExpansionPanelDetails>
+
+                            <BottomBar />
                         </ExpansionPanel>
                     </Box>
                 </Grid>

@@ -16,10 +16,10 @@ import {
 import {
     deleteCarAction, getCarsAction, updateCarAction, updateCurrentPageAction, updateMenuItemsAction, updateSelectedMenuIndexAction
 } from 'actions';
-import { ErrorPanel, InterventionPreview, LoadingPanel, Page } from 'components';
+import { BottomBar, ErrorPanel, InterventionPreview, LoadingPanel, Page } from 'components';
 import { CertificateModal, DeleteCarModal, UpdateCarModal, UpdateInterventionModal } from 'modals';
 import { NotFoundPage } from 'pages';
-import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
+import { CarPropType, compareInterventions, DefaultCarPicture, formatDateLabel } from 'resources';
 
 import './CarPage.scss';
 
@@ -106,7 +106,11 @@ class CarPage extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { getCars, updateMenuItems, updateSelectedMenuIndex } = this.props;
+        const {
+            getCars,
+            updateMenuItems,
+            updateSelectedMenuIndex
+        } = this.props;
 
         updateMenuItems([ {
             icon: <DeleteIcon />,
@@ -166,7 +170,10 @@ class CarPage extends PureComponent {
      * Handles the 'Update interventions' modal enter action.
      */
     onEnterUpdateInterventionsModal() {
-        const { cars, match: { params: { id } } } = this.props;
+        const {
+            cars,
+            match: { params: { id } }
+        } = this.props;
 
         this.setState({
             updateInterventionsModalCar: JSON.parse(JSON.stringify(cars.find(car => Number(id) === car.id)))
@@ -224,7 +231,10 @@ class CarPage extends PureComponent {
      * Handles the 'Delete car' modal validate action.
      */
     async onValidateDeleteCarModal() {
-        const { deleteCar, match: { params: { id } } } = this.props;
+        const {
+            deleteCar,
+            match: { params: { id } }
+        } = this.props;
 
         await deleteCar(Number(id));
         this.setState({ redirect: true });
@@ -252,7 +262,13 @@ class CarPage extends PureComponent {
      * Updates the breadcrumbs.
      */
     updateBreadcrumbs() {
-        const { cars, isInError, isLoading, match: { params: { id } }, updateCurrentPage } = this.props;
+        const {
+            cars,
+            isInError,
+            isLoading,
+            match: { params: { id } },
+            updateCurrentPage
+        } = this.props;
 
         let content;
         if (isInError) {
@@ -281,10 +297,20 @@ class CarPage extends PureComponent {
     }
 
     render() {
-        const { cars, isInError, isLoading, match: { params: { id } } } = this.props;
         const {
-            expandedInterventionIndex, isCertificateModalOpen, isDeleteCarModalOpen, isUpdateCarModalOpen, isUpdateInterventionsModalOpen,
-            redirect, updateInterventionsModalCar
+            cars,
+            isInError,
+            isLoading,
+            match: { params: { id } }
+        } = this.props;
+        const {
+            expandedInterventionIndex,
+            isCertificateModalOpen,
+            isDeleteCarModalOpen,
+            isUpdateCarModalOpen,
+            isUpdateInterventionsModalOpen,
+            redirect,
+            updateInterventionsModalCar
         } = this.state;
 
         let content;
@@ -309,7 +335,7 @@ class CarPage extends PureComponent {
                     <DisplayIcon />
                 </IconButton>;
 
-                const commentsSection = (<Grid className='CommentsSection' container>
+                const commentsSection = (<Grid className='CommentsSection' container direction='column'>
                     <Grid item xs={1}>
                         <Typography className='CommentsSubtitle' variant='subtitle1'>Commentaires</Typography>
                     </Grid>
@@ -328,94 +354,82 @@ class CarPage extends PureComponent {
                 const carToUpdate = updateInterventionsModalCar ? updateInterventionsModalCar : JSON.parse(JSON.stringify(car));
 
                 content = (<Fragment>
-                    <ExpansionPanel className='InfoPanel' expanded>
-                        <ExpansionPanelSummary className='InfoPanelHeader'>
-                            <Typography className='InfoPanelTitle' color='primary' variant='h6'>Informations</Typography>
-
-                            <IconButton className='UpdateCarButton' color='primary' onClick={this.onOpenUpdateCarModal}>
-                                <UpdateIcon />
-                            </IconButton>
-                        </ExpansionPanelSummary>
-
-                        <ExpansionPanelDetails>
-                            <Grid container direction='column'>
-                                <Grid container item spacing={4}>
-                                    <Grid item xs={4}>
-                                        <Table>
-                                            <TableBody>
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Propriétaire</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.owner}</TableCell>
-                                                </TableRow>
-
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Marque</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.brand}</TableCell>
-                                                </TableRow>
-
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Code moteur</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.engineCode}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <Table>
-                                            <TableBody>
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Numéro d'immatriculation</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.registration}</TableCell>
-                                                </TableRow>
-
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Modèle</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.model}</TableCell>
-                                                </TableRow>
-
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Date de mise en circulation</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{formatDateLabel(car.releaseDate)}</TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </Grid>
-
-                                    <Grid item xs={4}>
-                                        <Table>
-                                            <TableBody>
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>VIN</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.serialNumber}</TableCell>
-                                                </TableRow>
-
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Motorisation</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.motorization}</TableCell>
-                                                </TableRow>
-
-                                                <TableRow className='TableRow' hover>
-                                                    <TableCell className='TableRowLabel'>Carte grise</TableCell>
-                                                    <TableCell align='right' className='CertificateCell'>
-                                                        {car.certificate && certificateButton}
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </Grid>
-                                </Grid>
-
-                                {car.comments && commentsSection}
-                            </Grid>
-                        </ExpansionPanelDetails>
-                    </ExpansionPanel>
-
                     <Grid container spacing={4}>
                         <Grid item xs={4}>
                             <Paper className='PicturePanel'>
                                 {picture}
+
+                                <BottomBar />
                             </Paper>
+
+                            <ExpansionPanel className='InfoPanel' expanded>
+                                <ExpansionPanelSummary className='InfoPanelHeader'>
+                                    <Typography className='InfoPanelTitle' color='primary' variant='h6'>Informations</Typography>
+
+                                    <IconButton className='UpdateCarButton' color='primary' onClick={this.onOpenUpdateCarModal}>
+                                        <UpdateIcon />
+                                    </IconButton>
+                                </ExpansionPanelSummary>
+
+                                <ExpansionPanelDetails>
+                                    <Grid container direction='column'>
+                                        <Table>
+                                            <TableBody>
+                                                {car.owner && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Propriétaire</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.owner}</TableCell>
+                                                </TableRow>}
+
+                                                {car.brand && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Marque</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.brand}</TableCell>
+                                                </TableRow>}
+
+                                                {car.engineCode && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Code moteur</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.engineCode}</TableCell>
+                                                </TableRow>}
+
+                                                {car.registration && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Immatriculation</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.registration}</TableCell>
+                                                </TableRow>}
+
+                                                {car.model && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Modèle</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.model}</TableCell>
+                                                </TableRow>}
+
+                                                {car.releaseDate && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Mise en circulation</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{formatDateLabel(car.releaseDate)}</TableCell>
+                                                </TableRow>}
+
+                                                {car.serialNumber && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>VIN</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.serialNumber}</TableCell>
+                                                </TableRow>}
+
+                                                {car.motorization && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Motorisation</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{car.motorization}</TableCell>
+                                                </TableRow>}
+
+                                                {car.certificate && <TableRow className='TableRow' hover>
+                                                    <TableCell className='TableRowLabel'>Carte grise</TableCell>
+                                                    <TableCell align='right' className='CertificateCell'>
+                                                        {car.certificate && certificateButton}
+                                                    </TableCell>
+                                                </TableRow>}
+                                            </TableBody>
+                                        </Table>
+
+                                        {car.comments && commentsSection}
+                                    </Grid>
+                                </ExpansionPanelDetails>
+
+                                <BottomBar />
+                            </ExpansionPanel>
                         </Grid>
 
                         <Grid item xs={8}>
@@ -430,11 +444,15 @@ class CarPage extends PureComponent {
 
                                 <ExpansionPanelDetails>
                                     <Grid container>
-                                        {car.interventions.map((intervention, index) =>
-                                                <InterventionPreview intervention={intervention} expanded={expandedInterventionIndex === index}
-                                                                     key={index} onClick={() => this.onInterventionPreviewClick(index)} />)}
+                                        {car.interventions.sort(compareInterventions)
+                                                .map((intervention, index) =>
+                                                        <InterventionPreview intervention={intervention}
+                                                                             expanded={expandedInterventionIndex === index}
+                                                                             key={index} onClick={() => this.onInterventionPreviewClick(index)} />)}
                                     </Grid>
                                 </ExpansionPanelDetails>
+
+                                <BottomBar />
                             </ExpansionPanel>
                         </Grid>
                     </Grid>

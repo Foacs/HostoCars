@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Grid, IconButton } from '@material-ui/core';
 import { AddRounded as CreateIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 
-import { InterventionForm } from 'components';
-import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE } from 'resources';
+import { BottomBar, InterventionForm } from 'components';
+import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, INTERVENTION_STATUS_STEPS } from 'resources';
 
 import './UpdateInterventionsModal.scss';
 
@@ -38,7 +38,16 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      * Handles the creation of an intervention.
      */
     const onCreateIntervention = () => {
-        onUpdateCar({ interventions: [ ...car.interventions, { operations: [] } ], ...car });
+        onUpdateCar({
+            ...car,
+            interventions: [
+                ...car.interventions,
+                {
+                    operations: [],
+                    status: INTERVENTION_STATUS_STEPS[0]
+                }
+            ]
+        });
     };
 
     /**
@@ -46,11 +55,12 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      */
     const onCreateOperation = x => {
         onUpdateCar({
+            ...car,
             interventions:
                     car.interventions.map((intervention, i) => i === x ? {
-                        operations: [ { operationLines: [] }, ...intervention.operations ], ...intervention
+                        ...intervention,
+                        operations: [ ...intervention.operations, { operationLines: [] } ]
                     } : intervention)
-            , ...car
         });
     };
 
@@ -59,15 +69,18 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      */
     const onCreateOperationLine = (x, y) => {
         onUpdateCar({
+            ...car,
             interventions: [
                 car.interventions.map((intervention, i) => i === x ? {
+                    ...intervention,
                     operations: [
                         intervention.operations.map((operation, j) => j === y ? {
-                            operationLines: [ ...operation.operationLines, { done: false } ], ...operation
+                            ...operation,
+                            operationLines: [ ...operation.operationLines, { done: false } ]
                         } : operation)
-                    ], ...intervention
+                    ]
                 } : intervention)
-            ], ...car
+            ]
         });
     };
 
@@ -78,7 +91,10 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      *     The index of the intervention to remove
      */
     const onDeleteIntervention = x => {
-        onUpdateCar({ interventions: car.interventions.splice(x, 1), ...car });
+        onUpdateCar({
+            ...car,
+            interventions: car.interventions.filter((intervention, i) => i !== x)
+        });
     };
 
     /**
@@ -91,11 +107,13 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      */
     const onDeleteOperation = (x, y) => {
         onUpdateCar({
+            ...car,
             interventions: [
                 car.interventions.map((intervention, i) => i === x ? {
-                    operations: intervention.operations.splice(y, 1), ...intervention
+                    ...intervention,
+                    operations: intervention.operations.filter((operation, j) => j !== y)
                 } : intervention)
-            ], ...car
+            ]
         });
     };
 
@@ -111,15 +129,17 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      */
     const onDeleteOperationLine = (x, y, z) => {
         onUpdateCar({
+            ...car,
             interventions: [
                 car.interventions.map((intervention, i) => i === x ? {
                     operations: [
                         intervention.operations.map((operation, j) => j === y ? {
-                            operationLines: operation.operationLines.splice(z, 1), ...operation
+                            ...operation,
+                            operationLines: operation.operationLines.filter((operationLine, k) => k !== z)
                         } : operation)
                     ]
                 } : intervention)
-            ], ...car
+            ]
         });
     };
 
@@ -157,6 +177,7 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
      * Handles the validation action.
      */
     const onValidateAction = () => {
+        onValidate(car);
         onClose();
     };
 
@@ -192,10 +213,7 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
             <Grid alignItems='flex-end' container direction='row' justify='space-between'>
                 <Grid item>
                     <Fab className='CreateInterventionButton' color='primary'
-                         onClick={() => onUpdateCar({
-                             ...car,
-                             interventions: [ ...car.interventions, { operations: [] } ]
-                         })} size='small'
+                         onClick={onCreateIntervention} size='small'
                          variant='round'>
                         <CreateIcon className='CreateInterventionIcon' />
                     </Fab>
@@ -206,12 +224,14 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
                         Annuler
                     </Button>
 
-                    <Button autoFocus className='ValidateButton' color='secondary' onClick={onCreateIntervention}>
+                    <Button autoFocus className='ValidateButton' color='secondary' onClick={onValidateAction}>
                         Valider
                     </Button>
                 </Grid>
             </Grid>
         </DialogActions>
+
+        <BottomBar />
     </Dialog>);
 }
 

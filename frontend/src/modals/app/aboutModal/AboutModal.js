@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@material-ui/core';
 
+import { BottomBar } from 'components';
 import { ENTER_KEY_CODE, ESCAPE_KEY_CODE, Logo } from 'resources';
 
 import './AboutModal.scss';
@@ -55,6 +56,8 @@ function AboutModal({ className, onClose, open }) {
                 Fermer
             </Button>
         </DialogActions>
+
+        <BottomBar />
     </Dialog>;
 }
 

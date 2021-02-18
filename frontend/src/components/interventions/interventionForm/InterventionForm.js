@@ -61,7 +61,7 @@ function InterventionForm({ className, expanded, intervention, onClick, onCreate
     const areOperationsFinished = finishedOperations === totalOperations;
 
     const gaugeMaxValue = amount ? amount : paidAmount ? paidAmount : 1;
-    const gaugeValue = paidAmount ? paidAmount : 0;
+    const gaugeValue = paidAmount ? paidAmount < gaugeMaxValue ? paidAmount : gaugeMaxValue : 0;
 
     const currentStatusIndex = INTERVENTION_STATUS_STEPS.indexOf(status);
     const isInterventionFinished = currentStatusIndex === (INTERVENTION_STATUS_STEPS.length - 1);

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import { Box, Card, CardActionArea, Divider, Typography } from '@material-ui/core';
 
+import { BottomBar } from 'components';
 import { CarPropType, DefaultCarPicture } from 'resources';
 
 import './CarCard.scss';
@@ -45,6 +46,8 @@ function CarCard({ car, className }) {
                 <Typography align='center' noWrap variant='subtitle2' className={modelSubtitleClassName}>{modelSubtitleLabel}</Typography>
             </Box>
         </CardActionArea>
+
+        <BottomBar />
     </Card>);
 }
 

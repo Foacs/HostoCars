@@ -90,3 +90,32 @@ export const loadFileAsByteArray = (file) => {
 
     return result;
 };
+
+/**
+ * Compares the given interventions.
+ * <br/>
+ * <br/>
+ * The comparison is performed on the interventions' year and number fields.
+ *
+ * @param intervention1
+ *     The first intervention
+ * @param intervention2
+ *     The second intervention
+ *
+ * @returns {number} the result of the comparison
+ */
+export const compareInterventions = (intervention1, intervention2) => {
+    if (intervention1.year > intervention2.year) {
+        return 1;
+    } else if (intervention1.year < intervention2.year) {
+        return -1;
+    } else {
+        if (intervention1.number > intervention2.number) {
+            return 1;
+        } else if (intervention1.number < intervention2.number) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
+};
