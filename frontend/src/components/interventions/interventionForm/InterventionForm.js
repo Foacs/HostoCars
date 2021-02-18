@@ -37,7 +37,17 @@ import './InterventionForm.scss';
  *
  * @constructor
  */
-function InterventionForm({ className, expanded, intervention, onClick, onCreateOperation, onCreateOperationLine, onDeleteIntervention, onDeleteOperation, onDeleteOperationLine }) {
+function InterventionForm({
+    className,
+    expanded,
+    intervention,
+    onClick,
+    onCreateOperation,
+    onCreateOperationLine,
+    onDeleteIntervention,
+    onDeleteOperation,
+    onDeleteOperationLine
+}) {
     // Initializes the help flag
     const [ expandedOperationIndex, setExpandedOperationIndex ] = useState(-1);
 
@@ -51,8 +61,38 @@ function InterventionForm({ className, expanded, intervention, onClick, onCreate
     const [ estimatedTime, setEstimatedTime ] = useState(intervention.estimatedTime);
     const [ comments, setComments ] = useState(intervention.comments);
 
-    // Initializes the constraints
-    const [ descriptionRequired, setDescriptionRequired ] = React.useState(false);
+    // Forces the initialization
+    if (description !== intervention.description) {
+        setDescription(intervention.description);
+    }
+
+    if (status !== intervention.status) {
+        setStatus(intervention.status);
+    }
+
+    if (amount !== intervention.amount) {
+        setAmount(intervention.amount);
+    }
+
+    if (paidAmount !== intervention.paidAmount) {
+        setPaidAmount(intervention.paidAmount);
+    }
+
+    if (mileage !== intervention.mileage) {
+        setMileage(intervention.mileage);
+    }
+
+    if (realTime !== intervention.realTime) {
+        setRealTime(intervention.realTime);
+    }
+
+    if (estimatedTime !== intervention.estimatedTime) {
+        setEstimatedTime(intervention.estimatedTime);
+    }
+
+    if (comments !== intervention.comments) {
+        setComments(intervention.comments);
+    }
 
     const interventionNumber = undefined !== intervention.year && undefined !== intervention.number
             ? `${intervention.year}-${addLeadingZeros(intervention.number, 2)}` : '';
@@ -79,7 +119,6 @@ function InterventionForm({ className, expanded, intervention, onClick, onCreate
         switch (field) {
             case 'description':
                 setDescription(e.target.value);
-                setDescriptionRequired(false);
                 intervention.description = e.target.value;
                 break;
             case 'status':
