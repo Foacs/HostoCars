@@ -15,7 +15,6 @@ import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
 import com.openpojo.validation.rule.impl.SerializableMustHaveSerialVersionUIDRule;
 import com.openpojo.validation.rule.impl.SetterMustExistRule;
 import com.openpojo.validation.rule.impl.TestClassMustBeProperlyNamedRule;
-import com.openpojo.validation.test.impl.DefaultValuesNullTester;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SerializableTester;
 import com.openpojo.validation.test.impl.SetterTester;
@@ -48,8 +47,7 @@ public final class TestHelper {
      */
     private static Validator getPojoValidator() {
         if (isNull(pojoValidator)) {
-            pojoValidator = create().with(new DefaultValuesNullTester())
-                .with(new EqualsAndHashCodeMatchRule())
+            pojoValidator = create().with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())
                 .with(new GetterTester())
                 .with(new NoFieldShadowingRule())

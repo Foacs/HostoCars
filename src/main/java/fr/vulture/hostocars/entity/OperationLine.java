@@ -1,5 +1,7 @@
 package fr.vulture.hostocars.entity;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -13,12 +15,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.ToString;
+import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code operationLines} table.
  */
-@Entity
 @Data
+@Entity
+@ToString
 @Table(name = "operationLines")
 class OperationLine implements Serializable {
 
@@ -38,9 +43,35 @@ class OperationLine implements Serializable {
     @Column(name = "done", nullable = false, columnDefinition = "INTEGER")
     private Boolean done;
 
+    @Exclude
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operationId", referencedColumnName = "id")
     private Operation operation;
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        if (isNull(obj) || this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final OperationLine that = (OperationLine) obj;
+        return nonNull(this.id) && this.id.equals(that.id);
+    }
 
 }
