@@ -7,7 +7,6 @@
 
     & > .Header {
         background-color: transparent;
-        padding-bottom:   12px;
 
         & > div {
             margin:  0;
@@ -73,10 +72,22 @@
         .OperationList {
             padding: 0 12px;
 
-            .AddOperationListItem {
-                box-shadow: none;
-                height:     80px;
-                margin-top: 0;
+            .AddOperationButton {
+                margin: 16px 0 16px 18px;
+            }
+
+            #OperationForm:last-of-type {
+                &::after {
+                    background-color: rgba(0, 0, 0, 0.12);
+                    bottom:           -1px;
+                    content:          '';
+                    height:           1px;
+                    left:             0;
+                    opacity:          1;
+                    position:         absolute;
+                    right:            0;
+                    transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+                }
             }
         }
 

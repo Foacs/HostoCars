@@ -269,13 +269,9 @@ function InterventionForm({
                                                operation={operation} />)
                         )}
 
-                        <ExpansionPanel className='AddOperationListItem' expanded={true}>
-                            <ExpansionPanelSummary>
-                                <IconButton className='AddOperationButton' color='primary' onClick={onCreateOperation}>
-                                    <CreateIcon />
-                                </IconButton>
-                            </ExpansionPanelSummary>
-                        </ExpansionPanel>
+                        <IconButton className='AddOperationButton' color='primary' onClick={onCreateOperation}>
+                            <CreateIcon />
+                        </IconButton>
                     </Box>
                 </Grid>
             </Grid>

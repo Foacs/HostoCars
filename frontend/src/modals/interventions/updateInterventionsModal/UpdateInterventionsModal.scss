@@ -9,7 +9,33 @@
         display: none;
     }
 
-    .Title {
+    .UpdateInterventionsModalActions {
+        padding-top: 0;
+    }
+
+    .UpdateInterventionsModalContent {
+        padding-bottom: 0;
+
+        .AddInterventionButton {
+            margin: 16px 0 0 18px;
+        }
+
+        #InterventionForm:last-of-type {
+            &::after {
+                background-color: rgba(0, 0, 0, 0.12);
+                bottom:           -1px;
+                content:          '';
+                height:           1px;
+                left:             0;
+                opacity:          1;
+                position:         absolute;
+                right:            0;
+                transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            }
+        }
+    }
+
+    .UpdateInterventionsModalTitle {
         color:     $primary-color;
         min-width: 600px;
 

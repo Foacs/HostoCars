@@ -32,7 +32,7 @@ const formTitle = 'Édition d\'une voiture';
 function UpdateCarModal({ car, className, onClose, onValidate, open, registrations, serialNumbers }) {
     return (<CarForm car={car} onClose={onClose} onValidate={onValidate} open={open} registrations={registrations}
                      serialNumbers={serialNumbers}
-                     title={formTitle} validateButtonLabel='Modifier' />);
+                     title={formTitle} validateButtonLabel='Appliquer' />);
 }
 
 UpdateCarModal.propTypes = {
