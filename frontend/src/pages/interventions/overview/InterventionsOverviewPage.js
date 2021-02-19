@@ -53,7 +53,12 @@ class InterventionsOverviewPage extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { getCars, updateCurrentPage, updateMenuItems, updateSelectedMenuIndex } = this.props;
+        const {
+            getCars,
+            updateCurrentPage,
+            updateMenuItems,
+            updateSelectedMenuIndex
+        } = this.props;
 
         updateCurrentPage('Interventions', []);
         updateMenuItems([ {
@@ -80,7 +85,11 @@ class InterventionsOverviewPage extends PureComponent {
      * Render method.
      */
     render() {
-        const { interventions, isInError, isLoading } = this.props;
+        const {
+            interventions,
+            isInError,
+            isLoading
+        } = this.props;
         const { expandedInterventionIndex } = this.state;
 
         let content;
@@ -104,6 +113,14 @@ class InterventionsOverviewPage extends PureComponent {
             const operationLinesNumber = operationLines.length;
             const finishedOperationLinesNumber = operationLines.filter(operationLine => !operationLine.done).length;
             const areAllOperationLinesFinished = operationLinesNumber === finishedOperationLinesNumber;
+
+            const interventionsPanelContent = (0 === interventions.length
+                    ? <Typography align='center' className='NoInterventionsLabel' variant='body1'>Aucune intervention à afficher</Typography>
+                    : <Grid container>
+                        {interventions.map((intervention, index) =>
+                                <InterventionPreview intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
+                                                     onClick={() => this.onInterventionPreviewClick(index)} />)}
+                    </Grid>);
 
             // If the interventions and the cars have been loaded, displays the page normal content
             content = (<Grid container spacing={4}>
@@ -156,9 +173,17 @@ class InterventionsOverviewPage extends PureComponent {
                 </Grid>
 
                 <Grid item xs={8}>
-                    {interventions.map((intervention, index) =>
-                            <InterventionPreview intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
-                                                 onClick={() => this.onInterventionPreviewClick(index)} />)}
+                    <ExpansionPanel className='InterventionsPanel' expanded>
+                        <ExpansionPanelSummary className='InterventionsPanelHeader'>
+                            <Typography className='InterventionsPanelTitle' color='primary' variant='h6'>Interventions</Typography>
+                        </ExpansionPanelSummary>
+
+                        <ExpansionPanelDetails className='InterventionsPanelContent'>
+                            {interventionsPanelContent}
+                        </ExpansionPanelDetails>
+
+                        <BottomBar />
+                    </ExpansionPanel>
                 </Grid>
             </Grid>);
         }

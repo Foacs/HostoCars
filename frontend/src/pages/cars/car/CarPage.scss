@@ -66,6 +66,13 @@
     }
 
     .InterventionsPanel {
+        .InterventionsPanelContent {
+            .NoInterventionsLabel {
+                margin-bottom: 12px;
+                width:         100%;
+            }
+        }
+
         .InterventionsPanelHeader {
             cursor:     default;
             min-height: 52px;

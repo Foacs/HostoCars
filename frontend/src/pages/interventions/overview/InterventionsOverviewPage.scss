@@ -3,6 +3,30 @@
         left: calc(50% + 128px);
     }
 
+    .InterventionsPanel {
+        .InterventionsPanelContent {
+            #InterventionPreview {
+                box-shadow: none;
+            }
+
+            .NoInterventionsLabel {
+                margin-bottom: 12px;
+                width:         100%;
+            }
+        }
+
+        .InterventionsPanelHeader {
+            cursor:     default;
+            min-height: 52px;
+
+            .InterventionsPanelTitle {
+                left:     24px;
+                position: absolute;
+                top:      12px;
+            }
+        }
+    }
+
     .OverviewInfoPanel {
         border-radius: 4px;
 
