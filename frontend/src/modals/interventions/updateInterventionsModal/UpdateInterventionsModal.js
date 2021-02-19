@@ -29,7 +29,15 @@ import './UpdateInterventionsModal.scss';
  *
  * @constructor
  */
-function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCar, onValidate, open }) {
+function UpdateInterventionsModal({
+    car,
+    className,
+    onClose,
+    onEnter,
+    onUpdateCar,
+    onValidate,
+    open
+}) {
     // Initializes the help flag
     const [ help, setHelp ] = React.useState(false);
     const [ expandedInterventionIndex, setExpandedInterventionIndex ] = React.useState(-1);
@@ -70,17 +78,15 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
     const onCreateOperationLine = (x, y) => {
         onUpdateCar({
             ...car,
-            interventions: [
-                car.interventions.map((intervention, i) => i === x ? {
-                    ...intervention,
-                    operations: [
-                        intervention.operations.map((operation, j) => j === y ? {
-                            ...operation,
-                            operationLines: [ ...operation.operationLines, { done: false } ]
-                        } : operation)
-                    ]
-                } : intervention)
-            ]
+            interventions:
+                    car.interventions.map((intervention, i) => i === x ? {
+                        ...intervention,
+                        operations:
+                                intervention.operations.map((operation, j) => j === y ? {
+                                    ...operation,
+                                    operationLines: [ ...operation.operationLines, { done: false } ]
+                                } : operation)
+                    } : intervention)
         });
     };
 
@@ -108,12 +114,11 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
     const onDeleteOperation = (x, y) => {
         onUpdateCar({
             ...car,
-            interventions: [
-                car.interventions.map((intervention, i) => i === x ? {
-                    ...intervention,
-                    operations: intervention.operations.filter((operation, j) => j !== y)
-                } : intervention)
-            ]
+            interventions:
+                    car.interventions.map((intervention, i) => i === x ? {
+                        ...intervention,
+                        operations: intervention.operations.filter((operation, j) => j !== y)
+                    } : intervention)
         });
     };
 
@@ -130,16 +135,14 @@ function UpdateInterventionsModal({ car, className, onClose, onEnter, onUpdateCa
     const onDeleteOperationLine = (x, y, z) => {
         onUpdateCar({
             ...car,
-            interventions: [
-                car.interventions.map((intervention, i) => i === x ? {
-                    operations: [
-                        intervention.operations.map((operation, j) => j === y ? {
-                            ...operation,
-                            operationLines: operation.operationLines.filter((operationLine, k) => k !== z)
-                        } : operation)
-                    ]
-                } : intervention)
-            ]
+            interventions:
+                    car.interventions.map((intervention, i) => i === x ? {
+                        operations:
+                                intervention.operations.map((operation, j) => j === y ? {
+                                    ...operation,
+                                    operationLines: operation.operationLines.filter((operationLine, k) => k !== z)
+                                } : operation)
+                    } : intervention)
         });
     };
 

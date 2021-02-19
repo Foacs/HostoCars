@@ -29,13 +29,37 @@ import './OperationForm.scss';
  *
  * @constructor
  */
-function OperationForm({ className, expanded, operation, onClick, onCreateOperationLine, onDeleteOperation, onDeleteOperationLine }) {
+function OperationForm({
+    className,
+    expanded,
+    operation,
+    onClick,
+    onCreateOperationLine,
+    onDeleteOperation,
+    onDeleteOperationLine
+}) {
     // Initializes the operation fields
     const [ label, setLabel ] = useState(operation.label);
+
+    // Forces the initialization
+    if (label !== operation.label) {
+        setLabel(operation.label);
+    }
 
     const finishedLines = operation.operationLines.filter(line => line.done).length;
     const totalLines = operation.operationLines.length;
     const isFinished = finishedLines === totalLines;
+
+    /**
+     * Handles the value changed event for the given field.
+     *
+     * @param {object} e
+     *     The event
+     */
+    const onLabelChanged = (e) => {
+        setLabel(e.target.value);
+        operation.label = e.target.value;
+    };
 
     return (<ExpansionPanel className={className} elevation={0} expanded={expanded} id='OperationForm' onChange={onClick}>
         <ExpansionPanelSummary className='Header' expandIcon={<ExpandIcon className='ExpandIcon' />}>
@@ -46,8 +70,7 @@ function OperationForm({ className, expanded, operation, onClick, onCreateOperat
                 <DeleteIcon />
             </IconButton>
 
-            <TextField className='Label' onClick={e => e.stopPropagation()} onChange={e => setLabel(e.target.value)} value={label}
-                       variant='outlined' />
+            <TextField className='Label' onChange={onLabelChanged} onClick={e => e.stopPropagation()} required value={label} variant='outlined' />
 
             <Chip className='LinesChip' color={isFinished ? 'secondary' : 'primary'} label={`${finishedLines} ⋮ ${totalLines}`} size='small'
                   variant={isFinished ? 'outlined' : 'default'} />
