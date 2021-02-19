@@ -19,7 +19,7 @@ import {
 import { BottomBar, ErrorPanel, InterventionPreview, LoadingPanel, Page } from 'components';
 import { CertificateModal, DeleteCarModal, UpdateCarModal, UpdateInterventionModal } from 'modals';
 import { NotFoundPage } from 'pages';
-import { CarPropType, compareInterventions, DefaultCarPicture, formatDateLabel } from 'resources';
+import { CarPropType, DefaultCarPicture, formatDateLabel } from 'resources';
 
 import './CarPage.scss';
 
@@ -353,6 +353,14 @@ class CarPage extends PureComponent {
 
                 const carToUpdate = updateInterventionsModalCar ? updateInterventionsModalCar : JSON.parse(JSON.stringify(car));
 
+                const interventionsPanelContent = (0 === car.interventions.length
+                        ? <Typography align='center' className='NoInterventionsLabel' variant='body1'>Aucune intervention à afficher</Typography>
+                        : <Grid container>
+                            {car.interventions.map((intervention, index) =>
+                                    <InterventionPreview intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
+                                                         onClick={() => this.onInterventionPreviewClick(index)} />)}
+                        </Grid>);
+
                 content = (<Fragment>
                     <Grid container spacing={4}>
                         <Grid item xs={4}>
@@ -442,14 +450,8 @@ class CarPage extends PureComponent {
                                     </IconButton>
                                 </ExpansionPanelSummary>
 
-                                <ExpansionPanelDetails>
-                                    <Grid container>
-                                        {car.interventions.sort(compareInterventions)
-                                                .map((intervention, index) =>
-                                                        <InterventionPreview intervention={intervention}
-                                                                             expanded={expandedInterventionIndex === index}
-                                                                             key={index} onClick={() => this.onInterventionPreviewClick(index)} />)}
-                                    </Grid>
+                                <ExpansionPanelDetails className='InterventionsPanelContent'>
+                                    {interventionsPanelContent}
                                 </ExpansionPanelDetails>
 
                                 <BottomBar />
