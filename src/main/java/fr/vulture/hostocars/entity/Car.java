@@ -1,12 +1,13 @@
 package fr.vulture.hostocars.entity;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,16 +16,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
+import lombok.ToString;
 import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code cars} table.
  */
-@Entity
 @Data
+@Entity
+@ToString
 @Table(name = "cars")
 public class Car implements Serializable {
 
@@ -71,22 +72,32 @@ public class Car implements Serializable {
     private byte[] picture;
 
     @JsonManagedReference
-    @Setter(AccessLevel.NONE)
     @OneToMany(mappedBy = "car", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-    private List<Intervention> interventions = new ArrayList<>(0);
+    private Set<Intervention> interventions = new HashSet<>(0);
 
     /**
-     * Sets the interventions.
-     *
-     * @param interventions
-     *     The interventions to set
+     * {@inheritDoc}
      */
-    public void setInterventions(final List<Intervention> interventions) {
-        this.interventions.clear();
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 
-        if (nonNull(interventions)) {
-            this.interventions.addAll(interventions);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
         }
+
+        if (isNull(obj) || this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final Car that = (Car) obj;
+        return nonNull(this.id) && this.id.equals(that.id);
     }
 
 }
