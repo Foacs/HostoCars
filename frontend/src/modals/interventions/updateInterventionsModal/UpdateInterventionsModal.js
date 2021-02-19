@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Fab, Grid, IconButton } from '@material-ui/core';
-import { AddRounded as CreateIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@material-ui/core';
+import { AddCircleOutline as CreateIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 
 import { BottomBar, InterventionForm } from 'components';
 import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, INTERVENTION_STATUS_STEPS } from 'resources';
@@ -185,7 +185,7 @@ function UpdateInterventionsModal({
     };
 
     return (<Dialog className={className} id='UpdateInterventionsModal' onClose={onClose} onEnter={onEnter} onKeyDown={onKeyPressed} open={open}>
-        <DialogTitle className='Title'>
+        <DialogTitle className='UpdateInterventionsModalTitle'>
             Édition des interventions
 
             <IconButton className='HelpButton' color='primary' onClick={onHelpButtonClick}>
@@ -193,7 +193,7 @@ function UpdateInterventionsModal({
             </IconButton>
         </DialogTitle>
 
-        <DialogContent>
+        <DialogContent className='UpdateInterventionsModalContent'>
             <DialogContentText className={help ? 'Instructions' : 'Instructions_hidden'}>
                 <i>
                     {`Veuillez modifier les interventions de la voiture actuelle ci-dessous puis cliquer sur 'Valider'.
@@ -210,28 +210,20 @@ function UpdateInterventionsModal({
                                       onDeleteOperation={i => onDeleteOperation(index, i)}
                                       onDeleteOperationLine={(i, j) => onDeleteOperationLine(index, i, j)} />
             )}
+
+            <IconButton className='AddInterventionButton' color='primary' onClick={onCreateIntervention}>
+                <CreateIcon />
+            </IconButton>
         </DialogContent>
 
-        <DialogActions>
-            <Grid alignItems='flex-end' container direction='row' justify='space-between'>
-                <Grid item>
-                    <Fab className='CreateInterventionButton' color='primary'
-                         onClick={onCreateIntervention} size='small'
-                         variant='round'>
-                        <CreateIcon className='CreateInterventionIcon' />
-                    </Fab>
-                </Grid>
+        <DialogActions className='UpdateInterventionsModalActions'>
+            <Button className='CancelButton' color='primary' onClick={onClose}>
+                Annuler
+            </Button>
 
-                <Grid item>
-                    <Button className='CancelButton' color='primary' onClick={onClose}>
-                        Annuler
-                    </Button>
-
-                    <Button autoFocus className='ValidateButton' color='secondary' onClick={onValidateAction}>
-                        Valider
-                    </Button>
-                </Grid>
-            </Grid>
+            <Button autoFocus className='ValidateButton' color='secondary' onClick={onValidateAction}>
+                Valider
+            </Button>
         </DialogActions>
 
         <BottomBar />

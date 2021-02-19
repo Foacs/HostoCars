@@ -271,7 +271,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
         // Checks the form validation
         if (validateForm()) {
             const validatedCar = {
-                id: car.id,
+                ...car,
                 registration: emptyValue === registration ? null : registration,
                 serialNumber: emptyValue === serialNumber ? null : serialNumber,
                 owner: emptyValue === owner ? null : owner,
