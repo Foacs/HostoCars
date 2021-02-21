@@ -259,7 +259,10 @@ class CarPage extends PureComponent {
      */
     onValidateUpdateInterventionsModal(isValid, car) {
         if (isValid) {
-            this.setState({ isUpdateInterventionsModalValidationActive: false });
+            this.setState({
+                isUpdateInterventionsModalOpen: false,
+                isUpdateInterventionsModalValidationActive: false
+            });
 
             const { updateCar } = this.props;
             updateCar(car);
