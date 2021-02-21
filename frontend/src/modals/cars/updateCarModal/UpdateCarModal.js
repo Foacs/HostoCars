@@ -29,7 +29,15 @@ const formTitle = 'Édition d\'une voiture';
  *
  * @constructor
  */
-function UpdateCarModal({ car, className, onClose, onValidate, open, registrations, serialNumbers }) {
+function UpdateCarModal({
+    car,
+    className,
+    onClose,
+    onValidate,
+    open,
+    registrations,
+    serialNumbers
+}) {
     return (<CarForm car={car} onClose={onClose} onValidate={onValidate} open={open} registrations={registrations}
                      serialNumbers={serialNumbers}
                      title={formTitle} validateButtonLabel='Appliquer' />);

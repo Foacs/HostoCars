@@ -20,7 +20,11 @@ import './OperationLinePreview.scss';
  *
  * @constructor
  */
-function OperationLinePreview({ className, divider, operationLine }) {
+function OperationLinePreview({
+    className,
+    divider,
+    operationLine
+}) {
     return (<ListItem className={className} divider={divider} id='OperationLinePreview'>
         <ListItemText className='Description' primary={operationLine.description} primaryTypographyProps={{ variant: 'body2' }}
                       secondary={operationLine.type} secondaryTypographyProps={{ variant: 'caption' }} />

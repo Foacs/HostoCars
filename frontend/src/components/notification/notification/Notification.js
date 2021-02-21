@@ -58,7 +58,14 @@ const resolveNotificationIcon = (variant) => {
  *
  * @constructor
  */
-function Notification({ children, className, id, message, onClose, variant }) {
+function Notification({
+    children,
+    className,
+    id,
+    message,
+    onClose,
+    variant
+}) {
     // Defines the notification panel class name depending on the variant
     const panelClassName = `Panel${variant ? ` Panel_${variant}` : ''}`;
 

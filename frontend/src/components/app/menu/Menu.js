@@ -23,7 +23,11 @@ import './Menu.scss';
  *
  * @constructor
  */
-function Menu({ updateSelectedIndex, className, selectedIndex }) {
+function Menu({
+    updateSelectedIndex,
+    className,
+    selectedIndex
+}) {
     return (<Drawer anchor='left' className={className} id='Menu' variant='permanent'>
         <Logo className='Logo non-selectable' />
 

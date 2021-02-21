@@ -15,7 +15,10 @@ import './Page.scss';
  *
  * @constructor
  */
-function Page({ children, id }) {
+function Page({
+    children,
+    id
+}) {
     return (<Box className='Page' id={id}>
         {children}
     </Box>);

@@ -17,34 +17,12 @@ class CarTest {
     private static final String[] IDS = new String[] {"1", "2"};
 
     /**
-     * Tests the {@link Car#equals} method's nullity.
-     */
-    @Test
-    @DisplayName("Equals (nullity)")
-    final void testEqualsNullity() {
-        // Prepares the inputs
-        final Car x = createDefaultObject();
-
-        // Calls the method and checks the result
-        assertNotEquals(x, null, "The equals method isn't null-proof");
-    }
-
-    /**
      * Creates a new instance of {@link Car} with the default values.
      *
      * @return a new instance of {@link Car}
      */
     private static Car createDefaultObject() {
         return createTestObject(Integer.valueOf(IDS[0]));
-    }
-
-    /**
-     * Tests the {@link Car} class.
-     */
-    @Test
-    @DisplayName("POJO validation")
-    final void testPojo() {
-        validatePojo(Car.class);
     }
 
     /**
@@ -59,6 +37,28 @@ class CarTest {
         final Car testObject = new Car();
         testObject.setId(id);
         return testObject;
+    }
+
+    /**
+     * Tests the {@link Car} class.
+     */
+    @Test
+    @DisplayName("POJO validation")
+    final void testPojo() {
+        validatePojo(Car.class);
+    }
+
+    /**
+     * Tests the {@link Car#equals} method's nullity.
+     */
+    @Test
+    @DisplayName("Equals (nullity)")
+    final void testEqualsNullity() {
+        // Prepares the inputs
+        final Car x = createDefaultObject();
+
+        // Calls the method and checks the result
+        assertNotEquals(x, null, "The equals method isn't null-proof");
     }
 
     /**

@@ -23,7 +23,12 @@ import './OperationPreview.scss';
  *
  * @constructor
  */
-function OperationPreview({ className, expanded, operation, onClick }) {
+function OperationPreview({
+    className,
+    expanded,
+    operation,
+    onClick
+}) {
     const finishedLines = operation.operationLines.filter(line => line.done).length;
     const totalLines = operation.operationLines.length;
     const isFinished = finishedLines === totalLines;

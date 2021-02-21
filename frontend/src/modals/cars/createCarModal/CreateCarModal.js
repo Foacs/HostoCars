@@ -26,7 +26,14 @@ const formTitle = 'Ajout d\'une voiture';
  *
  * @constructor
  */
-function CreateCarModal({ className, onClose, onValidate, open, registrations, serialNumbers }) {
+function CreateCarModal({
+    className,
+    onClose,
+    onValidate,
+    open,
+    registrations,
+    serialNumbers
+}) {
     return <CarForm onClose={onClose} onValidate={onValidate} open={open} registrations={registrations}
                     serialNumbers={serialNumbers}
                     title={formTitle} validateButtonLabel='Créer' />;

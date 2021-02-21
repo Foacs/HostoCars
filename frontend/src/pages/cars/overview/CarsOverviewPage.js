@@ -60,7 +60,12 @@ class CarsOverviewPage extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { getCars, updateCurrentPage, updateMenuItems, updateSelectedMenuIndex } = this.props;
+        const {
+            getCars,
+            updateCurrentPage,
+            updateMenuItems,
+            updateSelectedMenuIndex
+        } = this.props;
 
         updateCurrentPage('Voitures', []);
         updateMenuItems([ {
@@ -101,7 +106,11 @@ class CarsOverviewPage extends PureComponent {
      * Render method.
      */
     render() {
-        const { cars, isInError, isLoading } = this.props;
+        const {
+            cars,
+            isInError,
+            isLoading
+        } = this.props;
         const { isCreateCarModalOpen } = this.state;
 
         let content;
