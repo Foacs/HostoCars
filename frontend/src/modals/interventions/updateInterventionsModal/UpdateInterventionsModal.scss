@@ -5,44 +5,44 @@
         max-width: none;
     }
 
-    .Instructions_hidden {
-        display: none;
-    }
+    .UpdateInterventionsModal {
+        &_Content {
+            padding-bottom: 0;
 
-    .UpdateInterventionsModalActions {
-        padding-top: 0;
-    }
+            &_CreateButton {
+                margin: 16px 0 0 18px;
+            }
 
-    .UpdateInterventionsModalContent {
-        padding-bottom: 0;
+            &_Instructions {
+                &-hidden {
+                    display: none;
+                }
+            }
 
-        .AddInterventionButton {
-            margin: 16px 0 0 18px;
-        }
-
-        #InterventionForm:last-of-type {
-            &::after {
-                background-color: rgba(0, 0, 0, 0.12);
-                bottom:           -1px;
-                content:          '';
-                height:           1px;
-                left:             0;
-                opacity:          1;
-                position:         absolute;
-                right:            0;
-                transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            &_InterventionForm:last-of-type {
+                &::after {
+                    background-color: rgba(0, 0, 0, 0.12);
+                    bottom:           -1px;
+                    content:          '';
+                    height:           1px;
+                    left:             0;
+                    opacity:          1;
+                    position:         absolute;
+                    right:            0;
+                    transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+                }
             }
         }
-    }
 
-    .UpdateInterventionsModalTitle {
-        color:     $primary-color;
-        min-width: 600px;
+        &_Title {
+            color:     $primary-color;
+            min-width: 600px;
 
-        .HelpButton {
-            position: absolute;
-            right:    12px;
-            top:      8px;
+            &_HelpButton {
+                position: absolute;
+                right:    12px;
+                top:      8px;
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -55,32 +55,42 @@ const ownerRequiredHelperText = 'Veuillez renseigner le nom du propriétaire';
  *
  * @constructor
  */
-function CarForm({ car, className, onClose, onValidate, open, registrations, serialNumbers, title, validateButtonLabel }) {
+function CarForm({
+    car,
+    className,
+    onClose,
+    onValidate,
+    open,
+    registrations,
+    serialNumbers,
+    title,
+    validateButtonLabel
+}) {
     // Initializes the help flag
-    const [ help, setHelp ] = React.useState(false);
+    const [ help, setHelp ] = useState(false);
 
     // Initializes the car fields
-    const [ registration, setRegistration ] = React.useState(car.registration ? car.registration : '');
-    const [ serialNumber, setSerialNumber ] = React.useState(car.serialNumber ? car.serialNumber : '');
-    const [ owner, setOwner ] = React.useState(car.owner ? car.owner : '');
-    const [ brand, setBrand ] = React.useState(car.brand ? car.brand : '');
-    const [ model, setModel ] = React.useState(car.model ? car.model : '');
-    const [ motorization, setMotorization ] = React.useState(car.motorization ? car.motorization : '');
-    const [ engineCode, setEngineCode ] = React.useState(car.engineCode ? car.engineCode : '');
-    const [ releaseDate, setReleaseDate ] = React.useState(car.releaseDate ? car.releaseDate : null);
-    const [ certificate, setCertificate ] = React.useState(car.certificate ? car.certificate : null);
-    const [ picture, setPicture ] = React.useState(car.picture ? car.picture : null);
-    const [ comments, setComments ] = React.useState(car.comments ? car.comments : '');
+    const [ registration, setRegistration ] = useState(car.registration ? car.registration : '');
+    const [ serialNumber, setSerialNumber ] = useState(car.serialNumber ? car.serialNumber : '');
+    const [ owner, setOwner ] = useState(car.owner ? car.owner : '');
+    const [ brand, setBrand ] = useState(car.brand ? car.brand : '');
+    const [ model, setModel ] = useState(car.model ? car.model : '');
+    const [ motorization, setMotorization ] = useState(car.motorization ? car.motorization : '');
+    const [ engineCode, setEngineCode ] = useState(car.engineCode ? car.engineCode : '');
+    const [ releaseDate, setReleaseDate ] = useState(car.releaseDate ? car.releaseDate : null);
+    const [ certificate, setCertificate ] = useState(car.certificate ? car.certificate : null);
+    const [ picture, setPicture ] = useState(car.picture ? car.picture : null);
+    const [ comments, setComments ] = useState(car.comments ? car.comments : '');
 
     // Initializes the labels for the uploaded files
-    const [ certificateFileName, setCertificateFileName ] = React.useState(car.certificate ? currentCertificateLabel : '');
-    const [ pictureFileName, setPictureFileName ] = React.useState(car.picture ? currentImageLabel : '');
+    const [ certificateFileName, setCertificateFileName ] = useState(car.certificate ? currentCertificateLabel : '');
+    const [ pictureFileName, setPictureFileName ] = useState(car.picture ? currentImageLabel : '');
 
     // Initializes the constraints
-    const [ registrationRequired, setRegistrationRequired ] = React.useState(false);
-    const [ registrationUnique, setRegistrationUnique ] = React.useState(false);
-    const [ serialNumberUnique, setSerialNumberUnique ] = React.useState(false);
-    const [ ownerRequired, setOwnerRequired ] = React.useState(false);
+    const [ registrationRequired, setRegistrationRequired ] = useState(false);
+    const [ registrationUnique, setRegistrationUnique ] = useState(false);
+    const [ serialNumberUnique, setSerialNumberUnique ] = useState(false);
+    const [ ownerRequired, setOwnerRequired ] = useState(false);
 
     // Defines the adornment of the certificate field depending on the certificate being null or not
     const certificateFieldAdornment = certificate ? (<InputAdornment position='end'>

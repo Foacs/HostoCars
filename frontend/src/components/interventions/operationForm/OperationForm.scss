@@ -1,34 +1,68 @@
 @import '../../../resources/colors';
 
 #OperationForm {
-    .DeleteButton {
-        margin-right: 12px;
+    &::before {
+        background-color: rgba(0, 0, 0, 0.12);
+        content:          '';
+        height:           1px;
+        left:             0;
+        opacity:          1;
+        position:         absolute;
+        right:            0;
+        top:              -1px;
+        transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     }
 
-    .Header {
-        background-color: transparent;
-    }
+    .OperationForm {
+        &_Content {
+            &_Lines {
+                padding: 0 12px 0 48px;
+                width:   100%;
 
-    .LinesChip {
-        cursor: pointer;
-        margin: 16px 0 0 180px;
-        width:  50px;
+                &_CreateButton {
+                    margin: 16px 0 16px 18px;
+                }
 
-        & > span {
-            align-self: center;
+                &_LineForm:last-of-type {
+                    &::after {
+                        background-color: rgba(0, 0, 0, 0.12);
+                        bottom:           -1px;
+                        content:          '';
+                        height:           1px;
+                        left:             0;
+                        opacity:          1;
+                        position:         absolute;
+                        right:            0;
+                        transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+                    }
+                }
+            }
         }
-    }
 
-    .List {
-        margin:  -12px 0;
-        padding: 0 12px;
-        width:   100%;
-    }
+        &_Summary {
+            background: $transparent;
 
-    .Label {
-        align-self:  center;
-        color:       $gray-dark;
-        font-weight: bold;
-        width:       calc(100% - 78px);
+            &_DeleteButton {
+                color:  $error-color;
+                margin: 7px 12px 7px 0;
+            }
+
+            &_LabelField {
+                align-self:  center;
+                color:       $gray-dark;
+                font-weight: bold;
+                width:       calc(100% - 20px);
+            }
+
+            &_LinesStatus {
+                cursor: pointer;
+                margin: 16px 0 0 128px;
+                width:  50px;
+
+                & > span {
+                    align-self: center;
+                }
+            }
+        }
     }
 }

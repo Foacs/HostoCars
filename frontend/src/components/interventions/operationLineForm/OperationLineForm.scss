@@ -3,19 +3,40 @@
 #OperationLineForm {
     padding: 0;
 
-    &:hover {
-        background-color: rgba(0, 0, 0, 0.04);
-    }
+    .OperationLineForm {
+        &_Summary {
+            background:     $transparent;
+            pointer-events: none;
 
-    .Description {
-        padding-left: 9px;
-    }
+            &_DeleteButton {
+                color:          $error-color;
+                margin:         7px 12px 7px 0;
+                pointer-events: initial;
+            }
 
-    .CheckedIcon {
-        color: $secondary-color;
-    }
+            &_Description, &_Type {
+                align-self:     center;
+                color:          $gray-dark;
+                pointer-events: initial;
+                width:          calc(100% - 20px);
+            }
 
-    .UncheckedIcon {
-        color: $primary-color;
+            &_DoneFlag {
+                margin:         7px 0 7px 24px;
+                pointer-events: initial;
+
+                & > span {
+                    align-self: center;
+                }
+
+                &_CheckedIcon {
+                    color: $secondary-color;
+                }
+
+                &_UncheckedIcon {
+                    color: $primary-color;
+                }
+            }
+        }
     }
 }

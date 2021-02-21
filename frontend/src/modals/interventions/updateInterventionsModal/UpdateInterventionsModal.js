@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@material-ui/core';
 import { AddCircleOutline as CreateIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 
 import { BottomBar, InterventionForm } from 'components';
-import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, INTERVENTION_STATUS_STEPS } from 'resources';
+import { APPLY_LABEL, CANCEL_LABEL, CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, INTERVENTION_STATUS_STEPS } from 'resources';
 
 import './UpdateInterventionsModal.scss';
+
+// Declares the constants
+export const instructionsText = `Veuillez modifier les interventions de la voiture actuelle ci-dessous puis cliquer sur '${APPLY_LABEL}'.
+                    Les champs annotés du symbole * sont obligatoires.`;
+export const titleLabel = 'Édition des interventions';
 
 /**
  * The modal component to update the interventions of an existing car.
@@ -16,6 +21,8 @@ import './UpdateInterventionsModal.scss';
  *     The car to update
  * @param {string} [className = '']
  *     The component class name
+ * @param {boolean} [isValidationActive]
+ *     If the validation is active or not
  * @param {func} onClose
  *     The close event handler
  * @param {func} onEnter
@@ -32,15 +39,16 @@ import './UpdateInterventionsModal.scss';
 function UpdateInterventionsModal({
     car,
     className,
+    isValidationActive,
     onClose,
     onEnter,
     onUpdateCar,
     onValidate,
     open
 }) {
-    // Initializes the help flag
-    const [ help, setHelp ] = React.useState(false);
-    const [ expandedInterventionIndex, setExpandedInterventionIndex ] = React.useState(-1);
+    // Initializes the state
+    const [ expandedInterventionIndex, setExpandedInterventionIndex ] = useState(-1);
+    const [ help, setHelp ] = useState(false);
 
     /**
      * Handles the creation of an intervention.
@@ -60,8 +68,11 @@ function UpdateInterventionsModal({
 
     /**
      * Handles the creation of an operation.
+     *
+     * @param {number} x
+     *     The index of the intervention on which to create an operation
      */
-    const onCreateOperation = x => {
+    const onCreateOperation = (x) => {
         onUpdateCar({
             ...car,
             interventions:
@@ -74,6 +85,11 @@ function UpdateInterventionsModal({
 
     /**
      * Handles the creation of an operation line.
+     *
+     * @param {number} x
+     *     The index of the intervention on which to create an operation line
+     * @param {number} y
+     *     The index of the operation on which to create an operation line
      */
     const onCreateOperationLine = (x, y) => {
         onUpdateCar({
@@ -93,10 +109,10 @@ function UpdateInterventionsModal({
     /**
      * Handles the deletion of an intervention.
      *
-     * @param x
+     * @param {number} x
      *     The index of the intervention to remove
      */
-    const onDeleteIntervention = x => {
+    const onDeleteIntervention = (x) => {
         onUpdateCar({
             ...car,
             interventions: car.interventions.filter((intervention, i) => i !== x)
@@ -106,9 +122,9 @@ function UpdateInterventionsModal({
     /**
      * Handles the deletion of an operation.
      *
-     * @param x
-     *     The index of the intervention
-     * @param y
+     * @param {number} x
+     *     The index of the intervention on which to remove an operation
+     * @param {number} y
      *     The index of the operation to remove
      */
     const onDeleteOperation = (x, y) => {
@@ -125,11 +141,11 @@ function UpdateInterventionsModal({
     /**
      * Handles the deletion of an operation line.
      *
-     * @param x
-     *     The index of the intervention
-     * @param y
-     *     The index of the operation
-     * @param z
+     * @param {number} x
+     *     The index of the intervention on which to remove an operation line
+     * @param {number} y
+     *     The index of the operation on which to remove an operation line
+     * @param {number} z
      *     The index of the operation line to remove
      */
     const onDeleteOperationLine = (x, y, z) => {
@@ -159,7 +175,7 @@ function UpdateInterventionsModal({
      * @param {object} e
      *     The event
      */
-    const onKeyPressed = (e) => {
+    const onKeyPress = (e) => {
         switch (e.keyCode) {
             case ENTER_KEY_CODE:
                 // Prevents the event from propagating
@@ -180,29 +196,58 @@ function UpdateInterventionsModal({
      * Handles the validation action.
      */
     const onValidateAction = () => {
-        onValidate(car);
-        onClose();
+        onValidate(validateForm(), car);
     };
 
-    return (<Dialog className={className} id='UpdateInterventionsModal' onClose={onClose} onEnter={onEnter} onKeyDown={onKeyPressed} open={open}>
-        <DialogTitle className='UpdateInterventionsModalTitle'>
-            Édition des interventions
+    const validateForm = () => {
+        let isValid = true;
 
-            <IconButton className='HelpButton' color='primary' onClick={onHelpButtonClick}>
-                <HelpIcon />
+        if (null !== car.interventions && 0 < car.interventions.length) {
+            car.interventions.forEach(intervention => {
+                if (null === intervention.description || '' === intervention.description) {
+                    isValid = false;
+                } else if (null !== intervention.operations && 0 < intervention.operations.length) {
+                    intervention.operations.forEach(operation => {
+                        if (null === operation.label || '' === operation.label) {
+                            isValid = false;
+                        } else if (null !== operation.operationLines && 0 < operation.operationLines.length) {
+                            operation.operationLines.forEach(operationLine => {
+                                if (null === operationLine.description || '' === operationLine.description) {
+                                    isValid = false;
+                                }
+                            });
+                        } else {
+                            isValid = false;
+                        }
+                    });
+                } else {
+                    isValid = false;
+                }
+            });
+        }
+
+        return isValid;
+    };
+
+    return (<Dialog className={className} id='UpdateInterventionsModal' onClose={onClose} onEnter={onEnter} onKeyDown={onKeyPress} open={open}>
+        <DialogTitle className='UpdateInterventionsModal_Title'>
+            {titleLabel}
+
+            <IconButton className='UpdateInterventionsModal_Title_HelpButton' color='primary' onClick={onHelpButtonClick}>
+                <HelpIcon className='UpdateInterventionsModal_Title_HelpButton_Icon' />
             </IconButton>
         </DialogTitle>
 
-        <DialogContent className='UpdateInterventionsModalContent'>
-            <DialogContentText className={help ? 'Instructions' : 'Instructions_hidden'}>
-                <i>
-                    {`Veuillez modifier les interventions de la voiture actuelle ci-dessous puis cliquer sur 'Valider'.
-                    Les champs annotés du symbole * sont obligatoires.`}
-                </i>
+        <DialogContent className='UpdateInterventionsModal_Content'>
+            <DialogContentText
+                    className={`UpdateInterventionsModal_Content_Instructions${!help && ' UpdateInterventionsModal_Content_Instructions-hidden'}`}>
+                <i>{instructionsText}</i>
             </DialogContentText>
 
             {car.interventions.map((intervention, index) =>
-                    <InterventionForm intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
+                    <InterventionForm className='UpdateInterventionsModal_Content_InterventionForm'
+                                      expanded={expandedInterventionIndex === index} intervention={intervention}
+                                      isValidationActive={isValidationActive} key={index}
                                       onClick={() => setExpandedInterventionIndex(expandedInterventionIndex === index ? -1 : index)}
                                       onCreateOperation={() => onCreateOperation(index)}
                                       onCreateOperationLine={i => onCreateOperationLine(index, i)}
@@ -211,18 +256,18 @@ function UpdateInterventionsModal({
                                       onDeleteOperationLine={(i, j) => onDeleteOperationLine(index, i, j)} />
             )}
 
-            <IconButton className='AddInterventionButton' color='primary' onClick={onCreateIntervention}>
-                <CreateIcon />
+            <IconButton className='UpdateInterventionsModal_Content_CreateButton' color='primary' onClick={onCreateIntervention}>
+                <CreateIcon className='UpdateInterventionsModal_Content_CreateButton_Icon' />
             </IconButton>
         </DialogContent>
 
-        <DialogActions className='UpdateInterventionsModalActions'>
-            <Button className='CancelButton' color='primary' onClick={onClose}>
-                Annuler
+        <DialogActions className='UpdateInterventionsModal_Actions'>
+            <Button className='UpdateInterventionsModal_Actions_CancelButton' color='primary' onClick={onClose}>
+                {CANCEL_LABEL}
             </Button>
 
-            <Button autoFocus className='ValidateButton' color='secondary' onClick={onValidateAction}>
-                Valider
+            <Button autoFocus className='UpdateInterventionsModal_Actions_ValidateButton' color='secondary' onClick={onValidateAction}>
+                {APPLY_LABEL}
             </Button>
         </DialogActions>
 
@@ -233,9 +278,12 @@ function UpdateInterventionsModal({
 UpdateInterventionsModal.propTypes = {
     car: CarPropType.isRequired,
     className: PropTypes.string,
-    open: PropTypes.bool.isRequired,
+    isValidationActive: PropTypes.bool.isRequired,
     onClose: PropTypes.func.isRequired,
-    onValidate: PropTypes.func.isRequired
+    onEnter: PropTypes.func.isRequired,
+    onUpdateCar: PropTypes.func.isRequired,
+    onValidate: PropTypes.func.isRequired,
+    open: PropTypes.bool.isRequired
 };
 
 UpdateInterventionsModal.defaultProps = {
