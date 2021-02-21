@@ -17,34 +17,12 @@ class InterventionTest {
     private static final String[] IDS = new String[] {"1", "2"};
 
     /**
-     * Tests the {@link Intervention#equals} method's nullity.
-     */
-    @Test
-    @DisplayName("Equals (nullity)")
-    final void testEqualsNullity() {
-        // Prepares the inputs
-        final Intervention x = createDefaultObject();
-
-        // Calls the method and checks the result
-        assertNotEquals(x, null, "The equals method isn't null-proof");
-    }
-
-    /**
      * Creates a new instance of {@link Intervention} with the default values.
      *
      * @return a new instance of {@link Intervention}
      */
     private static Intervention createDefaultObject() {
         return createTestObject(Integer.valueOf(IDS[0]));
-    }
-
-    /**
-     * Tests the {@link Intervention} class.
-     */
-    @Test
-    @DisplayName("POJO validation")
-    final void testPojo() {
-        validatePojo(Intervention.class);
     }
 
     /**
@@ -59,6 +37,28 @@ class InterventionTest {
         final Intervention testObject = new Intervention();
         testObject.setId(id);
         return testObject;
+    }
+
+    /**
+     * Tests the {@link Intervention} class.
+     */
+    @Test
+    @DisplayName("POJO validation")
+    final void testPojo() {
+        validatePojo(Intervention.class);
+    }
+
+    /**
+     * Tests the {@link Intervention#equals} method's nullity.
+     */
+    @Test
+    @DisplayName("Equals (nullity)")
+    final void testEqualsNullity() {
+        // Prepares the inputs
+        final Intervention x = createDefaultObject();
+
+        // Calls the method and checks the result
+        assertNotEquals(x, null, "The equals method isn't null-proof");
     }
 
     /**

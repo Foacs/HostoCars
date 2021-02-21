@@ -18,7 +18,11 @@ import './AboutModal.scss';
  * @param {boolean} open
  *     If the modal is open
  */
-function AboutModal({ className, onClose, open }) {
+function AboutModal({
+    className,
+    onClose,
+    open
+}) {
     /**
      * Handles the key pressed action.
      *

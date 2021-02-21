@@ -17,34 +17,12 @@ class OperationLineTest {
     private static final String[] IDS = new String[] {"1", "2"};
 
     /**
-     * Tests the {@link OperationLine#equals} method's nullity.
-     */
-    @Test
-    @DisplayName("Equals (nullity)")
-    final void testEqualsNullity() {
-        // Prepares the inputs
-        final OperationLine x = createDefaultObject();
-
-        // Calls the method and checks the result
-        assertNotEquals(x, null, "The equals method isn't null-proof");
-    }
-
-    /**
      * Creates a new instance of {@link OperationLine} with the default values.
      *
      * @return a new instance of {@link OperationLine}
      */
     private static OperationLine createDefaultObject() {
         return createTestObject(Integer.valueOf(IDS[0]));
-    }
-
-    /**
-     * Tests the {@link OperationLine} class.
-     */
-    @Test
-    @DisplayName("POJO validation")
-    final void testPojo() {
-        validatePojo(OperationLine.class);
     }
 
     /**
@@ -59,6 +37,28 @@ class OperationLineTest {
         final OperationLine testObject = new OperationLine();
         testObject.setId(id);
         return testObject;
+    }
+
+    /**
+     * Tests the {@link OperationLine} class.
+     */
+    @Test
+    @DisplayName("POJO validation")
+    final void testPojo() {
+        validatePojo(OperationLine.class);
+    }
+
+    /**
+     * Tests the {@link OperationLine#equals} method's nullity.
+     */
+    @Test
+    @DisplayName("Equals (nullity)")
+    final void testEqualsNullity() {
+        // Prepares the inputs
+        final OperationLine x = createDefaultObject();
+
+        // Calls the method and checks the result
+        assertNotEquals(x, null, "The equals method isn't null-proof");
     }
 
     /**

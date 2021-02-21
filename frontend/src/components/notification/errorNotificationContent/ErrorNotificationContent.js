@@ -75,9 +75,21 @@ function generateErrorMail(statusText = '', status = '', message = '', url = '',
  *
  * @constructor
  */
-function ErrorNotificationContent({ className, disableMail, error, sendMail, timestamp }) {
+function ErrorNotificationContent({
+    className,
+    disableMail,
+    error,
+    sendMail,
+    timestamp
+}) {
     const {
-        config: { url } = {}, response: { config: { method }, status, statusText, data } = {}
+        config: { url } = {},
+        response: {
+            config: { method },
+            status,
+            statusText,
+            data
+        } = {}
     } = error;
 
     // Initializes the displayMail flag

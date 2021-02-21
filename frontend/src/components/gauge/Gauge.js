@@ -58,7 +58,10 @@ class Gauge extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { maxValue, value } = this.props;
+        const {
+            maxValue,
+            value
+        } = this.props;
 
         // Render the gauge canvas
         const canvas = this.canvasRef.current;

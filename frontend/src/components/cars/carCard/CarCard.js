@@ -19,7 +19,10 @@ import './CarCard.scss';
  *
  * @constructor
  */
-function CarCard({ car, className }) {
+function CarCard({
+    car,
+    className
+}) {
     // Defines the model subtitle class name depending on the car's brand and model values
     const modelSubtitleClassName = `ModelSubTitle ${(!car.brand && !car.model) && 'ModelSubTitle_missing'}`;
 

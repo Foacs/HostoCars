@@ -78,8 +78,14 @@ class AppBar extends PureComponent {
      * Render method.
      */
     render() {
-        const { anchorEl, isAboutModelOpen } = this.state;
-        const { className, menuItems } = this.props;
+        const {
+            anchorEl,
+            isAboutModelOpen
+        } = this.state;
+        const {
+            className,
+            menuItems
+        } = this.props;
 
         return (<Fragment>
             <MaterialAppBar className={className} id='AppBar' position='fixed'>

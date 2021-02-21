@@ -20,7 +20,12 @@ import './DeleteCarModal.scss';
  * @param {boolean} open
  *     If the modal is open
  */
-function DeleteCarModal({ className, onClose, onValidate, open }) {
+function DeleteCarModal({
+    className,
+    onClose,
+    onValidate,
+    open
+}) {
     /**
      * Handles the key pressed action.
      *

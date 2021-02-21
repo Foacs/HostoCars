@@ -30,7 +30,11 @@ class NotFoundPage extends PureComponent {
      * Method called when the component did mount.
      */
     componentDidMount() {
-        const { updateCurrentPage, updateMenuItems, updateSelectedMenuIndex } = this.props;
+        const {
+            updateCurrentPage,
+            updateMenuItems,
+            updateSelectedMenuIndex
+        } = this.props;
 
         updateCurrentPage('Page introuvable', []);
         updateMenuItems([]);

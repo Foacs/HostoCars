@@ -23,7 +23,12 @@ import './CertificateModal.scss';
  *
  * @constructor
  */
-function CertificateModal({ certificate, className, onClose, open }) {
+function CertificateModal({
+    certificate,
+    className,
+    onClose,
+    open
+}) {
     /**
      * Handles the key pressed action.
      *

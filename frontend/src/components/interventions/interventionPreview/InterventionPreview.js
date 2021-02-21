@@ -27,7 +27,12 @@ import './InterventionPreview.scss';
  *
  * @constructor
  */
-function InterventionPreview({ className, expanded, intervention, onClick }) {
+function InterventionPreview({
+    className,
+    expanded,
+    intervention,
+    onClick
+}) {
     const [ expandedOperationIndex, setExpandedOperationIndex ] = useState(false);
 
     const interventionNumber = `${intervention.year}-${addLeadingZeros(intervention.number, 2)}`;
