@@ -25,7 +25,11 @@ const separator = <NextIcon fontSize='small' />;
  *
  * @constructor
  */
-function Breadcrumbs({ className, currentNavigationPath, currentPageName }) {
+function Breadcrumbs({
+    className,
+    currentNavigationPath,
+    currentPageName
+}) {
     return (<MuiBreadcrumbs className={className} id='Breadcrumbs' separator={separator}>
         <Link className='HomeLink' component={RouterLink} to='/cars' replace>
             <HomeIcon />

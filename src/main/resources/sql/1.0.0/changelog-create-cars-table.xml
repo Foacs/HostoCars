@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="liquibase" id="changelog-create-cars-table">
+        <createTable tableName="cars">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" unique="true" />
+            </column>
+
+            <column name="owner" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="registration" type="TEXT">
+                <constraints nullable="false" unique="true" />
+            </column>
+
+            <column name="brand" type="TEXT" />
+
+            <column name="model" type="TEXT" />
+
+            <column name="motorization" type="TEXT" />
+
+            <column name="releaseDate" type="DATE" />
+
+            <column name="comments" type="TEXT" />
+
+            <column name="certificate" type="BLOB" />
+
+            <column name="picture" type="BLOB" />
+        </createTable>
+
+        <comment>
+            Creating cars table
+        </comment>
+    </changeSet>
+</databaseChangeLog>

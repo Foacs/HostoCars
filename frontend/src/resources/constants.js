@@ -6,11 +6,11 @@
 export const ENTER_KEY_CODE = 13;
 
 /**
- * The mail address to use when sending an error mail.
+ * The support e-mail address.
  *
  * @type {string}
  */
-export const ERROR_MAIL_ADDRESS = '***REMOVED***';
+export const SUPPORT_EMAIL_ADDRESS = '***REMOVED***';
 
 /**
  * The event key code of the 'Escape' key.
@@ -18,6 +18,13 @@ export const ERROR_MAIL_ADDRESS = '***REMOVED***';
  * @type {number}
  */
 export const ESCAPE_KEY_CODE = 27;
+
+/**
+ * The array of the ordered possible intervention statuses.
+ *
+ * @type {string[]}
+ */
+export const INTERVENTION_STATUS_STEPS = [ 'Diagnostic', 'Commande', 'Réception', 'Réalisation', 'Terminé' ];
 
 /**
  * The relative path to the logging file.
@@ -32,6 +39,13 @@ export const LOG_FILE_PATH = './log/log.log';
  * @type {number}
  */
 export const NO_CONTENT_STATUS = 204;
+
+/**
+ * The web service 'Not found' response status.
+ *
+ * @type {number}
+ */
+export const NOT_FOUND_STATUS = 404;
 
 /**
  * The notification error variant.
@@ -73,4 +87,4 @@ export const OK_STATUS = 200;
  *
  * @type {string}
  */
-export const WEB_SERVICE_BASE_URL = 'http://localhost:8080';
+export const WEB_SERVICE_BASE_URL = 'http://127.0.0.1:8080';

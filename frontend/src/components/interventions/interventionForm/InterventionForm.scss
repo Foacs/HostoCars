@@ -1,0 +1,144 @@
+@import '../../../resources/colors';
+
+#InterventionForm {
+    box-shadow: none;
+    min-width:  600px;
+    padding:    12px 0;
+
+    &::before {
+        background-color: rgba(0, 0, 0, 0.12);
+        content:          '';
+        height:           1px;
+        left:             0;
+        opacity:          1;
+        position:         absolute;
+        right:            0;
+        top:              -1px;
+        transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    }
+
+    .InterventionForm {
+        &_Summary {
+            background: $transparent;
+
+            & > div {
+                margin:  0;
+                padding: 0;
+            }
+
+            &_AmountGauge {
+                align-self: center;
+                margin:     0 -22px;
+                width:      95px;
+            }
+
+            &_DeleteButton {
+                color:   $error-color;
+                margin:  1px 0;
+                padding: 12px 15px;
+            }
+
+            &_DescriptionField {
+                align-self:  center;
+                margin-left: 24px;
+                width:       calc(100% - 400px);
+            }
+
+            &_OperationsStatus {
+                align-self: center;
+                cursor:     pointer;
+                width:      50px;
+            }
+
+            &_NumberLabel {
+                align-self: center;
+                width:      90px;
+            }
+
+            &_Status {
+                align-self: center;
+                cursor:     inherit;
+                margin:     0 12px 0 66px;
+                width:      90px;
+            }
+        }
+
+        &_Content {
+            &_Amount, &_EstimatedTime, &_Mileage, &_PaidAmount, &_RealTime {
+                width: 100%;
+
+                & > div > input {
+                    padding:    6px 14px;
+                    text-align: center;
+                }
+            }
+
+            &_Amount, &_EstimatedTime {
+                padding-left: 2px;
+            }
+
+            &_PaidAmount, &_RealTime {
+                padding-right: 2px;
+            }
+
+            &_AmountLabel, &_MileageLabel, &_TimeLabel {
+                color:   $gray;
+                padding: 6px 24px 0 0;
+                width:   100%;
+            }
+
+            &_Comments {
+                padding-bottom: 24px;
+                width:          100%;
+            }
+
+            &_DataDivider {
+                margin-right: 24px;
+            }
+
+            &_Operations {
+                padding: 0 12px;
+
+                &_CreateButton {
+                    margin: 16px 0 16px 18px;
+                }
+
+                &_OperationForm:last-of-type {
+                    &::after {
+                        background-color: rgba(0, 0, 0, 0.12);
+                        bottom:           -1px;
+                        content:          '';
+                        height:           1px;
+                        left:             0;
+                        opacity:          1;
+                        position:         absolute;
+                        right:            0;
+                        transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+                    }
+                }
+            }
+
+            &_OperationsTitle {
+                width: 100%;
+            }
+
+            &_StatusStepper {
+                margin:  12px;
+                padding: 12px 12px 24px 12px;
+                width:   100%;
+
+                &_Step {
+                    &-finished {
+                        & svg {
+                            color: $secondary-color;
+                        }
+                    }
+
+                    &_Button {
+                        border-radius: 64px;
+                    }
+                }
+            }
+        }
+    }
+}

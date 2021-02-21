@@ -2,18 +2,14 @@ package fr.vulture.hostocars.controller;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.OK;
 
 import fr.vulture.hostocars.pojo.Mail;
-import fr.vulture.hostocars.pojo.Response;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
@@ -27,7 +23,6 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -42,7 +37,10 @@ class MailControllerTest {
     public final TemporaryFolder folder = new TemporaryFolder();
 
     @Mock
-    private JavaMailSender mailSender;
+    private JavaMailSender sender;
+
+    @Mock
+    private ControllerHelper helper;
 
     @InjectMocks
     private MailController mailController;
@@ -65,92 +63,91 @@ class MailControllerTest {
     }
 
     /**
-     * Tests the {@link MailController#sendMail} method with {@link HttpStatus#OK} status.
+     * Tests the {@link MailController#sendMail} method.
      */
     @Test
     @SneakyThrows
-    @DisplayName("Sending a mail with an OK status")
-    final void testSendMailWithOkStatus() {
-        final Mail mail = new Mail();
+    @DisplayName("Send mail")
+    final void testSendMail() {
+        // Prepares the inputs
         final String recipient = "localPart@domain";
-        mail.setRecipient(recipient);
         final String subject = "subject";
-        mail.setSubject(subject);
         final String content = "content";
-        mail.setContent(content);
         final String pathToFirstAttachment = "pathToFirstAttachment";
         final String pathToSecondAttachment = "pathToSecondAttachment";
+        final Mail mail = new Mail();
+        mail.setRecipient(recipient);
+        mail.setSubject(subject);
+        mail.setContent(content);
         mail.setAttachmentArray(new String[] {pathToFirstAttachment, pathToSecondAttachment});
-        final MimeMessage message = new MimeMessage((Session) null);
 
+        // Prepares the intermediary results
+        final MimeMessage message = new MimeMessage((Session) null);
+        final ResponseEntity<?> response = mock(ResponseEntity.class);
+
+        // Prepares the rules
         this.folder.newFile(pathToFirstAttachment);
         this.folder.newFile(pathToSecondAttachment);
 
-        when(this.mailSender.createMimeMessage()).thenReturn(message);
-        doNothing().when(this.mailSender).send(message);
+        // Mocks the calls
+        when(this.sender.createMimeMessage()).thenReturn(message);
+        when(this.helper.resolvePutResponse(any(Runnable.class))).thenReturn(response);
 
-        final ResponseEntity<?> response = this.mailController.sendMail(mail);
+        // Calls the method
+        final ResponseEntity<?> result = this.mailController.sendMail(mail);
 
-        assertNotNull(response, "Response unexpectedly null");
-        assertSame(OK, response.getStatusCode(), "Response status different from expected");
-        assertNull(response.getBody(), "Response body unexpectedly not null");
+        // Checks the mocks calls
+        verify(this.sender).createMimeMessage();
+        verify(this.helper).resolvePutResponse(any(Runnable.class));
+
+        // Checks the result
+        assertSame(response, result, "Result different from expected");
         assertEquals(recipient, message.getAllRecipients()[0].toString(), "Recipient different from expected");
         assertEquals(subject, message.getSubject(), "Subject different from expected");
         assertDoesNotThrow(message::getContent, "Content unexpectedly null");
-
-        verify(this.mailSender, times(1)).createMimeMessage();
-        verify(this.mailSender, times(1)).send(message);
     }
 
     /**
-     * Tests the {@link MailController#sendMail} method with {@link HttpStatus#INTERNAL_SERVER_ERROR} status and a null recipient.
+     * Tests the {@link MailController#sendMail} method in error.
      */
     @Test
     @SneakyThrows
-    @DisplayName("Sending a mail with an OK status and a null recipient")
-    final void testSendMailWithOkStatusAndNullRecipient() {
-        final Mail mail = new Mail();
-        final String subject = "subject";
-        mail.setSubject(subject);
-        final String content = "content";
-        mail.setContent(content);
-
-        final ResponseEntity<?> response = this.mailController.sendMail(mail);
-
-        assertNotNull(response, "Response unexpectedly null");
-        assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
-        assertNotNull(response.getBody(), "Response body unexpectedly null");
-        assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(AssertionError.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
-            "Response body message different from expected");
-    }
-
-    /**
-     * Tests the {@link MailController#sendMail} method with {@link HttpStatus#INTERNAL_SERVER_ERROR} status.
-     */
-    @Test
-    @DisplayName("Sending a mail with an INTERNAL_SERVER_ERROR status")
-    final void testSendMailWithInternalError() {
-        final Mail mail = new Mail();
+    @DisplayName("Send mail (error case)")
+    final void testSendMailInError() {
+        // Prepares the inputs
         final String recipient = "localPart@domain";
-        mail.setRecipient(recipient);
         final String subject = "subject";
-        mail.setSubject(subject);
         final String content = "content";
+        final String pathToFirstAttachment = "pathToFirstAttachment";
+        final String pathToSecondAttachment = "pathToSecondAttachment";
+        final Mail mail = new Mail();
+        mail.setRecipient(recipient);
+        mail.setSubject(subject);
         mail.setContent(content);
+        mail.setAttachmentArray(new String[] {pathToFirstAttachment, pathToSecondAttachment});
 
-        when(this.mailSender.createMimeMessage()).thenThrow(new RuntimeException(""));
+        // Prepares the intermediary results
+        final MimeMessage message = new MimeMessage((Session) null);
 
-        final ResponseEntity<?> response = this.mailController.sendMail(mail);
+        // Prepares the rules
+        this.folder.newFile(pathToFirstAttachment);
+        this.folder.newFile(pathToSecondAttachment);
 
-        assertNotNull(response, "Response unexpectedly null");
-        assertSame(INTERNAL_SERVER_ERROR, response.getStatusCode(), "Response status different from expected");
-        assertNotNull(response.getBody(), "Response body unexpectedly null");
-        assertSame(Response.class, response.getBody().getClass(), "Response body class different from expected");
-        assertSame(RuntimeException.class.getSimpleName(), ((Response) response.getBody()).getMessage(),
-            "Response body message different from expected");
+        // Mocks the calls
+        when(this.sender.createMimeMessage()).thenReturn(message);
+        when(this.helper.resolvePutResponse(any(Runnable.class))).thenThrow(new RuntimeException());
 
-        verify(this.mailSender, times(1)).createMimeMessage();
+        // Calls the method
+        assertThrows(RuntimeException.class, () -> this.mailController.sendMail(mail));
+
+        // Checks the mocks calls
+        verify(this.sender).createMimeMessage();
+        verify(this.helper).resolvePutResponse(any(Runnable.class));
+
+        // Checks the result
+        assertEquals(recipient, message.getAllRecipients()[0].toString(), "Recipient different from expected");
+        assertEquals(subject, message.getSubject(), "Subject different from expected");
+        assertDoesNotThrow(message::getContent, "Content unexpectedly null");
     }
 
 }

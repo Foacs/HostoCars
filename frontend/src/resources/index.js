@@ -11,6 +11,9 @@ export { default as Logo } from './img/logo/Logo';
 // Menu
 export { menuItems } from './menu';
 
+// Strings
+export * from './strings';
+
 // Theme
 export { theme } from './theme';
 

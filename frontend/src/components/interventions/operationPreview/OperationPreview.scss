@@ -1,0 +1,25 @@
+@import '../../../resources/colors';
+
+#OperationPreview {
+    .LinesChip {
+        cursor: pointer;
+        width:  50px;
+
+        & > span {
+            align-self: center;
+        }
+    }
+
+    .List {
+        margin:  -12px 0;
+        padding: 0 12px;
+        width:   100%;
+    }
+
+    .Label {
+        align-self:  center;
+        color:       $gray-dark;
+        font-weight: bold;
+        width:       calc(100% - 78px);
+    }
+}

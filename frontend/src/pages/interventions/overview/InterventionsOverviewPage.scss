@@ -1,0 +1,55 @@
+#InterventionsOverviewPage {
+    .ErrorPanel, .LoadingPanel {
+        left: calc(50% + 128px);
+    }
+
+    .InterventionsPanel {
+        .InterventionsPanelContent {
+            #InterventionPreview {
+                box-shadow: none;
+            }
+
+            .NoInterventionsLabel {
+                margin-bottom: 12px;
+                width:         100%;
+            }
+        }
+
+        .InterventionsPanelHeader {
+            cursor:     default;
+            min-height: 52px;
+
+            .InterventionsPanelTitle {
+                left:     24px;
+                position: absolute;
+                top:      12px;
+            }
+        }
+    }
+
+    .OverviewInfoPanel {
+        border-radius: 4px;
+
+        .Header {
+            cursor:     default;
+            min-height: 52px;
+        }
+
+        .TableRow {
+            &:last-child > * {
+                border-bottom: none;
+            }
+
+            .TableRowValue {
+                align-self: center;
+                width:      50px;
+            }
+        }
+    }
+
+    .StaticColumn {
+        min-width: 210px;
+        position:  fixed;
+        width:     calc(33% - 128px);
+    }
+}

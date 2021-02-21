@@ -2,12 +2,12 @@
 
 #NotFoundPage {
     color:          $primary-color;
-    left:           calc(50% - 128px);
+    left:           calc(50% - 224px);
     overflow:       hidden;
     pointer-events: none;
     position:       absolute;
     text-align:     center;
-    top:            20%;
+    top:            10%;
 
     .Label {
         font-weight: normal;

@@ -31,10 +31,20 @@ class Notifier extends PureComponent {
      * Method called when the component did update.
      */
     componentDidUpdate() {
-        const { closeSnackbar, dequeueNotification, enqueueSnackbar, notifications } = this.props;
+        const {
+            closeSnackbar,
+            dequeueNotification,
+            enqueueSnackbar,
+            notifications
+        } = this.props;
 
         // Iterates over the notifications to update their statuses
-        notifications.forEach(({ dismissed = false, key, message, options = {} }) => {
+        notifications.forEach(({
+            dismissed = false,
+            key,
+            message,
+            options = {}
+        }) => {
             // If the notification is to be dismissed, closes it
             if (dismissed) {
                 closeSnackbar(key);
@@ -61,7 +71,10 @@ class Notifier extends PureComponent {
                 this.displayed = this.displayed.filter(k => key !== k);
             };
 
-            const { content, variant } = options;
+            const {
+                content,
+                variant
+            } = options;
 
             // Defines the notification to display
             const notification = (<Notification id={key} message={message} onClose={handleClose} variant={variant}>

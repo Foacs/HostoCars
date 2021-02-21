@@ -1,5 +1,5 @@
 import { createMuiTheme } from '@material-ui/core/styles';
-
+// noinspection ES6CheckImport
 import {
     backgroundColor, backgroundLightColor, errorColor, errorDarkColor, errorLightColor, primaryColor, primaryDarkColor, primaryLightColor,
     secondaryColor, secondaryDarkColor, secondaryLightColor
