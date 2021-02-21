@@ -68,6 +68,7 @@ class CarPage extends PureComponent {
             isDeleteCarModalOpen: false,
             isUpdateCarModalOpen: false,
             isUpdateInterventionsModalOpen: false,
+            isUpdateInterventionsModalValidationActive: false,
             redirect: false,
             updateInterventionsModalCar: undefined
         };
@@ -162,7 +163,8 @@ class CarPage extends PureComponent {
      */
     onCloseUpdateInterventionsModal() {
         this.setState({
-            isUpdateInterventionsModalOpen: false
+            isUpdateInterventionsModalOpen: false,
+            isUpdateInterventionsModalValidationActive: false
         });
     }
 
@@ -217,7 +219,10 @@ class CarPage extends PureComponent {
      * Handles the 'Update interventions' button click action.
      */
     onOpenUpdateInterventionsModal() {
-        this.setState({ isUpdateInterventionsModalOpen: true });
+        this.setState({
+            isUpdateInterventionsModalOpen: true,
+            isUpdateInterventionsModalValidationActive: false
+        });
     };
 
     /**
@@ -252,10 +257,15 @@ class CarPage extends PureComponent {
     /**
      * Handles the 'Update interventions' modal validate action.
      */
-    onValidateUpdateInterventionsModal(car) {
-        const { updateCar } = this.props;
+    onValidateUpdateInterventionsModal(isValid, car) {
+        if (isValid) {
+            this.setState({ isUpdateInterventionsModalValidationActive: false });
 
-        updateCar(car);
+            const { updateCar } = this.props;
+            updateCar(car);
+        } else {
+            this.setState({ isUpdateInterventionsModalValidationActive: true });
+        }
     }
 
     /**
@@ -309,6 +319,7 @@ class CarPage extends PureComponent {
             isDeleteCarModalOpen,
             isUpdateCarModalOpen,
             isUpdateInterventionsModalOpen,
+            isUpdateInterventionsModalValidationActive,
             redirect,
             updateInterventionsModalCar
         } = this.state;
@@ -471,7 +482,8 @@ class CarPage extends PureComponent {
 
                     <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteCarModalOpen} onValidate={this.onValidateDeleteCarModal} />
 
-                    <UpdateInterventionModal car={carToUpdate} onClose={this.onCloseUpdateInterventionsModal}
+                    <UpdateInterventionModal car={carToUpdate} isValidationActive={isUpdateInterventionsModalValidationActive}
+                                             onClose={this.onCloseUpdateInterventionsModal}
                                              onEnter={this.onEnterUpdateInterventionsModal} open={isUpdateInterventionsModalOpen}
                                              onUpdateCar={this.onUpdateInterventionsModalCar} onValidate={this.onValidateUpdateInterventionsModal} />
                 </Fragment>);

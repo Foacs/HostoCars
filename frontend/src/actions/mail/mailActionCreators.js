@@ -32,7 +32,7 @@ export const sendMailAction = (mail) => {
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors de l\'envoi du mail.',
                         options: {
-                            content: <ErrorNotificationContent disableMail error={e} />,
+                            content: <ErrorNotificationContent disableMail error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }

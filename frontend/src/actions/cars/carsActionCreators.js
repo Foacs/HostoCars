@@ -106,7 +106,7 @@ export const deleteCarAction = (id) => {
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors de la suppression d\'une voiture.',
                         options: {
-                            content: <ErrorNotificationContent error={e} />,
+                            content: <ErrorNotificationContent error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }
@@ -173,7 +173,7 @@ export const getCarByIdAction = (id) => {
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors du chargement d\'une voiture.',
                         options: {
-                            content: <ErrorNotificationContent error={e} />,
+                            content: <ErrorNotificationContent error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }
@@ -250,7 +250,7 @@ export const getCarsAction = () => {
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors du chargement des voitures.',
                         options: {
-                            content: <ErrorNotificationContent error={e} />,
+                            content: <ErrorNotificationContent error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }
@@ -331,7 +331,7 @@ export const updateCarAction = (car) => {
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors de l\'édition d\'une voiture.',
                         options: {
-                            content: <ErrorNotificationContent error={e} />,
+                            content: <ErrorNotificationContent error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }

@@ -5,116 +5,140 @@
     min-width:  600px;
     padding:    12px 0;
 
-    & > .Header {
-        background-color: transparent;
-
-        & > div {
-            margin:  0;
-            padding: 0;
-        }
-
-        .AmountGauge {
-            align-self: center;
-            margin:     0 -22px;
-            width:      95px;
-        }
-
-        .Number {
-            align-self: center;
-            width:      90px;
-        }
-
-        .Description {
-            align-self:  center;
-            margin-left: 24px;
-            width:       calc(100% - 400px);
-        }
-
-        .OperationChip {
-            align-self: center;
-            cursor:     pointer;
-            width:      50px;
-        }
-
-        .Status {
-            align-self: center;
-            cursor:     inherit;
-            margin:     0 12px 0 66px;
-            width:      90px;
-        }
+    &::before {
+        background-color: rgba(0, 0, 0, 0.12);
+        content:          '';
+        height:           1px;
+        left:             0;
+        opacity:          1;
+        position:         absolute;
+        right:            0;
+        top:              -1px;
+        transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
     }
 
-    .Content {
-        .Amount, .EstimatedTime, .Mileage, .PaidAmount, .RealTime {
-            width: 100%;
+    .InterventionForm {
+        &_Summary {
+            background: $transparent;
 
-            & > div > input {
-                padding:    6px 14px;
-                text-align: center;
+            & > div {
+                margin:  0;
+                padding: 0;
+            }
+
+            &_AmountGauge {
+                align-self: center;
+                margin:     0 -22px;
+                width:      95px;
+            }
+
+            &_DeleteButton {
+                color:   $error-color;
+                margin:  1px 0;
+                padding: 12px 15px;
+            }
+
+            &_DescriptionField {
+                align-self:  center;
+                margin-left: 24px;
+                width:       calc(100% - 400px);
+            }
+
+            &_OperationsStatus {
+                align-self: center;
+                cursor:     pointer;
+                width:      50px;
+            }
+
+            &_NumberLabel {
+                align-self: center;
+                width:      90px;
+            }
+
+            &_Status {
+                align-self: center;
+                cursor:     inherit;
+                margin:     0 12px 0 66px;
+                width:      90px;
             }
         }
 
-        .AmountLabel, .MileageLabel, .TimeLabel {
-            color:   $gray;
-            padding: 6px 24px 0 0;
-            width:   100%;
-        }
+        &_Content {
+            &_Amount, &_EstimatedTime, &_Mileage, &_PaidAmount, &_RealTime {
+                width: 100%;
 
-        .Comments {
-            padding-bottom: 24px;
-            width:          100%;
-        }
-
-        .Divider {
-            margin-right: 24px;
-        }
-
-        .OperationList {
-            padding: 0 12px;
-
-            .AddOperationButton {
-                margin: 16px 0 16px 18px;
+                & > div > input {
+                    padding:    6px 14px;
+                    text-align: center;
+                }
             }
 
-            #OperationForm:last-of-type {
-                &::after {
-                    background-color: rgba(0, 0, 0, 0.12);
-                    bottom:           -1px;
-                    content:          '';
-                    height:           1px;
-                    left:             0;
-                    opacity:          1;
-                    position:         absolute;
-                    right:            0;
-                    transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+            &_Amount, &_EstimatedTime {
+                padding-left: 2px;
+            }
+
+            &_PaidAmount, &_RealTime {
+                padding-right: 2px;
+            }
+
+            &_AmountLabel, &_MileageLabel, &_TimeLabel {
+                color:   $gray;
+                padding: 6px 24px 0 0;
+                width:   100%;
+            }
+
+            &_Comments {
+                padding-bottom: 24px;
+                width:          100%;
+            }
+
+            &_DataDivider {
+                margin-right: 24px;
+            }
+
+            &_Operations {
+                padding: 0 12px;
+
+                &_CreateButton {
+                    margin: 16px 0 16px 18px;
+                }
+
+                &_OperationForm:last-of-type {
+                    &::after {
+                        background-color: rgba(0, 0, 0, 0.12);
+                        bottom:           -1px;
+                        content:          '';
+                        height:           1px;
+                        left:             0;
+                        opacity:          1;
+                        position:         absolute;
+                        right:            0;
+                        transition:       opacity 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, background-color 150ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+                    }
+                }
+            }
+
+            &_OperationsTitle {
+                width: 100%;
+            }
+
+            &_StatusStepper {
+                margin:  12px;
+                padding: 12px 12px 24px 12px;
+                width:   100%;
+
+                &_Step {
+                    &-finished {
+                        & svg {
+                            color: $secondary-color;
+                        }
+                    }
+
+                    &_Button {
+                        border-radius: 64px;
+                    }
                 }
             }
         }
-
-        .OperationListTitle {
-            width: 100%;
-        }
-
-        .StatusStepper {
-            padding: 12px 12px 24px 12px;
-            width:   100%;
-        }
-
-        .Step {
-            &_finished {
-                & svg {
-                    color: $secondary-color;
-                }
-            }
-        }
-
-        .StatusStepButton {
-            border-radius: 64px;
-        }
-    }
-
-    .DeleteButton {
-        color:   $error-color;
-        padding: 12px 15px;
     }
 }
