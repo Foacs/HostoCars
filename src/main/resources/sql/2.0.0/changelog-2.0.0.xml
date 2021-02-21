@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <include file="classpath:/sql/2.0.0/changelog-create-interventions-table.xml" />
+    <include file="classpath:/sql/2.0.0/changelog-create-operations-table.xml" />
+    <include file="classpath:/sql/2.0.0/changelog-create-operation-lines-table.xml" />
+    <include file="classpath:/sql/2.0.0/changelog-create-interventions-sequences-table.xml" />
+    <include file="classpath:/sql/2.0.0/changelog-create-interventions-number-triggers.xml" />
+
+    <changeSet author="liquibase" id="tag-version-2.0.0">
+        <tagDatabase tag="2.0.0" />
+    </changeSet>
+</databaseChangeLog>

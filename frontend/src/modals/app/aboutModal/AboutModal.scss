@@ -1,0 +1,12 @@
+@import '../../../resources/colors';
+
+#AboutModal {
+    .Logo {
+        padding: 0 16px 32px;
+        width:   256px;
+    }
+
+    .Title {
+        color: $primary-color;
+    }
+}

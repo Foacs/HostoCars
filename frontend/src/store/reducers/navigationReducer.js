@@ -4,6 +4,7 @@ import { navigationActionTypes as types } from 'actions';
 const initialState = {
     currentNavigationPath: [],
     currentPageName: '',
+    menuItems: [],
     selectedMenuIndex: -1
 };
 
@@ -19,13 +20,18 @@ const initialState = {
  */
 const navigationReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.CHANGE_CURRENT_PAGE:
+        case types.UPDATE_CURRENT_PAGE:
             return {
                 ...state,
                 currentNavigationPath: action.pagePath,
                 currentPageName: action.pageName
             };
-        case types.CHANGE_SELECTED_MENU_INDEX:
+        case types.UPDATE_MENU_ITEMS :
+            return {
+                ...state,
+                menuItems: action.items
+            };
+        case types.UPDATE_SELECTED_MENU_INDEX:
             return {
                 ...state,
                 selectedMenuIndex: action.index

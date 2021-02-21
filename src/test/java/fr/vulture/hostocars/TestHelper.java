@@ -15,45 +15,39 @@ import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
 import com.openpojo.validation.rule.impl.SerializableMustHaveSerialVersionUIDRule;
 import com.openpojo.validation.rule.impl.SetterMustExistRule;
 import com.openpojo.validation.rule.impl.TestClassMustBeProperlyNamedRule;
-import com.openpojo.validation.test.impl.DefaultValuesNullTester;
 import com.openpojo.validation.test.impl.GetterTester;
 import com.openpojo.validation.test.impl.SerializableTester;
 import com.openpojo.validation.test.impl.SetterTester;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * Helper class for testing.
+ * Helper class for unit tests.
  */
-@Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class TestHelper {
 
-    private static Validator beanValidator;
+    private static Validator pojoValidator;
 
     /**
-     * Validates a bean class.
+     * Validates a POJO class.
      *
-     * @param beanClass
-     *     The bean class to validate
+     * @param pojoClass
+     *     The POJO class to validate
      */
-    public static void validateBean(@NonNull final Class beanClass) {
-        log.trace("Validating the bean class : {}", beanClass.getSimpleName());
-        getBeanValidator().validate(PojoClassFactory.getPojoClass(beanClass));
+    public static void validatePojo(@NonNull final Class pojoClass) {
+        getPojoValidator().validate(PojoClassFactory.getPojoClass(pojoClass));
     }
 
     /**
-     * Returns the static bean validator after initializing it if necessary.
+     * Returns the static POJO validator after initializing it if necessary.
      *
-     * @return a bean validator
+     * @return a POJO validator
      */
-    private static Validator getBeanValidator() {
-        if (isNull(beanValidator)) {
-            log.trace("Initializing the bean validator");
-            beanValidator = create().with(new DefaultValuesNullTester())
-                .with(new EqualsAndHashCodeMatchRule())
+    private static Validator getPojoValidator() {
+        if (isNull(pojoValidator)) {
+            pojoValidator = create().with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())
                 .with(new GetterTester())
                 .with(new NoFieldShadowingRule())
@@ -69,7 +63,7 @@ public final class TestHelper {
                 .build();
         }
 
-        return beanValidator;
+        return pojoValidator;
     }
 
 }

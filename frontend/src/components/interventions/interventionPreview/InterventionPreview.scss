@@ -1,0 +1,91 @@
+@import '../../../resources/colors';
+
+#InterventionPreview {
+    min-width: 600px;
+    width:     100%;
+
+    &.InterventionPreview_withoutShadow {
+        box-shadow: none;
+    }
+
+    .Header {
+        & > div {
+            margin:  0;
+            padding: 0;
+        }
+
+        .AmountGauge {
+            align-self: center;
+            margin:     0 -22px;
+            width:      95px;
+        }
+
+        .CarLink, .Number {
+            align-self: center;
+            width:      90px;
+        }
+
+        .Description {
+            align-self: center;
+            padding:    12px 0 12px 12px;
+            width:      calc(100% - 400px);
+        }
+
+        .OperationChip {
+            align-self: center;
+            cursor:     pointer;
+            width:      50px;
+        }
+
+        .Status {
+            align-self: center;
+            cursor:     inherit;
+            margin:     0 12px;
+            width:      90px;
+
+            &.Status_withPadding {
+                margin-left: 90px;
+            }
+        }
+    }
+
+    .Content {
+        .Amount, .Mileage, .Time {
+            padding-left: 24px;
+            width:        100%;
+        }
+
+        .AmountLabel, .MileageLabel, .TimeLabel {
+            color:         $gray;
+            padding-right: 24px;
+            width:         100%;
+        }
+
+        .Comments {
+            padding: 12px;
+            width:   100%;
+        }
+
+        .OperationList {
+            padding: 8px 12px 0 12px;
+        }
+
+        .OperationListTitle {
+            padding-top: 18px;
+            width:       100%;
+        }
+
+        .StatusStepper {
+            padding: 12px;
+            width:   100%;
+        }
+
+        .Step {
+            &_finished {
+                & svg {
+                    color: $secondary-color;
+                }
+            }
+        }
+    }
+}

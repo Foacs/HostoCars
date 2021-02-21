@@ -19,7 +19,7 @@ import { WEB_SERVICE_BASE_URL } from 'resources';
  */
 export const sendMailAction = (mail) => {
     return (dispatch) => {
-        return axios.post(`${WEB_SERVICE_BASE_URL}/mail/send`, mail)
+        return axios.put(`${WEB_SERVICE_BASE_URL}/mails`, mail)
                 .then(() => {
                     dispatch(enqueueNotificationAction({
                         message: 'Mail envoyé avec succès.',
@@ -32,7 +32,7 @@ export const sendMailAction = (mail) => {
                     dispatch(enqueueNotificationAction({
                         message: 'Une erreur est survenue lors de l\'envoi du mail.',
                         options: {
-                            content: <ErrorNotificationContent disableMail error={e} />,
+                            content: <ErrorNotificationContent disableMail error={e} timestamp={new Date().toLocaleString()} />,
                             persist: true,
                             variant: 'error'
                         }

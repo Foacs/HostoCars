@@ -1,0 +1,38 @@
+@import '../../resources/colors';
+
+#ApiPage {
+    .swagger-ui {
+        .link {
+            display: none;
+        }
+
+        .title {
+            color: $primary-color;
+
+            span small {
+                background-color: $warning-light-color;
+            }
+        }
+
+        .version-stamp, .response-col_links, .response-controls, .content-type-wrapper, .prop-format, .scheme-container, .svg-assets {
+            display: none;
+        }
+
+        .parameter__type, .parameter__in {
+            font-family: sans-serif;
+            font-size:   12px;
+        }
+
+        .required::after {
+            font-family: sans-serif;
+            font-size:   10px;
+        }
+
+        .property-row {
+            .prop-type, td:first-child {
+                font-family: sans-serif;
+                font-size:   12px;
+            }
+        }
+    }
+}

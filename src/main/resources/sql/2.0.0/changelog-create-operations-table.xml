@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="liquibase" id="changelog-create-operations-table">
+        <createTable tableName="operations">
+            <column name="id" type="INTEGER" autoIncrement="true">
+                <constraints nullable="false" primaryKey="true" unique="true" />
+            </column>
+
+            <column name="interventionId" type="INTEGER">
+                <constraints nullable="false" foreignKeyName="fkOperationsInterventions" references="interventions(id)" referencedColumnNames="id"
+                             referencedTableName="interventions" />
+            </column>
+
+            <column name="label" type="TEXT">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <comment>
+            Creating operations table
+        </comment>
+    </changeSet>
+</databaseChangeLog>

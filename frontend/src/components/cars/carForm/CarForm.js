@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -8,7 +8,8 @@ import {
 import { CancelRounded as CancelIcon, FolderOpenRounded as BrowseIcon, HelpOutlineRounded as HelpIcon } from '@material-ui/icons';
 import { DatePicker } from '@material-ui/pickers';
 
-import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, extractFileNameFromURL, formatDateLabel, loadFileAsByteArray } from 'resources';
+import { BottomBar } from 'components';
+import { CarPropType, ENTER_KEY_CODE, ESCAPE_KEY_CODE, extractFileNameFromUrl, formatDateLabel, loadFileAsByteArray } from 'resources';
 
 import './CarForm.scss';
 
@@ -17,10 +18,6 @@ const currentCertificateLabel = 'Carte grise actuelle';
 
 // Defines the certificate field value label when the current car has an image
 const currentImageLabel = 'Image actuelle';
-
-// Defines the help text
-const helpText = <i>Veuillez remplir le formulaire ci-dessous puis cliquer sur 'Ajouter' afin d'ajouter une nouvelle voiture.
-    Les champs annotés du symbole * sont obligatoires.</i>;
 
 // Defines the text to display when the registration is not provided
 const registrationRequiredHelperText = 'Veuillez renseigner l\'immatriculation';
@@ -58,32 +55,42 @@ const ownerRequiredHelperText = 'Veuillez renseigner le nom du propriétaire';
  *
  * @constructor
  */
-function CarForm({ car, className, onClose, onValidate, open, registrations, serialNumbers, title, validateButtonLabel }) {
+function CarForm({
+    car,
+    className,
+    onClose,
+    onValidate,
+    open,
+    registrations,
+    serialNumbers,
+    title,
+    validateButtonLabel
+}) {
     // Initializes the help flag
-    const [ help, setHelp ] = React.useState(false);
+    const [ help, setHelp ] = useState(false);
 
     // Initializes the car fields
-    const [ registration, setRegistration ] = React.useState(car.registration ? car.registration : '');
-    const [ serialNumber, setSerialNumber ] = React.useState(car.serialNumber ? car.serialNumber : '');
-    const [ owner, setOwner ] = React.useState(car.owner ? car.owner : '');
-    const [ brand, setBrand ] = React.useState(car.brand ? car.brand : '');
-    const [ model, setModel ] = React.useState(car.model ? car.model : '');
-    const [ motorization, setMotorization ] = React.useState(car.motorization ? car.motorization : '');
-    const [ engineCode, setEngineCode ] = React.useState(car.engineCode ? car.engineCode : '');
-    const [ releaseDate, setReleaseDate ] = React.useState(car.releaseDate ? car.releaseDate : null);
-    const [ certificate, setCertificate ] = React.useState(car.certificate ? car.certificate : null);
-    const [ picture, setPicture ] = React.useState(car.picture ? car.picture : null);
-    const [ comments, setComments ] = React.useState(car.comments ? car.comments : '');
+    const [ registration, setRegistration ] = useState(car.registration ? car.registration : '');
+    const [ serialNumber, setSerialNumber ] = useState(car.serialNumber ? car.serialNumber : '');
+    const [ owner, setOwner ] = useState(car.owner ? car.owner : '');
+    const [ brand, setBrand ] = useState(car.brand ? car.brand : '');
+    const [ model, setModel ] = useState(car.model ? car.model : '');
+    const [ motorization, setMotorization ] = useState(car.motorization ? car.motorization : '');
+    const [ engineCode, setEngineCode ] = useState(car.engineCode ? car.engineCode : '');
+    const [ releaseDate, setReleaseDate ] = useState(car.releaseDate ? car.releaseDate : null);
+    const [ certificate, setCertificate ] = useState(car.certificate ? car.certificate : null);
+    const [ picture, setPicture ] = useState(car.picture ? car.picture : null);
+    const [ comments, setComments ] = useState(car.comments ? car.comments : '');
 
     // Initializes the labels for the uploaded files
-    const [ certificateFileName, setCertificateFileName ] = React.useState(car.certificate ? currentCertificateLabel : '');
-    const [ pictureFileName, setPictureFileName ] = React.useState(car.picture ? currentImageLabel : '');
+    const [ certificateFileName, setCertificateFileName ] = useState(car.certificate ? currentCertificateLabel : '');
+    const [ pictureFileName, setPictureFileName ] = useState(car.picture ? currentImageLabel : '');
 
     // Initializes the constraints
-    const [ registrationRequired, setRegistrationRequired ] = React.useState(false);
-    const [ registrationUnique, setRegistrationUnique ] = React.useState(false);
-    const [ serialNumberUnique, setSerialNumberUnique ] = React.useState(false);
-    const [ ownerRequired, setOwnerRequired ] = React.useState(false);
+    const [ registrationRequired, setRegistrationRequired ] = useState(false);
+    const [ registrationUnique, setRegistrationUnique ] = useState(false);
+    const [ serialNumberUnique, setSerialNumberUnique ] = useState(false);
+    const [ ownerRequired, setOwnerRequired ] = useState(false);
 
     // Defines the adornment of the certificate field depending on the certificate being null or not
     const certificateFieldAdornment = certificate ? (<InputAdornment position='end'>
@@ -200,17 +207,20 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 setEngineCode(e.target.value);
                 break;
             case 'releaseDate':
-                setReleaseDate(`${e.getFullYear()}-${(e.getMonth() + 1)
-                        .toLocaleString('fr', {
-                            minimumIntegerDigits: 2,
-                            useGrouping: false
-                        })}`);
+                if (null === e) {
+                    setReleaseDate(e);
+                } else {
+                    setReleaseDate(`${e.getFullYear()}-${(e.getMonth() + 1).toLocaleString('fr', {
+                        minimumIntegerDigits: 2,
+                        useGrouping: false
+                    })}`);
+                }
                 break;
             case 'certificate':
                 const certificateDocument = document.getElementById('CertificateInput');
 
                 const certificateUrl = certificateDocument.value;
-                setCertificateFileName(extractFileNameFromURL(certificateUrl));
+                setCertificateFileName(extractFileNameFromUrl(certificateUrl));
 
                 const certificateFile = certificateDocument.files[0];
                 setCertificate(loadFileAsByteArray(certificateFile));
@@ -219,7 +229,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 const pictureDocument = document.getElementById('PictureInput');
 
                 const pictureUrl = pictureDocument.value;
-                setPictureFileName(extractFileNameFromURL(pictureUrl));
+                setPictureFileName(extractFileNameFromUrl(pictureUrl));
 
                 const pictureFile = pictureDocument.files[0];
                 setPicture(loadFileAsByteArray(pictureFile));
@@ -271,7 +281,7 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
         // Checks the form validation
         if (validateForm()) {
             const validatedCar = {
-                id: car.id,
+                ...car,
                 registration: emptyValue === registration ? null : registration,
                 serialNumber: emptyValue === serialNumber ? null : serialNumber,
                 owner: emptyValue === owner ? null : owner,
@@ -318,13 +328,13 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
         }
 
         // Validates the serial number field
-        if (null !== serialNumber && '' !== serialNumber && serialNumbers.includes(serialNumber)) {
+        if (null != serialNumber && '' !== serialNumber && serialNumbers.includes(serialNumber)) {
             setSerialNumberUnique(true);
             isValid = false;
         }
 
         // Validates the owner field
-        if (null === owner || '' === owner) {
+        if (null == owner || '' === owner) {
             setOwnerRequired(true);
             isValid = false;
         }
@@ -342,12 +352,27 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
         </DialogTitle>
 
         <DialogContent>
-            <DialogContentText className={!help && 'Instructions_hidden'}>
-                {helpText}
+            <DialogContentText className={help ? 'Instructions' : 'Instructions_hidden'}>
+                <i>
+                    {`Veuillez remplir le formulaire ci-dessous puis cliquer sur '${validateButtonLabel}' pour terminer.
+                    Les champs annotés du symbole * sont obligatoires.`}
+                </i>
             </DialogContentText>
 
             <Grid alignItems='center' container direction='column' justify='center'>
                 <Grid alignItems='center' container justify='space-between' spacing={2}>
+                    <Grid item xs>
+                        <TextField className={`Field ${ownerRequired && 'Field_error'}`}
+                                   error={ownerRequired}
+                                   fullWidth
+                                   helperText={ownerRequired && ownerRequiredHelperText}
+                                   label='Propriétaire'
+                                   onChange={e => onFieldValueChanged(e, 'owner')}
+                                   required
+                                   value={owner}
+                                   variant='outlined' />
+                    </Grid>
+
                     <Grid item xs>
                         <TextField className={`Field ${(registrationRequired || registrationUnique) && 'Field_error'}`}
                                    error={registrationRequired || registrationUnique}
@@ -360,7 +385,9 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                                    value={registration}
                                    variant='outlined' />
                     </Grid>
+                </Grid>
 
+                <Grid alignItems='center' container justify='space-between' spacing={2}>
                     <Grid item xs>
                         <TextField className={`Field ${(serialNumberUnique) && 'Field_error'}`}
                                    error={serialNumberUnique}
@@ -369,20 +396,6 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                                    label='VIN'
                                    onChange={e => onFieldValueChanged(e, 'serialNumber')}
                                    value={serialNumber}
-                                   variant='outlined' />
-                    </Grid>
-                </Grid>
-
-                <Grid alignItems='center' container justify='space-between' spacing={2}>
-                    <Grid item xs>
-                        <TextField className={`Field ${ownerRequired && 'Field_error'}`}
-                                   error={ownerRequired}
-                                   fullWidth
-                                   helperText={ownerRequired && ownerRequiredHelperText}
-                                   label='Propriétaire'
-                                   onChange={e => onFieldValueChanged(e, 'owner')}
-                                   required
-                                   value={owner}
                                    variant='outlined' />
                     </Grid>
 
@@ -452,10 +465,12 @@ function CarForm({ car, className, onClose, onValidate, open, registrations, ser
                 Annuler
             </Button>
 
-            <Button autoFocus className='ValidateButton' color='primary' onClick={onValidateAction}>
+            <Button autoFocus className='ValidateButton' color='secondary' onClick={onValidateAction}>
                 {validateButtonLabel}
             </Button>
         </DialogActions>
+
+        <BottomBar />
     </Dialog>);
 }
 
