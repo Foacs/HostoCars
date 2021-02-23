@@ -5,12 +5,15 @@ import static org.springframework.boot.SpringApplication.exit;
 import java.awt.Desktop;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
+import java.awt.SplashScreen;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -21,15 +24,26 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 /**
- * Helper to add a tray icon at application startup.
+ * Worker running at startup to initialize the DB folder, add a tray icon and close the splash screen.
  */
 @Slf4j
 @Component
-public class SystemTrayHelper implements InitializingBean {
+public class StartupWorker implements InitializingBean {
 
     static {
         // Sets the java.awt.headless system property to enable the tray icon
         System.setProperty("java.awt.headless", "false");
+    }
+
+    /**
+     * Valued autowired constructor.
+     *
+     * @param applicationContext
+     *     The autowired {@link ApplicationContext} component
+     */
+    @Autowired
+    public StartupWorker(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
     }
 
     @NonNull
@@ -48,14 +62,14 @@ public class SystemTrayHelper implements InitializingBean {
     private String serverPort;
 
     /**
-     * Valued autowired constructor.
+     * This method is intended to be called before the application context's initialization.
      *
-     * @param applicationContext
-     *     The autowired {@link ApplicationContext} component
+     * @param args
+     *     The execution arguments
      */
-    @Autowired
-    public SystemTrayHelper(final ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+    public static void initialize(final String[] args) {
+        // Initializes the DB folder
+        new File("data").mkdir();
     }
 
     /**
@@ -122,6 +136,12 @@ public class SystemTrayHelper implements InitializingBean {
             }
         } else {
             log.warn("System tray not supported on this platform");
+        }
+
+        // Closes the splash screen (if there is one)
+        final SplashScreen splashScreen = SplashScreen.getSplashScreen();
+        if (Objects.nonNull(splashScreen)) {
+            splashScreen.close();
         }
     }
 

@@ -67,7 +67,7 @@
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
-            <version>4.0.0</version>
+            <version>3.10.3</version>
         </dependency>
         <!-- Open API -->
         <dependency>
@@ -188,6 +188,18 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <SplashScreen-Image>BOOT-INF/classes/splash.png</SplashScreen-Image>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
             </plugin>
         </plugins>
 

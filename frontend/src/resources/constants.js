@@ -31,7 +31,7 @@ export const INTERVENTION_STATUS_STEPS = [ 'Diagnostic', 'Commande', 'Réception
  *
  * @type {string}
  */
-export const LOG_FILE_PATH = './log/log.log';
+export const LOG_FILE_PATH = './log/server.log';
 
 /**
  * The web service 'No content' response status.
