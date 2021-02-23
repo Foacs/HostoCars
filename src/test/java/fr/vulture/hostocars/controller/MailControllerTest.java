@@ -25,6 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Test class for the {@link MailController} class.
@@ -52,6 +53,7 @@ class MailControllerTest {
     @SneakyThrows
     void initialize() {
         this.folder.create();
+        ReflectionTestUtils.setField(this.mailController, "mailUsername", "mailUsername");
     }
 
     /**
@@ -102,6 +104,7 @@ class MailControllerTest {
 
         // Checks the result
         assertSame(response, result, "Result different from expected");
+        assertEquals("mailUsername", message.getFrom()[0].toString(), "Expeditor different from expected");
         assertEquals(recipient, message.getAllRecipients()[0].toString(), "Recipient different from expected");
         assertEquals(subject, message.getSubject(), "Subject different from expected");
         assertDoesNotThrow(message::getContent, "Content unexpectedly null");
@@ -145,6 +148,7 @@ class MailControllerTest {
         verify(this.helper).resolvePutResponse(any(Runnable.class));
 
         // Checks the result
+        assertEquals("mailUsername", message.getFrom()[0].toString(), "Expeditor different from expected");
         assertEquals(recipient, message.getAllRecipients()[0].toString(), "Recipient different from expected");
         assertEquals(subject, message.getSubject(), "Subject different from expected");
         assertDoesNotThrow(message::getContent, "Content unexpectedly null");
