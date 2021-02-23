@@ -10,6 +10,28 @@
 
 <br />
 
+#### Version [`2.0.0`](https://github.com/Vulture68/HostoCars/releases/download/2.0.0/HostoCars.exe "Download HostoCars v2.0.0")
+
+<hr/>
+
+<div align="right">
+    <i>23 Fév 2020</i>
+</div>
+
+- Création de la page 'Interventions'
+- Création de la page 'API'
+- Refonte de la page 'Voiture'
+- Ajout du splash screen
+- Ajout du system tray icon
+- Correction du champ 'Mise en circulation'
+- Correction de la fonction d'envoi d'emails
+- Correction de la génération de rapports d'erreurs
+- Refonte de l'API
+- Refonte du backend
+- Mise en place de Liquibase
+
+<br />
+
 #### Version [`1.1.0`](https://github.com/Vulture68/HostoCars/releases/download/1.1.0/HostoCars.exe "Download HostoCars v1.1.0")
 
 <hr/>
