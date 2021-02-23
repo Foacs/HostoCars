@@ -14,6 +14,7 @@ import javax.mail.internet.MimeMessage;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,15 @@ import org.springframework.web.bind.annotation.RestController;
 @Tags(@Tag(name = "Mails", description = "Services related to mails."))
 public class MailController {
 
+    @NonNull
     private final JavaMailSender sender;
+
+    @NonNull
     private final ControllerHelper helper;
+
+    @NonNull
+    @Value("${spring.mail.username}")
+    private String mailUsername;
 
     /**
      * Valued autowired constructor.
@@ -72,6 +80,7 @@ public class MailController {
         final MimeMessageHelper messageHelper = new MimeMessageHelper(message, true);
 
         // Sets the message fields
+        messageHelper.setFrom(this.mailUsername);
         messageHelper.setTo(mail.getRecipient());
         messageHelper.setSubject(mail.getSubject());
         messageHelper.setText(mail.getContent(), true);
