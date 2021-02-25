@@ -110,6 +110,12 @@
             <version>0.8.13</version>
             <scope>test</scope>
         </dependency>
+        <!-- Jacoco -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.3</version>
+        </dependency>
     </dependencies>
 
     <profiles>
