@@ -21,7 +21,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /**
      * {@inheritDoc}
      */
-    @Loggable(debug = true)
+    @Loggable(debug = true, inputs = false)
     @Override
     public void addResourceHandlers(@NonNull final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**/*").addResourceLocations("classpath:/static/").resourceChain(true).addResolver(new CustomPathResourceResolver());
@@ -30,7 +30,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /**
      * {@inheritDoc}
      */
-    @Loggable(debug = true)
+    @Loggable(debug = true, inputs = false)
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**").allowedHeaders("*").exposedHeaders("Location");
@@ -44,7 +44,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * {@inheritDoc}
          */
-        @Loggable(debug = true)
+        @Loggable(debug = true, inputs = false, output = false)
         @SneakyThrows
         @Override
         public final Resource getResource(final String resourcePath, @NonNull final Resource location) {

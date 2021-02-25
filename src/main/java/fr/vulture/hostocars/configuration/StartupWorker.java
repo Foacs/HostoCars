@@ -75,7 +75,6 @@ public class StartupWorker implements InitializingBean {
     /**
      * {@inheritDoc}
      */
-    @Loggable(debug = true)
     @Override
     public void afterPropertiesSet() {
         // Checks if the current system supports the system tray

@@ -23,4 +23,24 @@ public @interface Loggable {
      */
     boolean debug() default false;
 
+    /**
+     * If the inputs of the method have to be logged at {@link Level#TRACE} level.
+     * <br/>
+     * <br/>
+     * Default value: {@code true}
+     *
+     * @return if the inputs of the method have to be logged at {@link Level#TRACE} level
+     */
+    boolean inputs() default true;
+
+    /**
+     * If the output of the method has to be logged at {@link Level#TRACE} level.
+     * <br/>
+     * <br/>
+     * Default value: {@code true}
+     *
+     * @return if the output of the method has to be logged at {@link Level#TRACE} level
+     */
+    boolean output() default true;
+
 }

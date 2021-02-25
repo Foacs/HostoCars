@@ -5,6 +5,7 @@ import static java.util.Objects.nonNull;
 import static javax.persistence.GenerationType.IDENTITY;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import fr.vulture.hostocars.configuration.Hide;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -63,10 +64,12 @@ public class Car implements Serializable {
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
+    @Hide
     @Exclude
     @Column(name = "certificate", columnDefinition = "BLOB")
     private byte[] certificate;
 
+    @Hide
     @Exclude
     @Column(name = "picture", columnDefinition = "BLOB")
     private byte[] picture;
