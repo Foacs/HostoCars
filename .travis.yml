@@ -1,0 +1,23 @@
+language: java
+
+git:
+  depth: false
+
+dist: trusty
+
+os:
+  - linux
+
+jdk:
+  - oraclejdk8
+
+addons:
+  sonarcloud:
+    organization: "foacs"
+    token: $SONAR_TOKEN
+
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
