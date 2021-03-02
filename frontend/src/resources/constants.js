@@ -6,13 +6,6 @@
 export const ENTER_KEY_CODE = 13;
 
 /**
- * The support e-mail address.
- *
- * @type {string}
- */
-export const SUPPORT_EMAIL_ADDRESS = 'brice.kessler@outlook.com';
-
-/**
  * The event key code of the 'Escape' key.
  *
  * @type {number}
@@ -25,13 +18,6 @@ export const ESCAPE_KEY_CODE = 27;
  * @type {string[]}
  */
 export const INTERVENTION_STATUS_STEPS = [ 'Diagnostic', 'Commande', 'Réception', 'Réalisation', 'Terminé' ];
-
-/**
- * The relative path to the logging file.
- *
- * @type {string}
- */
-export const LOG_FILE_PATH = './log/server.log';
 
 /**
  * The web service 'No content' response status.

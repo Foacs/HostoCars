@@ -12,14 +12,14 @@ import { WEB_SERVICE_BASE_URL } from 'resources';
  * <br />
  * If the operation fails, an error notification is shown.
  *
- * @param {object} mail
- *     The mail to send
+ * @param {object} details
+ *     The details of the mail to send
  *
  * @returns {Promise} the action promise
  */
-export const sendMailAction = (mail) => {
+export const sendMailAction = (details) => {
     return (dispatch) => {
-        return axios.put(`${WEB_SERVICE_BASE_URL}/mails`, mail)
+        return axios.put(`${WEB_SERVICE_BASE_URL}/mails`, details)
                 .then(() => {
                     dispatch(enqueueNotificationAction({
                         message: 'Mail envoyé avec succès.',
