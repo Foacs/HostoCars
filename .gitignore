@@ -15,7 +15,7 @@
 /src/main/resources/static/
 
 ### Properties ###
-/src/main/resources/static/mail.properties
+/src/main/resources/mail.properties
 
 ### NodeJS ###
 /frontend/node_modules/
