@@ -7,12 +7,11 @@ import { Box, Button, Collapse, List, ListItemText } from '@material-ui/core';
 import { MailOutlineRounded as MailIcon } from '@material-ui/icons';
 
 import { sendMailAction } from 'actions';
-import { LOG_FILE_PATH, SUPPORT_EMAIL_ADDRESS } from 'resources';
 
 import './ErrorNotificationContent.scss';
 
 /**
- * Generates an error mail from an error's details.
+ * Generates an error mail details object from an error's details.
  *
  * @param {string} [statusText = '']
  *     The error status text
@@ -27,35 +26,16 @@ import './ErrorNotificationContent.scss';
  * @param {string} [timestamp = '']
  *     The error timestamp
  *
- * @returns {object} the generated error mail object
+ * @returns {object} the generated error mail details object
  */
 function generateErrorMail(statusText = '', status = '', message = '', url = '', method = '', timestamp = '') {
     return {
-        recipient: SUPPORT_EMAIL_ADDRESS,
-        subject: 'Notification HostoCars - ERREUR',
-        content: `<html lang='fr'>
-                <head>
-                    <title>HostoCars Erreur</title>
-                    <style>
-                        table {border: 1px solid black;}
-                        th, td {border: 1px solid black; padding: 2px 6px;}
-                    </style>
-                </head>
-                <body>
-                    <h3>Une erreur est survenue dans HostoCars :</h3>
-                    <table>
-                        <tr><th>Erreur</th><td>${statusText || ''}</td></tr>
-                        <tr><th>Code</th><td>${status || ''}</td></tr>
-                        <tr><th>Message</th><td>${message || ''}</td></tr>
-                        <tr><th>URL</th><td>${url || ''}</td></tr>
-                        <tr><th>Méthode</th><td>${method || ''}</td></tr>
-                        <tr><th>Date</th><td>${timestamp || ''}</td></tr>
-                    </table>
-                    <br />
-                    <i>Le fichier de log est disponible en pièce jointe.</i>
-                </body>
-            </html>`,
-        attachmentArray: [ LOG_FILE_PATH ]
+        Error: statusText,
+        Code: status,
+        Message: message,
+        URL: url,
+        Method: method,
+        Timestamp: timestamp
     };
 }
 
