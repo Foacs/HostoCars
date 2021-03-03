@@ -11,13 +11,13 @@ os:
 jdk:
   - openjdk11
 
-node_js:
-  - 10
-
 addons:
   sonarcloud:
     organization: "foacs"
     token: $SONAR_TOKEN
+
+before_install:
+  - npm install -g npm@latest
 
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar
