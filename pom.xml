@@ -262,13 +262,13 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>src/main/javascript</exclude>
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>src/main/javascript</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
         </plugins>
 
