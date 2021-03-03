@@ -21,6 +21,7 @@
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.sources>src/main/java,src/main/javascript</sonar.sources>
     </properties>
 
     <dependencies>
@@ -243,10 +244,6 @@
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
                     <version>3.7.0.1746</version>
-                    <configuration>
-                        <sonar.sources>.</sonar.sources>
-                        <sonar.inclusions>src/main/**</sonar.inclusions>
-                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
