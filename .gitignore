@@ -6,19 +6,18 @@
 .idea
 *.iml
 
-
 ### Generated ###
 /target/
 /data/
 /log/
-/frontend/build/
+/src/main/javascript/build/
 /src/main/resources/static/
 
 ### Properties ###
 /src/main/resources/mail.properties
 
 ### NodeJS ###
-/frontend/node_modules/
+/src/main/javascript/node_modules/
 
 ### Temp ###
 /temp/
