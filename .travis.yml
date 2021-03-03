@@ -11,6 +11,9 @@ os:
 jdk:
   - openjdk11
 
+node_js:
+  - 10
+
 addons:
   sonarcloud:
     organization: "foacs"
