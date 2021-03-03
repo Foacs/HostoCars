@@ -164,7 +164,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.8.0</version>
                 <configuration>
-                    <workingDirectory>${project.basedir}/frontend</workingDirectory>
+                    <workingDirectory>${project.basedir}/src/main/javascript</workingDirectory>
                     <installDirectory>${project.build.directory}</installDirectory>
                 </configuration>
                 <executions>
@@ -217,7 +217,7 @@
                             <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.basedir}/frontend/build</directory>
+                                    <directory>${project.basedir}/src/main/javascript/build</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>

@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/frontend/public/logo.png?raw=true" alt="HostoCars logo" />
+  <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/src/main/javascript/public/logo.png?raw=true" alt="HostoCars logo" />
 </p>
 
 <br />
