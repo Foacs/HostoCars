@@ -21,7 +21,7 @@
     <properties>
         <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sonar.sources>src/main/java,src/main/javascript</sonar.sources>
+        <sonar.sources>src/main/java,src/main/javascript/src,src/main/javascript/public</sonar.sources>
     </properties>
 
     <dependencies>
@@ -264,6 +264,11 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>src/main/javascript</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
 
