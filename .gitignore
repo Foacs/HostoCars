@@ -1,0 +1,23 @@
+### Git ###
+.git
+.github
+
+### IntelliJ ###
+.idea
+*.iml
+
+### Generated ###
+/target/
+/data/
+/log/
+/src/main/javascript/build/
+/src/main/resources/static/
+
+### Properties ###
+/src/main/resources/mail.properties
+
+### NodeJS ###
+/src/main/javascript/node_modules/
+
+### Temp ###
+/temp/

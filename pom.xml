@@ -19,8 +19,9 @@
     <name>HostoCars</name>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.sources>src/main/java,src/main/javascript/src,src/main/javascript/public</sonar.sources>
     </properties>
 
     <dependencies>
@@ -110,6 +111,12 @@
             <version>0.8.13</version>
             <scope>test</scope>
         </dependency>
+        <!-- Jacoco -->
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>0.8.3</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -158,7 +165,7 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <version>1.8.0</version>
                 <configuration>
-                    <workingDirectory>${project.basedir}/frontend</workingDirectory>
+                    <workingDirectory>${project.basedir}/src/main/javascript</workingDirectory>
                     <installDirectory>${project.build.directory}</installDirectory>
                 </configuration>
                 <executions>
@@ -211,7 +218,7 @@
                             <outputDirectory>${project.build.outputDirectory}/static</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.basedir}/frontend/build</directory>
+                                    <directory>${project.basedir}/src/main/javascript/build</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
@@ -230,6 +237,38 @@
                         </manifestEntries>
                     </archive>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.7.0.1746</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.3</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>src/main/javascript</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
 

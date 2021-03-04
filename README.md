@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/frontend/public/logo.png?raw=true" alt="HostoCars logo" />
+  <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/src/main/javascript/public/logo.png?raw=true" alt="HostoCars logo" />
 </p>
 
 <br />
@@ -9,13 +9,29 @@
 </div>
 
 <br />
+<br />
+
+![GitHub top language](https://img.shields.io/github/languages/top/Foacs/HostoCars)
+[![Build Status](https://travis-ci.com/Foacs/HostoCars.svg?branch=develop)](https://travis-ci.com/Foacs/HostoCars)
+![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/foacs/HostoCars?include_prereleases)
+![License](https://img.shields.io/badge/license-CeCILL-blueviolet)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=ncloc)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=coverage)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=bugs)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=security_rating)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+
+<br />
 
 #### Version [`2.0.0`](https://github.com/Vulture68/HostoCars/releases/download/2.0.0/HostoCars.exe "Download HostoCars v2.0.0")
 
 <hr/>
 
 <div align="right">
-    <i>23 Fév 2020</i>
+    <i>23 Fév 2021</i>
 </div>
 
 - Création de la page 'Interventions'
