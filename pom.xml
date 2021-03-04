@@ -252,7 +252,8 @@
 
                 <configuration>
                     <excludes>
-                        <exclude>src/main/javascript/**/*</exclude>
+                        <exclude>**/*.js</exclude>
+                        <exclude>**/*.scss</exclude>
                     </excludes>
                 </configuration>
 
