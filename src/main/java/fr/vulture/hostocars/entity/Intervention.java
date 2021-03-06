@@ -30,7 +30,7 @@ import lombok.ToString.Exclude;
 @Entity
 @ToString
 @Table(name = "interventions")
-class Intervention implements Serializable {
+public class Intervention implements Serializable {
 
     private static final long serialVersionUID = -9130046034547531677L;
 

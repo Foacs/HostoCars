@@ -37,6 +37,16 @@ class WebMvcConfigTest {
     private final WebMvcConfigurer webMvcConfig = new WebMvcConfig();
 
     /**
+     * Tests the {@link WebMvcConfig#addResourceHandlers} method with a null registry.
+     */
+    @Test
+    @DisplayName("Add resource handlers (null registry)")
+    final void testAddResourceHandlersWithNullRegistry() {
+        // Calls the method
+        assertThrows(NullPointerException.class, () -> this.webMvcConfig.addResourceHandlers(null));
+    }
+
+    /**
      * Tests the {@link WebMvcConfig#addResourceHandlers} method.
      */
     @Test
@@ -99,6 +109,16 @@ class WebMvcConfigTest {
         verify(registry).addMapping("/**");
         verify(registryRegistration).allowedHeaders("*");
         verify(registryRegistration).exposedHeaders("Location");
+    }
+
+    /**
+     * Tests the {@link CustomPathResourceResolver#getResource(String, Resource)} method with a null location.
+     */
+    @Test
+    @DisplayName("Get resource (null location)")
+    final void testGetResourceWithNullLocation() {
+        // Calls the method
+        assertThrows(NullPointerException.class, () -> this.customPathResourceResolver.getResource("resourcePath", null));
     }
 
     /**

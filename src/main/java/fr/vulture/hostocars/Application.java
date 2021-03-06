@@ -24,7 +24,7 @@ public class Application {
     @Loggable
     public static void main(final String[] args) {
         // Performs the pre-run initialization
-        StartupWorker.initialize(args);
+        StartupWorker.initialize();
 
         // Runs the application
         run(Application.class, args);

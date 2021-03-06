@@ -65,14 +65,14 @@ class AppBar extends PureComponent {
      */
     onCloseMenu() {
         this.setState({ anchorEl: null });
-    };
+    }
 
     /**
      * Handles the menu open action.
      */
     onOpenMenu(event) {
         this.setState({ anchorEl: event.currentTarget });
-    };
+    }
 
     /**
      * Render method.

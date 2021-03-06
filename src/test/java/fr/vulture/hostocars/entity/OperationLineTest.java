@@ -62,6 +62,19 @@ class OperationLineTest {
     }
 
     /**
+     * Tests the {@link OperationLine#equals} method's identity.
+     */
+    @Test
+    @DisplayName("Equals (identity)")
+    final void testEqualsIdentity() {
+        // Prepares the inputs
+        final OperationLine x = createDefaultObject();
+
+        // Calls the method and checks the result
+        assertNotEquals(x, new Object(), "The equals method isn't identity-proof");
+    }
+
+    /**
      * Tests the {@link OperationLine#equals} method's reflexivity.
      */
     @Test

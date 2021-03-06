@@ -81,14 +81,14 @@ class CarsOverviewPage extends PureComponent {
      */
     onCloseCreateCarModal() {
         this.setState({ isCreateCarModalOpen: false });
-    };
+    }
 
     /**
      * Handles the 'Create car' button click action.
      */
     onOpenCreateCarModal() {
         this.setState({ isCreateCarModalOpen: true });
-    };
+    }
 
     /**
      * Handles the 'Create car' modal validate action.

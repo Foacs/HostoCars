@@ -1,12 +1,13 @@
 package fr.vulture.hostocars.controller;
 
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import fr.vulture.hostocars.entity.Car;
+import fr.vulture.hostocars.dto.Car;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.junit.jupiter.api.DisplayName;
@@ -75,6 +76,16 @@ class CarControllerTest {
     }
 
     /**
+     * Tests the {@link CarController#getCarById} method with a null ID.
+     */
+    @Test
+    @DisplayName("Get car by ID (null ID)")
+    void testGetCarByNullId() {
+        // Calls the method
+        assertThrows(NullPointerException.class, () -> this.carController.getCarById(null));
+    }
+
+    /**
      * Tests the {@link CarController#getCarById} method.
      */
     @Test
@@ -94,6 +105,16 @@ class CarControllerTest {
 
         // Checks the result
         assertSame(response, result, "Result different from expected");
+    }
+
+    /**
+     * Tests the {@link CarController#createCar} method with a null car.
+     */
+    @Test
+    @DisplayName("Create car (null car)")
+    void testCreateNullCar() {
+        // Calls the method
+        assertThrows(NullPointerException.class, () -> this.carController.createCar(null));
     }
 
     /**
@@ -119,6 +140,16 @@ class CarControllerTest {
     }
 
     /**
+     * Tests the {@link CarController#updateCar} method with a null car.
+     */
+    @Test
+    @DisplayName("Update car (null car)")
+    void testUpdateNullCar() {
+        // Calls the method
+        assertThrows(NullPointerException.class, () -> this.carController.updateCar(null));
+    }
+
+    /**
      * Tests the {@link CarController#updateCar} method.
      */
     @Test
@@ -138,6 +169,16 @@ class CarControllerTest {
 
         // Checks the result
         assertSame(response, result, "Result different from expected");
+    }
+
+    /**
+     * Tests the {@link CarController#deleteCarById} method with a null ID.
+     */
+    @Test
+    @DisplayName("Delete car by ID (null ID)")
+    void testDeleteCarByNullId() {
+        // Calls the method
+        assertThrows(NullPointerException.class, () -> this.carController.deleteCarById(null));
     }
 
     /**

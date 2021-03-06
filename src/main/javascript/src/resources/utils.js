@@ -111,8 +111,8 @@ export const loadFileAsByteArray = (file) => {
     reader.onloadend = (e) => {
         if (FileReader.DONE === e.target.readyState) {
             const array = new Uint8Array(e.target.result);
-            for (let i = 0; i < array.length; i++) {
-                result.push(array[i]);
+            for (let item of array) {
+                result.push(item);
             }
         }
     };

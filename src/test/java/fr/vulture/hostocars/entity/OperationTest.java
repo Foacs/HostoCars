@@ -62,6 +62,19 @@ class OperationTest {
     }
 
     /**
+     * Tests the {@link Operation#equals} method's identity.
+     */
+    @Test
+    @DisplayName("Equals (identity)")
+    final void testEqualsIdentity() {
+        // Prepares the inputs
+        final Operation x = createDefaultObject();
+
+        // Calls the method and checks the result
+        assertNotEquals(x, new Object(), "The equals method isn't identity-proof");
+    }
+
+    /**
      * Tests the {@link Operation#equals} method's reflexivity.
      */
     @Test

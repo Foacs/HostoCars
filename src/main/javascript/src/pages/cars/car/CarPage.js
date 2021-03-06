@@ -142,7 +142,7 @@ class CarPage extends PureComponent {
      */
     onCloseCertificateModal() {
         this.setState({ isCertificateModalOpen: false });
-    };
+    }
 
     /**
      * Handles the 'Delete car' modal close action.
@@ -199,21 +199,21 @@ class CarPage extends PureComponent {
      */
     onOpenCertificateModal() {
         this.setState({ isCertificateModalOpen: true });
-    };
+    }
 
     /**
      * Handles the 'Delete car' button click action.
      */
     onOpenDeleteCarModal() {
         this.setState({ isDeleteCarModalOpen: true });
-    };
+    }
 
     /**
      * Handles the 'Update car' button click action.
      */
     onOpenUpdateCarModal() {
         this.setState({ isUpdateCarModalOpen: true });
-    };
+    }
 
     /**
      * Handles the 'Update interventions' button click action.
@@ -223,14 +223,14 @@ class CarPage extends PureComponent {
             isUpdateInterventionsModalOpen: true,
             isUpdateInterventionsModalValidationActive: false
         });
-    };
+    }
 
     /**
      * Handles the intervention creation action.
      */
     onUpdateInterventionsModalCar(car) {
         this.setState({ updateInterventionsModalCar: car });
-    };
+    }
 
     /**
      * Handles the 'Delete car' modal validate action.

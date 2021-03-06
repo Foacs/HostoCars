@@ -63,11 +63,8 @@ public class StartupWorker implements InitializingBean {
 
     /**
      * This method is intended to be called before the application context's initialization.
-     *
-     * @param args
-     *     The execution arguments
      */
-    public static void initialize(final String[] args) {
+    public static void initialize() {
         // Initializes the DB folder
         new File("data").mkdir();
     }
