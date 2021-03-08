@@ -1,13 +1,10 @@
 package fr.vulture.hostocars.dto;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 
@@ -15,12 +12,11 @@ import lombok.ToString.Exclude;
  * DTO for the {@code cars} table.
  */
 @Data
-@ToString
-public class Car implements Serializable {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Car extends Dto {
 
-    private static final long serialVersionUID = -8531072274006990095L;
-
-    private Integer id;
+    private static final long serialVersionUID = -9056019196986505858L;
 
     private String registration;
 
@@ -48,30 +44,5 @@ public class Car implements Serializable {
 
     @JsonManagedReference
     private Set<Intervention> interventions = new HashSet<>(0);
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (isNull(obj) || this.getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final Car that = (Car) obj;
-        return nonNull(this.id) && this.id.equals(that.id);
-    }
 
 }

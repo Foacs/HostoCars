@@ -1,14 +1,11 @@
 package fr.vulture.hostocars.dto;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 
@@ -16,12 +13,11 @@ import lombok.ToString.Exclude;
  * DTO for the {@code operations} table.
  */
 @Data
-@ToString
-public class Operation implements Serializable {
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
+public class Operation extends Dto {
 
-    private static final long serialVersionUID = -6271290610333034638L;
-
-    private Integer id;
+    private static final long serialVersionUID = 7380315381960933148L;
 
     private String label;
 
@@ -31,30 +27,5 @@ public class Operation implements Serializable {
 
     @JsonManagedReference
     private Set<OperationLine> operationLines = new HashSet<>(0);
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (isNull(obj) || this.getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final Operation that = (Operation) obj;
-        return nonNull(this.id) && this.id.equals(that.id);
-    }
 
 }
