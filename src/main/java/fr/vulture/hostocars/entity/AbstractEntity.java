@@ -19,7 +19,7 @@ import lombok.ToString;
 @Data
 @ToString
 @MappedSuperclass
-abstract class Entity implements Serializable {
+abstract class AbstractEntity implements Serializable {
 
     private static final long serialVersionUID = 6385609581190828938L;
 
@@ -49,7 +49,7 @@ abstract class Entity implements Serializable {
             return false;
         }
 
-        final Entity that = (Entity) obj;
+        final AbstractEntity that = (AbstractEntity) obj;
         return nonNull(this.id) && this.id.equals(that.id);
     }
 

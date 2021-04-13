@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -87,7 +87,7 @@ class AppBar extends PureComponent {
             menuItems
         } = this.props;
 
-        return (<Fragment>
+        return (<>
             <MaterialAppBar className={className} id='AppBar' position='fixed'>
                 <Toolbar>
                     <Breadcrumbs />
@@ -114,7 +114,7 @@ class AppBar extends PureComponent {
             </MaterialAppBar>
 
             <AboutModal onClose={this.onAboutModalClose} open={isAboutModelOpen} />
-        </Fragment>);
+        </>);
     }
 }
 

@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import fr.vulture.hostocars.dto.Car;
+import fr.vulture.hostocars.entity.Car;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.junit.jupiter.api.DisplayName;

@@ -67,7 +67,8 @@ function Notification({
     variant
 }) {
     // Defines the notification panel class name depending on the variant
-    const panelClassName = `Panel${variant ? ` Panel_${variant}` : ''}`;
+    const classNameVariant = ` Panel_${variant}`;
+    const panelClassName = `Panel${variant ? classNameVariant : ''}`;
 
     // Defines the notification title class name depending on the children
     const titleClassName = 'Title' + (children ? ' Title_expandable' : '');

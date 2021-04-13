@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,11 +18,11 @@ import lombok.ToString.Exclude;
  * Entity for the {@code cars} table.
  */
 @Data
+@Entity
 @ToString
 @Table(name = "cars")
-@javax.persistence.Entity
-@EqualsAndHashCode(callSuper = true)
-public class Car extends Entity {
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+public class Car extends AbstractEntity {
 
     private static final long serialVersionUID = -8531072274006990095L;
 
@@ -65,3 +66,4 @@ public class Car extends Entity {
     private Set<Intervention> interventions = new HashSet<>(0);
 
 }
+

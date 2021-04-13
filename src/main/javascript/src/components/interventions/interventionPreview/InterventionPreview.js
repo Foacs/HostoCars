@@ -40,18 +40,23 @@ function InterventionPreview({
     const totalOperations = intervention.operations.length;
     const areOperationsFinished = finishedOperations === totalOperations;
 
-    const gaugeMaxValue = intervention.amount ? intervention.amount : intervention.paidAmount ? intervention.paidAmount : 1;
-    const gaugeValue = intervention.paidAmount ? intervention.paidAmount < gaugeMaxValue ? intervention.paidAmount : gaugeMaxValue : 0;
+    const gaugePaidAmount = intervention.paidAmount ? intervention.paidAmount : 1;
+    const gaugeMaxValue = intervention.amount ? intervention.amount : gaugePaidAmount;
+    const gaugeToPayAmount = intervention.paidAmount < gaugeMaxValue ? intervention.paidAmount : gaugeMaxValue;
+    const gaugeValue = intervention.paidAmount ? gaugeToPayAmount : 0;
 
     const currentStatusIndex = INTERVENTION_STATUS_STEPS.indexOf(intervention.status);
     const isInterventionFinished = currentStatusIndex === (INTERVENTION_STATUS_STEPS.length - 1);
     const stepClassName = isInterventionFinished ? 'Step Step_finished' : 'Step';
 
     const mileageValue = intervention.mileage ? `${intervention.mileage} km` : '';
-    const timeValue = intervention.realTime || intervention.estimatedTime ?
-            `${intervention.realTime ? intervention.realTime : '-'} / ${intervention.estimatedTime ? intervention.estimatedTime : '-'} h` : '';
-    const amountValue = intervention.paidAmount || intervention.amount ?
-            `${intervention.paidAmount ? intervention.paidAmount : 0} / ${intervention.amount ? intervention.amount : '-'} €` : '';
+    const realTimeValue = intervention.realTime ? intervention.realTime : '-';
+    const estimatedTimeValue = intervention.estimatedTime ? intervention.estimatedTime : '-';
+    const timeValue = intervention.realTime || intervention.estimatedTime ? `${realTimeValue} / ${estimatedTimeValue} h` : '';
+
+    const paidAmountValue = intervention.paidAmount ? intervention.paidAmount : 0;
+    const totalAmountValue = intervention.amount ? intervention.amount : '-';
+    const amountValue = intervention.paidAmount || intervention.amount ? `${paidAmountValue} / ${totalAmountValue} €` : '';
 
     return (<ExpansionPanel className={`${className} ${!intervention.carRegistration && 'InterventionPreview_withoutShadow'}`} expanded={expanded}
                             id='InterventionPreview' onChange={onClick}>

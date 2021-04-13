@@ -27,7 +27,9 @@ function CarCard({
     const modelSubtitleClassName = `ModelSubTitle ${(!car.brand && !car.model) && 'ModelSubTitle_missing'}`;
 
     // Defines the model subtitle label depending on the car's brand and model values
-    const modelSubtitleLabel = (car.brand || car.model) ? `${car.brand ? car.brand : ''} ${car.model ? car.model : ''}` : '-';
+    const brandLabel = car.brand ? car.brand : '';
+    const modelLabel = car.model ? car.model : '';
+    const modelSubtitleLabel = (car.brand || car.model) ? `${brandLabel} ${modelLabel}` : '-';
 
     // Defines the picture of the card depending on its value
     const picture = car.picture ? <img alt={`Car n°${car.id}`} src={`data:image/jpeg;base64,${car.picture}`} className='Picture' /> :

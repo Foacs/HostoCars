@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
  * Test class for the {@link OperationLine} class.
  */
 @DisplayName("Operation line entity")
-class OperationLineTest extends EntityTest<OperationLine> {
+class OperationLineTest extends AbstractEntityTest<OperationLine> {
 
     /**
      * {@inheritDoc}

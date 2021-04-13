@@ -2,6 +2,7 @@ package fr.vulture.hostocars.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,11 +16,11 @@ import lombok.ToString.Exclude;
  * Entity for the {@code operationLines} table.
  */
 @Data
+@Entity
 @ToString
-@javax.persistence.Entity
 @Table(name = "operationLines")
-@EqualsAndHashCode(callSuper = true)
-public class OperationLine extends Entity {
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+class OperationLine extends AbstractEntity {
 
     private static final long serialVersionUID = 7694570052168923210L;
 

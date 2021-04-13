@@ -9,12 +9,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
- * Abstract test class for implementations of the {@link Entity} class.
+ * Abstract test class for implementations of the {@link AbstractEntity} class.
  *
  * @param <E>
- *     The implementation class of the {@link Entity} class to test
+ *     The implementation class of the {@link AbstractEntity} class to test
  */
-abstract class EntityTest<E extends Entity> {
+abstract class AbstractEntityTest<E extends AbstractEntity> {
 
     private static final String[] IDS = new String[] {"1", "2"};
 
@@ -28,14 +28,14 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Returns the {@link Entity} class under test.
+     * Returns the {@link AbstractEntity} class under test.
      *
-     * @return the {@link Entity} class under test
+     * @return the {@link AbstractEntity} class under test
      */
     abstract Class<E> getTestClass();
 
     /**
-     * Tests the {@link Entity#equals(Object)} method's nullity.
+     * Tests the {@link AbstractEntity#equals(Object)} method's nullity.
      */
     @Test
     @DisplayName("Equals (nullity)")
@@ -48,21 +48,21 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Creates a new instance of {@link Entity} with the default values.
+     * Creates a new instance of {@link AbstractEntity} with the default values.
      *
-     * @return a new instance of {@link Entity}
+     * @return a new instance of {@link AbstractEntity}
      */
     private E createDefaultObject() {
         return this.createTestObject(Integer.valueOf(IDS[0]));
     }
 
     /**
-     * Creates a new instance of {@link Entity} with the given values.
+     * Creates a new instance of {@link AbstractEntity} with the given values.
      *
      * @param id
      *     The ID to set
      *
-     * @return a new instance of {@link Entity}
+     * @return a new instance of {@link AbstractEntity}
      */
     private E createTestObject(final Integer id) {
         final E testObject = this.constructTestObject();
@@ -71,14 +71,14 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Creates a new instance of {@link Entity}.
+     * Creates a new instance of {@link AbstractEntity}.
      *
-     * @return a new instance of {@link Entity}
+     * @return a new instance of {@link AbstractEntity}
      */
     abstract E constructTestObject();
 
     /**
-     * Tests the {@link Entity#equals(Object)} method's identity.
+     * Tests the {@link AbstractEntity#equals(Object)} method's identity.
      */
     @Test
     @DisplayName("Equals (identity)")
@@ -91,7 +91,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#equals(Object)} method's reflexivity.
+     * Tests the {@link AbstractEntity#equals(Object)} method's reflexivity.
      */
     @Test
     @DisplayName("Equals (reflexivity)")
@@ -104,7 +104,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#hashCode()} method's reflexivity.
+     * Tests the {@link AbstractEntity#hashCode()} method's reflexivity.
      */
     @Test
     @DisplayName("Hash code (reflexivity)")
@@ -117,7 +117,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#equals(Object)} method's symmetry.
+     * Tests the {@link AbstractEntity#equals(Object)} method's symmetry.
      */
     @Test
     @DisplayName("Equals (symmetry)")
@@ -131,7 +131,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#hashCode()} method's symmetry.
+     * Tests the {@link AbstractEntity#hashCode()} method's symmetry.
      */
     @Test
     @DisplayName("Hash code (symmetry)")
@@ -145,7 +145,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#equals(Object)} method's transitivity.
+     * Tests the {@link AbstractEntity#equals(Object)} method's transitivity.
      */
     @Test
     @DisplayName("Equals (transitivity)")
@@ -160,7 +160,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#hashCode()} method's transitivity.
+     * Tests the {@link AbstractEntity#hashCode()} method's transitivity.
      */
     @Test
     @DisplayName("Hash code (transitivity)")
@@ -176,7 +176,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#equals(Object)} method's consistency.
+     * Tests the {@link AbstractEntity#equals(Object)} method's consistency.
      */
     @Test
     @DisplayName("Equals (consistency)")
@@ -190,7 +190,7 @@ abstract class EntityTest<E extends Entity> {
     }
 
     /**
-     * Tests the {@link Entity#hashCode()} method's consistency.
+     * Tests the {@link AbstractEntity#hashCode()} method's consistency.
      */
     @Test
     @DisplayName("Hash code (consistency)")

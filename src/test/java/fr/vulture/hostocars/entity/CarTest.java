@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
  * Test class for the {@link Car} class.
  */
 @DisplayName("Car entity")
-class CarTest extends EntityTest<Car> {
+class CarTest extends AbstractEntityTest<Car> {
 
     /**
      * {@inheritDoc}

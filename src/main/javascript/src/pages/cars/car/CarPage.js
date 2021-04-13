@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
@@ -292,11 +292,11 @@ class CarPage extends PureComponent {
             content = <CircularProgress size={20} thickness={4} />;
         } else {
             // If there are cars, tries to get the current one
-            const car = cars.find(car => Number(id) === car.id);
+            const foundCar = cars.find(car => Number(id) === car.id);
 
-            if (car) {
+            if (foundCar) {
                 // If the current car has been found, displays its registration
-                content = car.registration;
+                content = foundCar.registration;
             } else {
                 // If the car has not been found, displays the smiley icon
                 content = <SmileyIcon />;
@@ -338,11 +338,12 @@ class CarPage extends PureComponent {
             // If the cars are being loaded, displays the loading panel
             content = <LoadingPanel />;
         } else {
-            const car = cars.find(car => Number(id) === car.id);
+            const foundCar = cars.find(car => Number(id) === car.id);
 
-            if (car) {
+            if (foundCar) {
                 // If the car has been found, displays the car content
-                const picture = car.picture ? <img alt={`Car n°${car.id}`} className='CarPicture' src={`data:image/jpeg;base64,${car.picture}`} /> :
+                const picture = foundCar.picture ? <img alt={`Car n°${foundCar.id}`} className='CarPicture'
+                                                        src={`data:image/jpeg;base64,${foundCar.picture}`} /> :
                         <DefaultCarPicture className='CarPicture CarPicture_default' />;
 
                 const certificateButton = <IconButton className='CertificateButton' onClick={this.onOpenCertificateModal}>
@@ -355,27 +356,27 @@ class CarPage extends PureComponent {
                     </Grid>
 
                     <Grid item xs={11}>
-                        <Typography className='Comments' variant='body2'>{car.comments}</Typography>
+                        <Typography className='Comments' variant='body2'>{foundCar.comments}</Typography>
                     </Grid>
                 </Grid>);
 
-                const existingRegistrations = cars.map(car => car.registration)
-                        .filter(registration => registration !== car.registration);
+                const existingRegistrations = cars.map(c => c.registration)
+                        .filter(registration => registration !== foundCar.registration);
 
-                const serialNumbers = cars && cars.filter(currentCar => car.serialNumber !== currentCar.serialNumber)
+                const serialNumbers = cars && cars.filter(currentCar => foundCar.serialNumber !== currentCar.serialNumber)
                         .map(currentCar => currentCar.serialNumber);
 
-                const carToUpdate = updateInterventionsModalCar ? updateInterventionsModalCar : JSON.parse(JSON.stringify(car));
+                const carToUpdate = updateInterventionsModalCar ? updateInterventionsModalCar : JSON.parse(JSON.stringify(foundCar));
 
-                const interventionsPanelContent = (0 === car.interventions.length
+                const interventionsPanelContent = (0 === foundCar.interventions.length
                         ? <Typography align='center' className='NoInterventionsLabel' variant='body1'>Aucune intervention à afficher</Typography>
                         : <Grid container>
-                            {car.interventions.map((intervention, index) =>
+                            {foundCar.interventions.map((intervention, index) =>
                                     <InterventionPreview intervention={intervention} expanded={expandedInterventionIndex === index} key={index}
                                                          onClick={() => this.onInterventionPreviewClick(index)} />)}
                         </Grid>);
 
-                content = (<Fragment>
+                content = (<>
                     <Grid container spacing={4}>
                         <Grid item xs={4}>
                             <Paper className='PicturePanel'>
@@ -397,56 +398,57 @@ class CarPage extends PureComponent {
                                     <Grid container direction='column'>
                                         <Table>
                                             <TableBody>
-                                                {car.owner && <TableRow className='TableRow' hover>
+                                                {foundCar.owner && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Propriétaire</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.owner}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.owner}</TableCell>
                                                 </TableRow>}
 
-                                                {car.brand && <TableRow className='TableRow' hover>
+                                                {foundCar.brand && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Marque</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.brand}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.brand}</TableCell>
                                                 </TableRow>}
 
-                                                {car.engineCode && <TableRow className='TableRow' hover>
+                                                {foundCar.engineCode && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Code moteur</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.engineCode}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.engineCode}</TableCell>
                                                 </TableRow>}
 
-                                                {car.registration && <TableRow className='TableRow' hover>
+                                                {foundCar.registration && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Immatriculation</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.registration}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.registration}</TableCell>
                                                 </TableRow>}
 
-                                                {car.model && <TableRow className='TableRow' hover>
+                                                {foundCar.model && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Modèle</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.model}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.model}</TableCell>
                                                 </TableRow>}
 
-                                                {car.releaseDate && <TableRow className='TableRow' hover>
+                                                {foundCar.releaseDate && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Mise en circulation</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{formatDateLabel(car.releaseDate)}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{formatDateLabel(
+                                                            foundCar.releaseDate)}</TableCell>
                                                 </TableRow>}
 
-                                                {car.serialNumber && <TableRow className='TableRow' hover>
+                                                {foundCar.serialNumber && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>VIN</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.serialNumber}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.serialNumber}</TableCell>
                                                 </TableRow>}
 
-                                                {car.motorization && <TableRow className='TableRow' hover>
+                                                {foundCar.motorization && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Motorisation</TableCell>
-                                                    <TableCell align='right' className='TableRowValue'>{car.motorization}</TableCell>
+                                                    <TableCell align='right' className='TableRowValue'>{foundCar.motorization}</TableCell>
                                                 </TableRow>}
 
-                                                {car.certificate && <TableRow className='TableRow' hover>
+                                                {foundCar.certificate && <TableRow className='TableRow' hover>
                                                     <TableCell className='TableRowLabel'>Carte grise</TableCell>
                                                     <TableCell align='right' className='CertificateCell'>
-                                                        {car.certificate && certificateButton}
+                                                        {foundCar.certificate && certificateButton}
                                                     </TableCell>
                                                 </TableRow>}
                                             </TableBody>
                                         </Table>
 
-                                        {car.comments && commentsSection}
+                                        {foundCar.comments && commentsSection}
                                     </Grid>
                                 </ExpansionPanelDetails>
 
@@ -477,10 +479,10 @@ class CarPage extends PureComponent {
                         <DeleteIcon className='DeleteCarIcon' />
                     </Fab>
 
-                    {car.certificate && <CertificateModal certificate={car.certificate} onClose={this.onCloseCertificateModal}
-                                                          open={isCertificateModalOpen} />}
+                    {foundCar.certificate && <CertificateModal certificate={foundCar.certificate} onClose={this.onCloseCertificateModal}
+                                                               open={isCertificateModalOpen} />}
 
-                    <UpdateCarModal car={car} onClose={this.onCloseUpdateCarModal} open={isUpdateCarModalOpen}
+                    <UpdateCarModal car={foundCar} onClose={this.onCloseUpdateCarModal} open={isUpdateCarModalOpen}
                                     onValidate={this.onValidateUpdateCarModal} registrations={existingRegistrations} serialNumbers={serialNumbers} />
 
                     <DeleteCarModal onClose={this.onCloseDeleteCarModal} open={isDeleteCarModalOpen} onValidate={this.onValidateDeleteCarModal} />
@@ -489,7 +491,7 @@ class CarPage extends PureComponent {
                                              onClose={this.onCloseUpdateInterventionsModal}
                                              onEnter={this.onEnterUpdateInterventionsModal} open={isUpdateInterventionsModalOpen}
                                              onUpdateCar={this.onUpdateInterventionsModalCar} onValidate={this.onValidateUpdateInterventionsModal} />
-                </Fragment>);
+                </>);
             } else {
                 // If the car has not been found even after loading the cars, displays the 'Not found' content
                 content = (<NotFoundPage label='Voiture introuvable' />);
