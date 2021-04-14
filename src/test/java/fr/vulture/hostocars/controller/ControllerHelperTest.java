@@ -183,4 +183,14 @@ class ControllerHelperTest {
         assertThrows(NullPointerException.class, () -> this.helper.resolveDeleteResponse(null), "Expected exception not thrown");
     }
 
+    /**
+     * Tests the {@link ControllerHelper#restTemplate()} method.
+     */
+    @Test
+    @DisplayName("REST template bean")
+    void testRestTemplateBean() {
+        // Calls the method
+        assertNotNull(this.helper.restTemplate(), "Result unexpectedly not null");
+    }
+
 }

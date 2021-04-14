@@ -10,20 +10,41 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.openpojo.reflection.impl.PojoClassImpl;
-import fr.vulture.hostocars.Application;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
 import java.lang.reflect.Method;
 import lombok.SneakyThrows;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.LoggerFactory;
 
 /**
  * Test class for the {@link LoggableMethodInterceptor} class.
  */
 @DisplayName("Loggable method interceptor")
 class LoggableMethodInterceptorTest {
+
+    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LoggableMethodInterceptorTest.class);
+
+    /**
+     * Initialization method called before each test.
+     */
+    @BeforeEach
+    void initialize() {
+        LOGGER.setLevel(Level.TRACE);
+    }
+
+    /**
+     * Demolition method called after each test.
+     */
+    @AfterEach
+    void teardown() {
+        LOGGER.setLevel(Level.TRACE);
+    }
 
     /**
      * Tests the {@link LoggableMethodInterceptor#logMethod} method with the {@link Loggable#debug} field at {@code false}.
@@ -47,7 +68,7 @@ class LoggableMethodInterceptorTest {
         when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
         when(loggable.debug()).thenReturn(false);
         when(method.getName()).thenReturn("methodName");
-        doReturn(Application.class).when(method).getDeclaringClass();
+        doReturn(this.getClass()).when(method).getDeclaringClass();
         when(joinPoint.getArgs()).thenReturn(new Object[] {"argument1", "argument2"});
         when(joinPoint.proceed()).thenReturn(joinPointResult);
 
@@ -90,7 +111,7 @@ class LoggableMethodInterceptorTest {
         when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
         when(loggable.debug()).thenReturn(true);
         when(method.getName()).thenReturn("methodName");
-        doReturn(Application.class).when(method).getDeclaringClass();
+        doReturn(this.getClass()).when(method).getDeclaringClass();
         when(joinPoint.getArgs()).thenReturn(new Object[] {"argument1", "argument2"});
         when(joinPoint.proceed()).thenReturn(joinPointResult);
 
@@ -118,6 +139,9 @@ class LoggableMethodInterceptorTest {
     @SneakyThrows
     @DisplayName("Log method (DEBUG level unavailable)")
     void testLogMethodWithoutDebugLevelAvailable() {
+        // Set the logger level to INFO
+        LOGGER.setLevel(Level.INFO);
+
         // Prepares the inputs
         final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
 
@@ -132,7 +156,7 @@ class LoggableMethodInterceptorTest {
         when(methodSignature.getMethod()).thenReturn(method);
         when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
         when(loggable.debug()).thenReturn(true);
-        doReturn(PojoClassImpl.class).when(method).getDeclaringClass();
+        doReturn(this.getClass()).when(method).getDeclaringClass();
         when(joinPoint.proceed()).thenReturn(joinPointResult);
 
         // Calls the method
@@ -143,6 +167,50 @@ class LoggableMethodInterceptorTest {
         verify(methodSignature).getMethod();
         verify(method).getAnnotation(Loggable.class);
         verify(loggable).debug();
+        verify(method).getDeclaringClass();
+        verify(joinPoint).proceed();
+
+        // Checks the result
+        assertSame(joinPointResult, result, "Result different from expected");
+    }
+
+    /**
+     * Tests the {@link LoggableMethodInterceptor#logMethod} without the {@code TRACE} level available.
+     */
+    @Test
+    @SneakyThrows
+    @DisplayName("Log method (TRACE level unavailable)")
+    void testLogMethodWithoutTraceLevelAvailable() {
+        // Set the logger level to DEBUG
+        LOGGER.setLevel(Level.DEBUG);
+
+        // Prepares the inputs
+        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+
+        // Prepares the intermediary results
+        final MethodSignature methodSignature = mock(MethodSignature.class);
+        final Method method = mock(Method.class);
+        final Loggable loggable = mock(Loggable.class);
+        final String joinPointResult = "result";
+
+        // Mocks the calls
+        when(joinPoint.getSignature()).thenReturn(methodSignature);
+        when(methodSignature.getMethod()).thenReturn(method);
+        when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
+        when(loggable.debug()).thenReturn(true);
+        when(method.getName()).thenReturn("methodName");
+        doReturn(this.getClass()).when(method).getDeclaringClass();
+        when(joinPoint.proceed()).thenReturn(joinPointResult);
+
+        // Calls the method
+        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+
+        // Checks the mocks calls
+        verify(joinPoint).getSignature();
+        verify(methodSignature).getMethod();
+        verify(method).getAnnotation(Loggable.class);
+        verify(loggable, times(2)).debug();
+        verify(method).getName();
         verify(method).getDeclaringClass();
         verify(joinPoint).proceed();
 
@@ -172,7 +240,7 @@ class LoggableMethodInterceptorTest {
         when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
         when(loggable.debug()).thenReturn(true);
         when(method.getName()).thenReturn("methodName");
-        doReturn(Application.class).when(method).getDeclaringClass();
+        doReturn(this.getClass()).when(method).getDeclaringClass();
         when(joinPoint.getArgs()).thenReturn(new Object[] {"argument1", mock(Object.class)});
         when(joinPoint.proceed()).thenReturn(joinPointResult);
 
@@ -215,7 +283,7 @@ class LoggableMethodInterceptorTest {
         when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
         when(loggable.debug()).thenReturn(true);
         when(method.getName()).thenReturn("methodName");
-        doReturn(Application.class).when(method).getDeclaringClass();
+        doReturn(this.getClass()).when(method).getDeclaringClass();
         when(joinPoint.getArgs()).thenReturn(new Object[] {"argument1", "argument2"});
         when(joinPoint.proceed()).thenReturn(joinPointResult);
 
@@ -259,7 +327,7 @@ class LoggableMethodInterceptorTest {
         when(method.getAnnotation(Loggable.class)).thenReturn(loggable);
         when(loggable.debug()).thenReturn(true);
         when(method.getName()).thenReturn("methodName");
-        doReturn(Application.class).when(method).getDeclaringClass();
+        doReturn(this.getClass()).when(method).getDeclaringClass();
         when(joinPoint.getArgs()).thenReturn(new Object[] {});
         when(joinPoint.proceed()).thenThrow(exception);
 

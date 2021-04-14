@@ -44,7 +44,7 @@ class CarControllerTest {
         when(this.helper.resolveGetCollectionResponse(any(Callable.class))).thenReturn(response);
 
         // Calls the method
-        final ResponseEntity<Collection<Car>> result = this.carController.getCars();
+        final ResponseEntity<Collection<Car>> result = this.carController.getCars((String[]) null);
 
         // Checks the mocks calls
         verify(this.helper).resolveGetCollectionResponse(any(Callable.class));

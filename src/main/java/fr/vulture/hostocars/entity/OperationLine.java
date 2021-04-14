@@ -7,19 +7,19 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code operationLines} table.
  */
-@Data
 @Entity
+@Getter
+@Setter
 @ToString
 @Table(name = "operationLines")
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 class OperationLine extends AbstractEntity {
 
     private static final long serialVersionUID = 7694570052168923210L;

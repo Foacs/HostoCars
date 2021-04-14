@@ -8,10 +8,12 @@ import java.util.concurrent.Callable;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Helper for controllers.
@@ -102,6 +104,16 @@ class ControllerHelper {
     ResponseEntity resolveDeleteResponse(final Runnable executable) {
         executable.run();
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * {@link RestTemplate} bean for the {@link} component.
+     *
+     * @return a {@link RestTemplate}
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 }

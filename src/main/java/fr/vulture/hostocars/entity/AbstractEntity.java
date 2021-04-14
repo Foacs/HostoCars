@@ -10,14 +10,14 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import lombok.Data;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Abstract representation of a DTO.
  */
-@Data
-@ToString
+@Getter
+@Setter
 @MappedSuperclass
 abstract class AbstractEntity implements Serializable {
 

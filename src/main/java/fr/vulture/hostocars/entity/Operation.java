@@ -12,19 +12,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code operations} table.
  */
-@Data
 @Entity
+@Getter
+@Setter
 @ToString
 @Table(name = "operations")
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 class Operation extends AbstractEntity {
 
     private static final long serialVersionUID = -6271290610333034638L;
