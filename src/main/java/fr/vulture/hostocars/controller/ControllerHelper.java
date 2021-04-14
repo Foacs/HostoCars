@@ -40,7 +40,7 @@ class ControllerHelper {
      * @return an {@link HttpStatus#OK} response if the result is present, else a {@link HttpStatus#NOT_FOUND} response
      */
     @Loggable(debug = true)
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     <T> ResponseEntity<T> resolveGetResponse(final Callable<Optional<T>> executable) {
         return ResponseEntity.of(executable.call());
     }
@@ -56,7 +56,7 @@ class ControllerHelper {
      * @return an {@link HttpStatus#OK} response
      */
     @Loggable(debug = true)
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     <T> ResponseEntity<Collection<T>> resolveGetCollectionResponse(final Callable<? extends Collection<T>> executable) {
         final Collection<T> result = executable.call();
         return result.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(result);
@@ -71,7 +71,7 @@ class ControllerHelper {
      * @return an {@link HttpStatus#CREATED} response
      */
     @Loggable(debug = true)
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     ResponseEntity resolvePostResponse(final Callable<String> executable) {
         return ResponseEntity.created(new URI("http://" + this.serverAddress + ':' + this.serverPort + executable.call())).build();
     }
@@ -85,7 +85,7 @@ class ControllerHelper {
      * @return an {@link HttpStatus#NO_CONTENT} response
      */
     @Loggable(debug = true)
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     ResponseEntity resolvePutResponse(final Runnable executable) {
         executable.run();
         return ResponseEntity.noContent().build();
@@ -100,7 +100,7 @@ class ControllerHelper {
      * @return an {@link HttpStatus#NO_CONTENT} response
      */
     @Loggable(debug = true)
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     ResponseEntity resolveDeleteResponse(final Runnable executable) {
         executable.run();
         return ResponseEntity.noContent().build();

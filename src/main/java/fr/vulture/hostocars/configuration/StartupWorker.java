@@ -1,5 +1,6 @@
 package fr.vulture.hostocars.configuration;
 
+import static java.util.Objects.nonNull;
 import static org.springframework.boot.SpringApplication.exit;
 
 import java.awt.Desktop;
@@ -13,8 +14,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.Objects;
-import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,14 @@ public class StartupWorker implements InitializingBean {
         System.setProperty("java.awt.headless", "false");
     }
 
+    private final ApplicationContext applicationContext;
+    @Value("${server.address}")
+    private String serverAddress;
+    @Value("${spring.application.name}")
+    private String applicationName;
+    @Value("${server.port}")
+    private String serverPort;
+
     /**
      * Valued autowired constructor.
      *
@@ -45,21 +52,6 @@ public class StartupWorker implements InitializingBean {
     public StartupWorker(final ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
-
-    @NonNull
-    private final ApplicationContext applicationContext;
-
-    @NonNull
-    @Value("${server.address}")
-    private String serverAddress;
-
-    @NonNull
-    @Value("${spring.application.name}")
-    private String applicationName;
-
-    @NonNull
-    @Value("${server.port}")
-    private String serverPort;
 
     /**
      * This method is intended to be called before the application context's initialization.
@@ -72,8 +64,8 @@ public class StartupWorker implements InitializingBean {
     /**
      * {@inheritDoc}
      */
-    @Loggable(debug = true)
     @Override
+    @Loggable(debug = true)
     public void afterPropertiesSet() {
         // Checks if the current system supports the system tray
         if (SystemTray.isSupported()) {
@@ -137,7 +129,7 @@ public class StartupWorker implements InitializingBean {
 
         // Closes the splash screen (if there is one)
         final SplashScreen splashScreen = SplashScreen.getSplashScreen();
-        if (Objects.nonNull(splashScreen)) {
+        if (nonNull(splashScreen)) {
             splashScreen.close();
         }
     }

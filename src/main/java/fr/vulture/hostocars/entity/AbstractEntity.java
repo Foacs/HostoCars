@@ -53,4 +53,12 @@ abstract class AbstractEntity implements Serializable {
         return nonNull(this.id) && this.id.equals(that.id);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return String.valueOf(this.id);
+    }
+
 }

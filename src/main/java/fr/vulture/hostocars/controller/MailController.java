@@ -43,7 +43,7 @@ public class MailController {
 
     @NonNull
     @Value("${logging.file.name}")
-    private String logFilePath;
+    private String loggingFileName;
 
     @NonNull
     @Value("${mail.bearer.token}")
@@ -62,7 +62,7 @@ public class MailController {
      *     The autowired {@link RestTemplate} component
      */
     @Autowired
-    public MailController(@NonNull final RestTemplate restTemplate) {
+    public MailController(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -76,7 +76,7 @@ public class MailController {
      */
     @Loggable
     @PutMapping
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     @Operation(summary = "Sends a mail.", description = "Sends a mail with the given details and the log file.",
         responses = @ApiResponse(description = "The mail has been sent successfully.", responseCode = "204"))
     public ResponseEntity<String> sendMail(@Parameter(required = true) @RequestBody @NonNull final Map<String, String> details) {
@@ -89,7 +89,7 @@ public class MailController {
         // Creates the body
         final LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("details", detailsAsJson.toString());
-        body.add("logs", new FileSystemResource(new File(this.logFilePath)));
+        body.add("logs", new FileSystemResource(new File(this.loggingFileName)));
 
         // Create the headers
         final HttpHeaders headers = new HttpHeaders();

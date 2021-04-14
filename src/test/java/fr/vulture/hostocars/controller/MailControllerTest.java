@@ -81,13 +81,13 @@ class MailControllerTest {
     @SneakyThrows(IOException.class)
     void testSendMail() {
         // Sets the controller properties
-        final String logFilePath = "logFilePath";
-        ReflectionTestUtils.setField(this.mailController, "logFilePath", logFilePath);
+        final String loggingFileName = "loggingFileName";
+        ReflectionTestUtils.setField(this.mailController, "loggingFileName", loggingFileName);
         final String mailServiceUri = "mailServiceUri";
         ReflectionTestUtils.setField(this.mailController, "mailServiceUri", mailServiceUri);
 
         // Mocks the log file
-        this.folder.newFile(logFilePath);
+        this.folder.newFile(loggingFileName);
 
         // Prepares the inputs
         final Map<String, String> details = new HashMap<>(2);

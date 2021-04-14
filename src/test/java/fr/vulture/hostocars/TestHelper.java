@@ -20,7 +20,6 @@ import com.openpojo.validation.test.impl.SerializableTester;
 import com.openpojo.validation.test.impl.SetterTester;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 
 /**
  * Helper class for unit tests.
@@ -36,7 +35,7 @@ public final class TestHelper {
      * @param pojoClass
      *     The POJO class to validate
      */
-    public static void validatePojo(@NonNull final Class pojoClass) {
+    public static void validatePojo(final Class pojoClass) {
         getPojoValidator().validate(PojoClassFactory.getPojoClass(pojoClass));
     }
 

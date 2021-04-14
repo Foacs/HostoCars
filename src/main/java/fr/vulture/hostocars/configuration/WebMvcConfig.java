@@ -2,7 +2,7 @@ package fr.vulture.hostocars.configuration;
 
 import static java.util.Objects.nonNull;
 
-import lombok.NonNull;
+import java.io.IOException;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -21,17 +21,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
     /**
      * {@inheritDoc}
      */
-    @Loggable(debug = true)
     @Override
-    public void addResourceHandlers(@NonNull final ResourceHandlerRegistry registry) {
+    @Loggable(debug = true)
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**/*").addResourceLocations("classpath:/static/").resourceChain(true).addResolver(new CustomPathResourceResolver());
     }
 
     /**
      * {@inheritDoc}
      */
-    @Loggable(debug = true)
     @Override
+    @Loggable(debug = true)
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**").allowedHeaders("*").exposedHeaders("Location");
     }
@@ -44,10 +44,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         /**
          * {@inheritDoc}
          */
-        @Loggable(debug = true)
-        @SneakyThrows
         @Override
-        public final Resource getResource(final String resourcePath, @NonNull final Resource location) {
+        @Loggable(debug = true)
+        @SneakyThrows(IOException.class)
+        public final Resource getResource(final String resourcePath, final Resource location) {
             if (nonNull(resourcePath)) {
                 final Resource requestedResource = location.createRelative(resourcePath);
                 return requestedResource.exists() && requestedResource.isReadable() ? requestedResource : new ClassPathResource("static/index.html");

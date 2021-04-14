@@ -18,7 +18,7 @@ import lombok.ToString.Exclude;
 @Entity
 @Getter
 @Setter
-@ToString
+@ToString(callSuper = true)
 @Table(name = "operationLines")
 class OperationLine extends AbstractEntity {
 
