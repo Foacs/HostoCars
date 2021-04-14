@@ -65,7 +65,7 @@ public class MailController {
     @SneakyThrows
     @Operation(summary = "Sends a mail.", description = "Sends a mail with the given details and the log file.",
         responses = @ApiResponse(description = "The mail has been sent successfully.", responseCode = "204"))
-    public ResponseEntity<?> sendMail(@Parameter(required = true) @RequestBody @NonNull final Map<String, String> details) {
+    public ResponseEntity<String> sendMail(@Parameter(required = true) @RequestBody @NonNull final Map<String, String> details) {
         // Writes the details as JSON
         final JSONObject detailsAsJson = new JSONObject();
         for (final Entry<String, String> detail : details.entrySet()) {

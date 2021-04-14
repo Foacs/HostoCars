@@ -97,7 +97,7 @@ class Notifier extends PureComponent {
             // Adds the notification key to the list of displayed ones
             this.displayed = [ ...this.displayed, key ];
         });
-    };
+    }
 
     /**
      * Render method (doesn't render anything, since this is not a graphical component).

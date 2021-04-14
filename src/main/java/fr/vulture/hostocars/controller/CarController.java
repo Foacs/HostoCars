@@ -104,7 +104,7 @@ public class CarController {
     @PostMapping
     @Operation(summary = "Inserts a new car.", description = "Inserts a new car in the database.",
         responses = @ApiResponse(description = "The car has been inserted successfully.", responseCode = "201", content = @Content))
-    public ResponseEntity<?> createCar(@Parameter(required = true) @RequestBody @NonNull final Car car) {
+    public ResponseEntity createCar(@Parameter(required = true) @RequestBody @NonNull final Car car) {
         return this.helper.resolvePostResponse(() -> "/cars/" + this.repository.save(car).getId());
     }
 
@@ -120,7 +120,7 @@ public class CarController {
     @PutMapping
     @Operation(summary = "Updates a car.", description = "Updates an existing car in the database.",
         responses = @ApiResponse(description = "The car has been updated successfully.", responseCode = "201", content = @Content))
-    public ResponseEntity<?> updateCar(@Parameter(required = true) @RequestBody @NonNull final Car car) {
+    public ResponseEntity updateCar(@Parameter(required = true) @RequestBody @NonNull final Car car) {
         return this.helper.resolvePutResponse(() -> this.repository.save(car));
     }
 
@@ -136,7 +136,7 @@ public class CarController {
     @DeleteMapping("/{id}")
     @Operation(summary = "Deletes a car by its ID.", description = "Deletes the car corresponding to the specified ID from the database.",
         responses = @ApiResponse(description = "The car has been deleted successfully.", responseCode = "204", content = @Content))
-    public ResponseEntity<?> deleteCarById(@Parameter(description = "The ID of the car to delete.", required = true) @PathVariable @NonNull final Integer id) {
+    public ResponseEntity deleteCarById(@Parameter(description = "The ID of the car to delete.", required = true) @PathVariable @NonNull final Integer id) {
         return this.helper.resolveDeleteResponse(() -> this.repository.deleteById(id));
     }
 

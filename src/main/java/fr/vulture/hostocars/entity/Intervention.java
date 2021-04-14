@@ -1,25 +1,19 @@
 package fr.vulture.hostocars.entity;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static javax.persistence.GenerationType.IDENTITY;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 
@@ -30,14 +24,10 @@ import lombok.ToString.Exclude;
 @Entity
 @ToString
 @Table(name = "interventions")
-class Intervention implements Serializable {
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
+class Intervention extends AbstractEntity {
 
     private static final long serialVersionUID = -9130046034547531677L;
-
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
-    private Integer id;
 
     @Column(name = "year", insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer year;
@@ -78,30 +68,5 @@ class Intervention implements Serializable {
     @JsonManagedReference
     @OneToMany(mappedBy = "intervention", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private Set<Operation> operations = new HashSet<>(0);
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int hashCode() {
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
-
-        if (isNull(obj) || this.getClass() != obj.getClass()) {
-            return false;
-        }
-
-        final Intervention that = (Intervention) obj;
-        return nonNull(this.id) && this.id.equals(that.id);
-    }
 
 }
