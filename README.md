@@ -15,14 +15,14 @@
 [![Build Status](https://travis-ci.com/Foacs/HostoCars.svg?branch=develop)](https://travis-ci.com/Foacs/HostoCars)
 ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/foacs/HostoCars?include_prereleases)
 ![License](https://img.shields.io/badge/license-CeCILL-blueviolet)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=ncloc)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=ncloc)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=coverage)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=bugs)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=security_rating)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.vulture%3Ahostocars&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=fr.vulture%3Ahostocars)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=coverage)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=bugs)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=security_rating)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
 
 <br />
 
