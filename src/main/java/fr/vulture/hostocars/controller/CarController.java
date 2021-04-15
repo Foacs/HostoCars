@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Objects;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/cars")
+@ConditionalOnProperty("spring.profiles.active")
 @Tags(@Tag(name = "Cars", description = "Services related to cars."))
 public class CarController {
 
@@ -72,7 +74,8 @@ public class CarController {
         responses = @ApiResponse(description = "At least one car has been found.", responseCode = "200",
             content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))))
     public ResponseEntity<Collection<Car>> getCars(@Parameter(description = "The sorting fields.") @RequestParam(required = false) final String... sortingFields) {
-        return this.helper.resolveGetCollectionResponse(() -> Objects.isNull(sortingFields) ? this.repository.findAll() : this.repository.findAll(Sort.by(sortingFields)));
+        final Sort sort = Objects.isNull(sortingFields) ? Sort.by(new String[] {}) : Sort.by(sortingFields);
+        return this.helper.resolveGetCollectionResponse(() -> this.repository.findAll(sort));
     }
 
     /**

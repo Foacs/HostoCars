@@ -41,8 +41,10 @@ class MailControllerTest {
 
     @Rule
     public final TemporaryFolder folder = new TemporaryFolder();
+
     @Mock
     private RestTemplate restTemplate;
+
     @InjectMocks
     private MailController mailController;
 
