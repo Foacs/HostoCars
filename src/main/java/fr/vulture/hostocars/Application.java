@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Application launcher with arguments.
  */
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "HostoCars API", version = "2.0.0"))
+@OpenAPIDefinition(info = @Info(title = "HostoCars API", version = "2.0.1-SNAPSHOT"))
 public class Application {
 
     /**
