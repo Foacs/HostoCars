@@ -2,7 +2,6 @@ package fr.vulture.hostocars.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -24,7 +23,6 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LoggableMethodInterceptor {
 
-    private static final ConcurrentHashMap<String, Logger> loggerMap = new ConcurrentHashMap<>(0);
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
@@ -41,8 +39,7 @@ public final class LoggableMethodInterceptor {
         final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
         final Loggable loggable = method.getAnnotation(Loggable.class);
         final Class<?> methodClass = method.getDeclaringClass();
-        final String methodClassName = methodClass.getCanonicalName();
-        final Logger logger = loggerMap.getOrDefault(methodClassName, loggerMap.put(methodClassName, LoggerFactory.getLogger(methodClass)));
+        final Logger logger = LoggerFactory.getLogger(methodClass);
 
         if (!loggable.debug() || logger.isDebugEnabled()) {
             final String methodName = method.getName();

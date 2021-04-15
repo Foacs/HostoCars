@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.context.annotation.Configuration;
@@ -42,7 +43,7 @@ public class MailController {
 
     @NonNull
     @Value("${logging.file.name}")
-    private String logFilePath;
+    private String loggingFileName;
 
     @NonNull
     @Value("${mail.bearer.token}")
@@ -51,6 +52,19 @@ public class MailController {
     @NonNull
     @Value("${mail.service.uri}")
     private String mailServiceUri;
+
+    private final RestTemplate restTemplate;
+
+    /**
+     * Valued autowired constructor.
+     *
+     * @param restTemplate
+     *     The autowired {@link RestTemplate} component
+     */
+    @Autowired
+    public MailController(final RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     /**
      * Sends a mail with the given details and attach the log file to it.
@@ -62,7 +76,7 @@ public class MailController {
      */
     @Loggable
     @PutMapping
-    @SneakyThrows
+    @SneakyThrows(Exception.class)
     @Operation(summary = "Sends a mail.", description = "Sends a mail with the given details and the log file.",
         responses = @ApiResponse(description = "The mail has been sent successfully.", responseCode = "204"))
     public ResponseEntity<String> sendMail(@Parameter(required = true) @RequestBody @NonNull final Map<String, String> details) {
@@ -75,7 +89,7 @@ public class MailController {
         // Creates the body
         final LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
         body.add("details", detailsAsJson.toString());
-        body.add("logs", new FileSystemResource(new File(this.logFilePath)));
+        body.add("logs", new FileSystemResource(new File(this.loggingFileName)));
 
         // Create the headers
         final HttpHeaders headers = new HttpHeaders();
@@ -86,7 +100,7 @@ public class MailController {
         final HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
         // Calls the mail service
-        final ResponseEntity<String> responseEntity = new RestTemplate().postForEntity(URI.create(this.mailServiceUri), requestEntity, String.class);
+        final ResponseEntity<String> responseEntity = this.restTemplate.postForEntity(URI.create(this.mailServiceUri), requestEntity, String.class);
 
         // Builds the response entity based on the service response
         return ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());

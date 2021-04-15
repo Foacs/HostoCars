@@ -12,19 +12,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code interventions} table.
  */
-@Data
 @Entity
-@ToString
+@Getter
+@Setter
+@ToString(callSuper = true)
 @Table(name = "interventions")
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 class Intervention extends AbstractEntity {
 
     private static final long serialVersionUID = -9130046034547531677L;
