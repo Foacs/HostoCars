@@ -1,88 +1,102 @@
-<p align="center">
-  <img width="300" src="https://github.com/Vulture68/HostoCars/blob/develop/src/main/javascript/public/logo.png?raw=true" alt="HostoCars logo" />
-</p>
+[Version française](https://github.com/Foacs/HostoCars/blob/develop/LISEZMOI.md)
 
-<br />
+# HostoCars
 
-<div align="center">
-    <i>Logiciel de gestion et de facturation de réparations de véhicules.</i>
-</div>
+![Logo](https://github.com/Foacs/HostoCars/blob/develop/src/main/javascript/public/logo.png?raw=true "Logo")
 
-<br />
-<br />
+Vehicle repair management and invoicing web application.
 
 ![GitHub top language](https://img.shields.io/github/languages/top/Foacs/HostoCars)
 [![Build Status](https://travis-ci.com/Foacs/HostoCars.svg?branch=develop)](https://travis-ci.com/Foacs/HostoCars)
 ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/foacs/HostoCars?include_prereleases)
 ![License](https://img.shields.io/badge/license-CeCILL-blueviolet)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=ncloc)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=ncloc)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=coverage)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=bugs)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=security_rating)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.heahwulf%3Ahostocars&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=fr.heahwulf%3Ahostocars)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=alert_status)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=coverage)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=bugs)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=security_rating)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=fr.foacs%3Ahostocars&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=fr.foacs%3Ahostocars)
 
-<br />
+## Table of contents
 
-#### Version [`2.0.0`](https://github.com/Vulture68/HostoCars/releases/download/2.0.0/HostoCars.exe "Download HostoCars v2.0.0")
+- [General info](#general-info)
+- [Technologies](#technologies)
+- [Setup](#setup)
+- [License](#license)
 
-<hr/>
+## General info
 
-<div align="right">
-    <i>23 Fév 2021</i>
-</div>
+This web application is intended to help with the management of vehicles repairs, from the diagnostic to the billing. Its usage is expected to be intuitive and user-friendly.
 
-- Création de la page 'Interventions'
-- Création de la page 'API'
-- Refonte de la page 'Voiture'
-- Ajout du splash screen
-- Ajout du system tray icon
-- Correction du champ 'Mise en circulation'
-- Correction de la fonction d'envoi d'emails
-- Correction de la génération de rapports d'erreurs
-- Refonte de l'API
-- Refonte du backend
-- Mise en place de Liquibase
+> The only available language is French and the project is not intended to be adapted for other languages, given the user panel it is designed for.
 
-<br />
+> This application is expected to run correctly on the 2 last major versions of Google Chrome and Mozilla Firefox web browsers. Any other web browser or version won't be supported.
+> Also, it is intended to be used on a computer, so as of today, no compatibility is planned for mobile.
 
-#### Version [`1.1.0`](https://github.com/Vulture68/HostoCars/releases/download/1.1.0/HostoCars.exe "Download HostoCars v1.1.0")
+## Technologies
 
-<hr/>
+### Backend
 
-<div align="right">
-    <i>25 Jan 2020</i>
-</div>
+- Java: `>11` [_(openJDK-11)_](https://openjdk.java.net/projects/jdk/11/)
+- Spring: `2.2.4.RELEASE`
+- Maven: `4.0.0`
 
-- Mise en place du système de notifications
-- Gestion des erreurs
-- Ajout de la fonctionnalité d'envoi de mail au support en cas d'erreur
-- Ajout des champs 'Code moteur' et 'VIN' aux voitures
-- Ajout de la fonctionnalité de validation avec la touche 'Entrer' sur les fenêtres de dialogues
-- Ajout de la fonctionnalité d'annulation avec la touche 'Echap' sur les fenêtres de dialogues
-- Correction du système de mise à jour de la base de données
+### Frontend
 
-<br />
+- NodeJS: `14.16.0`
+- ReactJS: `16.13.1`
+- npm: `7.8.0`
 
-#### Version [`1.0.0`](https://github.com/Vulture68/HostoCars/releases/download/1.0.0/HostoCars.exe "Download HostoCars v1.0.0")
+## Setup
 
-<hr/>
+1. To run this project locally, you'll first need to set up Java, maven, node and npm.
 
-<div align="right">
-    <i>25 Nov 2019</i>
-</div>
+> For more info, you can check out the following guides:
+> - The [Oracle's website](https://docs.oracle.com/en/java/javase/11/install/overview-jdk-installation.html) for Java
+> - The [Apache's website](https://maven.apache.org/install.html) for maven
+> - The [NodeJS website](https://nodejs.org/en/download/package-manager) for NodeJS
+> - The [npm website](https://docs.npmjs.com/cli/v7/configuring-npm) for npm
 
-- Mise en place de la base de données
-- Gestion de la version de la base de données
-- Mise en place d'un système de backup automatique de la base de données
-- Mise en place de tests unitaires (couverture de 30%)
-- Mise en place de la structure des voitures dans la base de données
-- Mise en place du contrôleur pour les voitures
-- Création du menu
-- Création de la barre d'application
-- Création de la page 'Voitures'
-- Création de la page 'Voiture'
-- Création de la page 'Page introuvable'
-- Création des fenêtres de dialogues pour l'ajout / l'édition / la suppression de voitures
+2. Then use maven to build the project using the following command at the project root:
+
+```shell script
+./mvn clean install
+```
+
+3. Finally, to launch the application use the following command at the project root:
+
+```shell script
+java -jar ./target/HostoCars.jar fr.foacs.hostocars.Application
+```
+
+4. Now the application should be accessible at [localhost:8080](http://localhost:8080/).
+
+### Frontend development
+
+To help with frontend development, the node server can be started in parallel with the following command:
+
+```shell script
+./src/main/javascript/npm run start
+```
+
+Then the local frontend implementation will be automatically compiled and executed at [localhost:3000](http://localhost:3000/).
+
+> In order for the latest frontend changes to be packaged, the project needs to be built again with maven with the previous command.
+
+### Mails
+
+To enable the mail support, you have to add a `mail.properties` file in the `./src/main/resources` folder (alongside the `application.properties` file), with a `mail.bearer.token`
+property.
+
+> As an example, you can have a look at the `example.mail.properties` file.
+
+In order to get a token for your use, you have to register an account on the [FOACS organisation website](https://foacs.ovh/), then create a token on your profile with the
+"_(API) Mail d'erreur_" token type. Be careful, as the token will only be displayed right after the creation and won't be accessible afterwards.
+
+## License
+
+This project is licensed under the terms of the __CeCILL__ license.
+
+> You can check out the full license [here](https://github.com/Foacs/HostoCars/blob/develop/LICENSE.md).

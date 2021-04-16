@@ -2,5 +2,5 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
     <logger level="error" name="com.openpojo" />
-    <logger level="trace" name="fr.heahwulf.hostocars" />
+    <logger level="trace" name="fr.foacs.hostocars" />
 </configuration>
