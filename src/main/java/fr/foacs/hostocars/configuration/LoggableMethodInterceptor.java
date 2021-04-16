@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Aspect
 @Component
+@ConditionalOnProperty("spring.profiles.active")
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class LoggableMethodInterceptor {
 

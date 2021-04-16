@@ -4,6 +4,7 @@ import static java.util.Objects.nonNull;
 
 import java.io.IOException;
 import lombok.SneakyThrows;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
  * Configuration bean used to fix the Spring URL redirection.
  */
 @Configuration
+@ConditionalOnProperty("spring.profiles.active")
 public class WebMvcConfig implements WebMvcConfigurer {
 
     /**

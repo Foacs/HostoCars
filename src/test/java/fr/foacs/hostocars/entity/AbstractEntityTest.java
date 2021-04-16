@@ -78,6 +78,37 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     abstract E constructTestObject();
 
     /**
+     * Tests the {@link AbstractEntity#getId()} method.
+     */
+    @Test
+    @DisplayName("Get ID")
+    final void testGetId() {
+        // Prepares the inputs
+        final Integer id = 1;
+        final E x = this.createTestObject(id);
+
+        // Calls the method and checks the result
+        assertEquals(id, x.getId(), "The ID is different from expected");
+    }
+
+    /**
+     * Tests the {@link AbstractEntity#setId(Integer)} method.
+     */
+    @Test
+    @DisplayName("Set ID")
+    final void testSetId() {
+        // Prepares the inputs
+        final Integer id = 1;
+        final E x = this.constructTestObject();
+
+        // Call the method
+        x.setId(id);
+
+        // Checks the result
+        assertEquals(id, x.getId(), "The ID is different from expected");
+    }
+
+    /**
      * Tests the {@link AbstractEntity#equals(Object)} method's identity.
      */
     @Test
