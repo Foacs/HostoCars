@@ -14,6 +14,7 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -38,6 +39,7 @@ import org.springframework.web.client.RestTemplate;
 @CrossOrigin(origins = "*")
 @RequestMapping("/mails")
 @PropertySource("classpath:mail.properties")
+@ConditionalOnProperty("spring.profiles.active")
 @Tags(@Tag(name = "Mails", description = "Services related to mails."))
 public class MailController {
 

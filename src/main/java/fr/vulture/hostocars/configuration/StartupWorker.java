@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ import org.springframework.stereotype.Component;
  */
 @Slf4j
 @Component
+@ConditionalOnProperty("spring.profiles.active")
 public class StartupWorker implements InitializingBean {
 
     static {
@@ -35,10 +37,13 @@ public class StartupWorker implements InitializingBean {
     }
 
     private final ApplicationContext applicationContext;
+
     @Value("${server.address}")
     private String serverAddress;
+
     @Value("${spring.application.name}")
     private String applicationName;
+
     @Value("${server.port}")
     private String serverPort;
 
