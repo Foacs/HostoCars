@@ -73,6 +73,14 @@ java -jar ./target/HostoCars.jar fr.foacs.hostocars.Application
 
 4. Now the application should be accessible at [localhost:8080](http://localhost:8080/).
 
+### Backend development
+
+To fasten the backend build, you can specify the `-Dskip-frontend_build` option to maven in order to skip the frontend build:
+
+```shell script
+./mvn clean install -Dskip-frontend-build
+```
+
 ### Frontend development
 
 To help with frontend development, the node server can be started in parallel with the following command:
@@ -83,7 +91,13 @@ To help with frontend development, the node server can be started in parallel wi
 
 Then the local frontend implementation will be automatically compiled and executed at [localhost:3000](http://localhost:3000/).
 
-> In order for the latest frontend changes to be packaged, the project needs to be built again with maven with the previous command.
+Also, to build the frontend without building the backend, you can use npm as follow:
+
+```shell script
+./src/main/javascript/npm run build
+```
+
+> In order for the latest frontend changes to be packaged, the project needs to be built again with maven with the `mvn clean install` command.
 
 ### Mails
 

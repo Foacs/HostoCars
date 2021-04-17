@@ -73,6 +73,14 @@ java -jar ./target/HostoCars.jar fr.foacs.hostocars.Application
 
 4. À présent l'application devrait être accessible à [localhost:8080](http://localhost:8080/).
 
+### Développement du backend
+
+Pour accélérer le build du backend, vous pouvez spécifier l'option `-Dskip-frontend_build` à maven dans le but d'ignorer le build du frontend :
+
+```shell script
+./mvn clean install -Dskip-frontend-build
+```
+
 ### Développement du frontend
 
 Pour vous aider à développer l'interface graphique, le serveur node peut être démarré en parallèle avec la commande suivante :
@@ -83,7 +91,13 @@ Pour vous aider à développer l'interface graphique, le serveur node peut être
 
 À présent l'implémentation locale de l'interface devrait être automatique exécutée et rafraîchie à [localhost:3000](http://localhost:3000/).
 
-> Pour packager la dernière version de l'interface graphique, le projet doit être buildé à nouveau avec la commande précédente.
+De plus, afin de builder le frontend sans builder le backend, vous pouvez la commande npm suivante :
+
+```shell script
+./src/main/javascript/npm run build
+```
+
+> Pour packager la dernière version de l'interface graphique, le projet doit être buildé à nouveau avec maven avec la commande `mvn clean install`.
 
 ### Mails
 
