@@ -1,7 +1,6 @@
 package fr.foacs.hostocars.configuration;
 
 import static java.util.Objects.nonNull;
-import static org.springframework.boot.SpringApplication.exit;
 
 import java.awt.Desktop;
 import java.awt.MenuItem;
@@ -18,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -111,7 +111,7 @@ public class StartupWorker implements InitializingBean {
                     log.info("Exiting the application");
 
                     // Exits the application
-                    exit(this.applicationContext, () -> 0);
+                    SpringApplication.exit(this.applicationContext, () -> 0);
                 });
 
                 // Creates a popup menu for the tray icon

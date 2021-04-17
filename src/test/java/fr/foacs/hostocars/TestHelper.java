@@ -1,10 +1,10 @@
 package fr.foacs.hostocars;
 
-import static com.openpojo.validation.ValidatorBuilder.create;
 import static java.util.Objects.isNull;
 
 import com.openpojo.reflection.impl.PojoClassFactory;
 import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
 import com.openpojo.validation.rule.impl.EqualsAndHashCodeMatchRule;
 import com.openpojo.validation.rule.impl.GetterMustExistRule;
 import com.openpojo.validation.rule.impl.NoFieldShadowingRule;
@@ -46,7 +46,8 @@ public final class TestHelper {
      */
     private static Validator getPojoValidator() {
         if (isNull(pojoValidator)) {
-            pojoValidator = create().with(new EqualsAndHashCodeMatchRule())
+            pojoValidator = ValidatorBuilder.create()
+                .with(new EqualsAndHashCodeMatchRule())
                 .with(new GetterMustExistRule())
                 .with(new GetterTester())
                 .with(new NoFieldShadowingRule())

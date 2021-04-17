@@ -1,7 +1,5 @@
 package fr.foacs.hostocars.controller;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
-
 import fr.foacs.hostocars.configuration.Loggable;
 import fr.foacs.hostocars.entity.Car;
 import fr.foacs.hostocars.repository.CarRepository;
@@ -19,6 +17,7 @@ import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -72,7 +71,7 @@ public class CarController {
     @GetMapping
     @Operation(summary = "Gets all cars.", description = "Retrieves the list of all the cars from the database. A list of sorting fields can also be specified.",
         responses = @ApiResponse(description = "At least one car has been found.", responseCode = "200",
-            content = @Content(mediaType = APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))))
     public ResponseEntity<Collection<Car>> getCars(@Parameter(description = "The sorting fields.") @RequestParam(required = false) final String... sortingFields) {
         final Sort sort = Objects.isNull(sortingFields) ? Sort.by(new String[] {}) : Sort.by(sortingFields);
         return this.helper.resolveGetCollectionResponse(() -> this.repository.findAll(sort));
@@ -90,7 +89,7 @@ public class CarController {
     @GetMapping("/{id}")
     @Operation(summary = "Gets a car by its ID.", description = "Retrieves the car corresponding to the specified ID from the database.",
         responses = @ApiResponse(description = "A car has been found.", responseCode = "200",
-            content = @Content(mediaType = APPLICATION_JSON_VALUE, schema = @Schema(implementation = Car.class))))
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = Car.class))))
     public ResponseEntity<Car> getCarById(@Parameter(description = "The car ID to search.", required = true) @PathVariable @NonNull final Integer id) {
         return this.helper.resolveGetResponse(() -> this.repository.findById(id));
     }

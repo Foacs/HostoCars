@@ -3,11 +3,11 @@ package fr.foacs.hostocars.entity;
 import static java.util.Objects.hash;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static javax.persistence.GenerationType.IDENTITY;
 
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -24,7 +24,7 @@ abstract class AbstractEntity implements Serializable {
     private static final long serialVersionUID = 6385609581190828938L;
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", unique = true, nullable = false, insertable = false, updatable = false, columnDefinition = "INTEGER")
     private Integer id;
 
