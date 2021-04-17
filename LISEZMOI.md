@@ -97,7 +97,7 @@ De plus, afin de builder le frontend sans builder le backend, vous pouvez la com
 ./src/main/javascript/npm run build
 ```
 
-> Pour packager la dernière version de l'interface graphique, le projet doit être buildé à nouveau avec maven avec la commande `mvn clean install`.
+> Pour packager la dernière version de l'interface graphique, le projet doit être buildé à nouveau avec la commande maven `mvn clean install`.
 
 ### Mails
 

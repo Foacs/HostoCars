@@ -91,13 +91,13 @@ To help with frontend development, the node server can be started in parallel wi
 
 Then the local frontend implementation will be automatically compiled and executed at [localhost:3000](http://localhost:3000/).
 
-Also, to build the frontend without building the backend, you can use npm as follow:
+Also, to build the frontend without building the backend, you can use npm as follows:
 
 ```shell script
 ./src/main/javascript/npm run build
 ```
 
-> In order for the latest frontend changes to be packaged, the project needs to be built again with maven with the `mvn clean install` command.
+> In order for the latest frontend changes to be packaged, the project needs to be built again with the maven `mvn clean install` command.
 
 ### Mails
 
