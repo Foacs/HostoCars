@@ -1,8 +1,8 @@
-[Version française](https://github.com/Foacs/HostoCars/blob/develop/LISEZMOI.md)
+[Version française](./LISEZMOI.md)
 
 # HostoCars
 
-![Logo](https://github.com/Foacs/HostoCars/blob/develop/src/main/javascript/public/logo.png?raw=true "Logo")
+![Logo](./src/main/javascript/public/logo.png?raw=true "Logo")
 
 Vehicle repair management and invoicing web application.
 
@@ -114,7 +114,7 @@ In order to get a token for your use, you have to register an account on the [FO
 
 This project is licensed under the terms of the __CeCILL__ license.
 
-> You can check out the full license [here](https://github.com/Foacs/HostoCars/blob/develop/LICENSE.md).
+> You can check out the full license [here](./LICENSE.md).
 
 ## Links
 

@@ -1,4 +1,4 @@
-[Version française](https://github.com/Foacs/HostoCars/blob/develop/VERSIONS.md)
+[Version française](./VERSIONS.md)
 
 # Releases
 
@@ -8,13 +8,13 @@
 
 ### Added
 
-- [LISEZMOI.md](https://github.com/Foacs/HostoCars/blob/develop/LISEZMOI.md) file
-- [RELEASES.md](https://github.com/Foacs/HostoCars/blob/develop/RELEASES.md) and [VERSIONS.md](https://github.com/Foacs/HostoCars/blob/develop/VERSIONS.md) files
-- [CODEOWNERS](https://github.com/Foacs/HostoCars/blob/develop/CODEOWNERS) file
+- [LISEZMOI.md](./LISEZMOI.md) file
+- [RELEASES.md](./RELEASES.md) and [VERSIONS.md](./VERSIONS.md) files
+- [CODEOWNERS](./CODEOWNERS) file
 
 ### Changed
 
-- [README.md](https://github.com/Foacs/HostoCars/blob/develop/README.md) file
+- [README.md](./README.md) file
 
 ## [2.0.0](https://github.com/Foacs/HostoCars/compare/1.1.0...2.0.0)
 

@@ -1,8 +1,8 @@
-[English version](https://github.com/Foacs/HostoCars/blob/develop/README.md)
+[English version](./README.md)
 
 # HostoCars
 
-![Logo](https://github.com/Foacs/HostoCars/blob/develop/src/main/javascript/public/logo.png?raw=true "Logo")
+![Logo](./src/main/javascript/public/logo.png?raw=true "Logo")
 
 Application web de gestion et de réparation de véhicules.
 
@@ -114,7 +114,7 @@ avec le type "_(API) Mail d'erreur_". Attention cependant, la valeur du jeton n'
 
 Ce projet est sous les termes de la licence __CeCILL__.
 
-> Vous pouvez accéder aux détails de la licence [ici](https://github.com/Foacs/HostoCars/blob/develop/LICENSE.md).
+> Vous pouvez accéder aux détails de la licence [ici](./LICENSE.md).
 
 ## Liens
 
