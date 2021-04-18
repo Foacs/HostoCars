@@ -12,4 +12,14 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Hide {
 
+    /**
+     * If the information of the field being null or not should be logged instead of totally hiding it.
+     * <br/>
+     * <br/>
+     * Default value: {@code false}
+     *
+     * @return if the information of the field being null or not should be logged instead of totally hiding it
+     */
+    boolean asBoolean() default false;
+
 }

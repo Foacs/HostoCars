@@ -4,6 +4,7 @@ import static java.util.Objects.hash;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
+import fr.foacs.hostocars.configuration.JsonUtil;
 import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -58,7 +59,7 @@ abstract class AbstractEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return String.valueOf(this.id);
+        return JsonUtil.writeValueAsJson(this);
     }
 
 }

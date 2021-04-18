@@ -1,6 +1,7 @@
 package fr.foacs.hostocars.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import fr.foacs.hostocars.configuration.Hide;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -9,8 +10,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code operationLines} table.
@@ -18,7 +17,6 @@ import lombok.ToString.Exclude;
 @Entity
 @Getter
 @Setter
-@ToString(callSuper = true)
 @Table(name = "operationLines")
 class OperationLine extends AbstractEntity {
 
@@ -33,7 +31,7 @@ class OperationLine extends AbstractEntity {
     @Column(name = "done", nullable = false, columnDefinition = "INTEGER")
     private Boolean done;
 
-    @Exclude
+    @Hide
     @JsonBackReference
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "operationId", referencedColumnName = "id")
