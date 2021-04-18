@@ -108,8 +108,10 @@ function InterventionForm({
     const areOperationsFinished = finishedOperations === totalOperations;
     const operationStatusLabel = `${finishedOperations} ⋮ ${totalOperations}`;
 
-    const gaugeMaxValue = amount ? amount : paidAmount ? paidAmount : 1;
-    const gaugeValue = paidAmount ? paidAmount < gaugeMaxValue ? paidAmount : gaugeMaxValue : 0;
+    const gaugePaidAmount = paidAmount ? paidAmount : 1;
+    const gaugeMaxValue = amount ? amount : gaugePaidAmount;
+    const gaugeToPayAmount = paidAmount < gaugeMaxValue ? paidAmount : gaugeMaxValue;
+    const gaugeValue = paidAmount ? gaugeToPayAmount : 0;
 
     const currentStatusIndex = INTERVENTION_STATUS_STEPS.indexOf(status);
     const isInterventionFinished = currentStatusIndex === (INTERVENTION_STATUS_STEPS.length - 1);
@@ -211,12 +213,12 @@ function InterventionForm({
     /**
      * Handles the status change action.
      *
-     * @param {string} status
+     * @param {string} s
      *     The status
      */
-    const onStatusChange = (status) => {
-        setStatus(status);
-        intervention.status = status;
+    const onStatusChange = (s) => {
+        setStatus(s);
+        intervention.status = s;
     };
 
     return (<ExpansionPanel className={className} expanded={expanded} id='InterventionForm' onChange={onClick}>

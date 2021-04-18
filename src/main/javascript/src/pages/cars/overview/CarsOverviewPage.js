@@ -1,4 +1,4 @@
-import React, { Fragment, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import PropTypes from 'prop-types';
@@ -81,14 +81,14 @@ class CarsOverviewPage extends PureComponent {
      */
     onCloseCreateCarModal() {
         this.setState({ isCreateCarModalOpen: false });
-    };
+    }
 
     /**
      * Handles the 'Create car' button click action.
      */
     onOpenCreateCarModal() {
         this.setState({ isCreateCarModalOpen: true });
-    };
+    }
 
     /**
      * Handles the 'Create car' modal validate action.
@@ -122,7 +122,7 @@ class CarsOverviewPage extends PureComponent {
             content = (<LoadingPanel className='LoadingPanel' />);
         } else {
             // If the cars have been loaded, displays the normal page content
-            content = (<Fragment>
+            content = (<>
                 <Grid alignItems='flex-start' className="CarsGrid" container justify='flex-start' spacing={4}>
                     {cars.map(car => <Grid item key={car.registration} lg={4} md={6} sm={12} xl={3} xs={12}>
                         <CarCard car={car} className='CarCard' />
@@ -135,7 +135,7 @@ class CarsOverviewPage extends PureComponent {
 
                 <CreateCarModal onClose={this.onCloseCreateCarModal} open={isCreateCarModalOpen} onValidate={this.onValidateCreateCarModal}
                                 registrations={cars.map(car => car.registration)} serialNumbers={cars.map(car => car.serialNumber)} />
-            </Fragment>);
+            </>);
         }
 
         return (<Page id='CarsOverviewPage'>
