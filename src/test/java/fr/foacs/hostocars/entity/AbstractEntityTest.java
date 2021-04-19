@@ -4,7 +4,22 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import fr.foacs.hostocars.TestHelper;
+import com.openpojo.reflection.impl.PojoClassFactory;
+import com.openpojo.validation.Validator;
+import com.openpojo.validation.ValidatorBuilder;
+import com.openpojo.validation.rule.impl.EqualsAndHashCodeMatchRule;
+import com.openpojo.validation.rule.impl.GetterMustExistRule;
+import com.openpojo.validation.rule.impl.NoFieldShadowingRule;
+import com.openpojo.validation.rule.impl.NoNestedClassRule;
+import com.openpojo.validation.rule.impl.NoPrimitivesRule;
+import com.openpojo.validation.rule.impl.NoPublicFieldsRule;
+import com.openpojo.validation.rule.impl.NoStaticExceptFinalRule;
+import com.openpojo.validation.rule.impl.SerializableMustHaveSerialVersionUIDRule;
+import com.openpojo.validation.rule.impl.SetterMustExistRule;
+import com.openpojo.validation.rule.impl.TestClassMustBeProperlyNamedRule;
+import com.openpojo.validation.test.impl.GetterTester;
+import com.openpojo.validation.test.impl.SerializableTester;
+import com.openpojo.validation.test.impl.SetterTester;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +31,22 @@ import org.junit.jupiter.api.Test;
  */
 abstract class AbstractEntityTest<E extends AbstractEntity> {
 
+    private static final Validator pojoValidator = ValidatorBuilder.create()
+        .with(new EqualsAndHashCodeMatchRule())
+        .with(new GetterMustExistRule())
+        .with(new GetterTester())
+        .with(new NoFieldShadowingRule())
+        .with(new NoNestedClassRule())
+        .with(new NoPrimitivesRule())
+        .with(new NoPublicFieldsRule())
+        .with(new NoStaticExceptFinalRule())
+        .with(new SerializableMustHaveSerialVersionUIDRule())
+        .with(new SerializableTester())
+        .with(new SetterMustExistRule())
+        .with(new SetterTester())
+        .with(new TestClassMustBeProperlyNamedRule())
+        .build();
+
     private static final String[] IDS = new String[] {"1", "2"};
 
     /**
@@ -24,7 +55,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @Test
     @DisplayName("POJO validation")
     final void testPojo() {
-        TestHelper.validatePojo(this.getTestClass());
+        pojoValidator.validate(PojoClassFactory.getPojoClass(this.getTestClass()));
     }
 
     /**
