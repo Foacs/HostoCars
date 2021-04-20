@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Member;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -143,27 +144,7 @@ public final class JsonUtil {
                         final var value = method.invoke(serializable);
 
                         if (Arrays.stream(field.getAnnotations()).noneMatch(Hide.class::isInstance)) {
-                            if (isNull(value)) {
-                                jsonGenerator.writeFieldName(field.getName());
-                                jsonGenerator.writeNull();
-                            } else if (value instanceof Iterable) {
-                                jsonGenerator.writeArrayFieldStart(field.getName());
-                                for (final Object item : (Iterable<?>) value) {
-                                    this.serialize((Serializable) item, jsonGenerator, serializerProvider);
-                                }
-                                jsonGenerator.writeEndArray();
-                            } else if (value instanceof Boolean) {
-                                jsonGenerator.writeFieldName(field.getName());
-                                jsonGenerator.writeBoolean((Boolean) value);
-                            } else if (value instanceof Number) {
-                                jsonGenerator.writeFieldName(field.getName());
-                                writeNumber(jsonGenerator, (Number) value);
-                            } else if (value instanceof String) {
-                                jsonGenerator.writeStringField(propertyDescriptor.getName(), value.toString());
-                            } else {
-                                jsonGenerator.writeFieldName(field.getName());
-                                jsonGenerator.writeObject(value);
-                            }
+                            this.serializeField(field, value, jsonGenerator, serializerProvider);
                         } else if (field.getAnnotation(Hide.class).asBoolean()) {
                             jsonGenerator.writeFieldName(field.getName());
                             jsonGenerator.writeBoolean(nonNull(value));
@@ -173,6 +154,43 @@ public final class JsonUtil {
             }
 
             jsonGenerator.writeEndObject();
+        }
+
+        /**
+         * Serializes a field's value in JSON based on its type.
+         *
+         * @param field
+         *     The field to serialize
+         * @param value
+         *     The value of the field to serialize
+         * @param jsonGenerator
+         *     The JSON generator
+         * @param serializerProvider
+         *     The serializer provider
+         */
+        @SneakyThrows(IOException.class)
+        private void serializeField(final Member field, final Object value, final JsonGenerator jsonGenerator, final SerializerProvider serializerProvider) {
+            if (isNull(value)) {
+                jsonGenerator.writeFieldName(field.getName());
+                jsonGenerator.writeNull();
+            } else if (value instanceof Iterable) {
+                jsonGenerator.writeArrayFieldStart(field.getName());
+                for (final Object item : (Iterable<?>) value) {
+                    this.serialize((Serializable) item, jsonGenerator, serializerProvider);
+                }
+                jsonGenerator.writeEndArray();
+            } else if (value instanceof Boolean) {
+                jsonGenerator.writeFieldName(field.getName());
+                jsonGenerator.writeBoolean((Boolean) value);
+            } else if (value instanceof Number) {
+                jsonGenerator.writeFieldName(field.getName());
+                writeNumber(jsonGenerator, (Number) value);
+            } else if (value instanceof String) {
+                jsonGenerator.writeStringField(field.getName(), value.toString());
+            } else {
+                jsonGenerator.writeFieldName(field.getName());
+                jsonGenerator.writeObject(value);
+            }
         }
 
     }
