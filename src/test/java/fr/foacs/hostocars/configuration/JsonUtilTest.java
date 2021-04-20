@@ -42,7 +42,7 @@ class JsonUtilTest {
     @Test
     @DisplayName("Write value as JSON (error case)")
     void testWriteValueAsJsonInError() {
-        final NonSerializableClass value = mock(NonSerializableClass.class);
+        final var value = mock(NonSerializableClass.class);
         doThrow(UnsupportedOperationException.class).when(value).getField();
         assertEquals("Unable to write as JSON", JsonUtil.writeValueAsJson(value), "Result different from expected");
     }

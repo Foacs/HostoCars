@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tags;
 import java.io.File;
 import java.net.URI;
 import java.util.Map;
-import java.util.Map.Entry;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,26 +82,26 @@ public class MailController {
         responses = @ApiResponse(description = "The mail has been sent successfully.", responseCode = "204"))
     public ResponseEntity<String> sendMail(@Parameter(required = true) @RequestBody @NonNull final Map<String, String> details) {
         // Writes the details as JSON
-        final JSONObject detailsAsJson = new JSONObject();
-        for (final Entry<String, String> detail : details.entrySet()) {
+        final var detailsAsJson = new JSONObject();
+        for (final var detail : details.entrySet()) {
             detailsAsJson.put(detail.getKey(), detail.getValue());
         }
 
         // Creates the body
-        final LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        final var body = new LinkedMultiValueMap<String, Object>();
         body.add("details", detailsAsJson.toString());
         body.add("logs", new FileSystemResource(new File(this.loggingFileName)));
 
         // Create the headers
-        final HttpHeaders headers = new HttpHeaders();
+        final var headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         headers.setBearerAuth(this.mailBearerToken);
 
         // Creates the request
-        final HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
+        final var requestEntity = new HttpEntity<>(body, headers);
 
         // Calls the mail service
-        final ResponseEntity<String> responseEntity = this.restTemplate.postForEntity(URI.create(this.mailServiceUri), requestEntity, String.class);
+        final var responseEntity = this.restTemplate.postForEntity(URI.create(this.mailServiceUri), requestEntity, String.class);
 
         // Builds the response entity based on the service response
         return ResponseEntity.status(responseEntity.getStatusCode()).body(responseEntity.getBody());

@@ -50,7 +50,7 @@ abstract class AbstractEntity implements Serializable {
             return false;
         }
 
-        final AbstractEntity that = (AbstractEntity) obj;
+        final var that = (AbstractEntity) obj;
         return nonNull(this.id) && this.id.equals(that.id);
     }
 

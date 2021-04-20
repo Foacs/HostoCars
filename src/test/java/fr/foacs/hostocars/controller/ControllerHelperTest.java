@@ -38,7 +38,7 @@ class ControllerHelperTest {
     @DisplayName("Resolve GET response (with content)")
     void testResolveGetResponseWithContent() {
         // Calls the method
-        final ResponseEntity<Object> result = this.helper.resolveGetResponse(() -> Optional.of(new Object()));
+        final var result = this.helper.resolveGetResponse(() -> Optional.of(new Object()));
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");
@@ -52,7 +52,7 @@ class ControllerHelperTest {
     @DisplayName("Resolve GET response (without content)")
     void testResolveGetResponseWithoutContent() {
         // Calls the method
-        final ResponseEntity<Object> result = this.helper.resolveGetResponse(Optional::empty);
+        final var result = this.helper.resolveGetResponse(Optional::empty);
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");
@@ -114,7 +114,7 @@ class ControllerHelperTest {
     @DisplayName("Resolve POST response")
     void testResolvePostResponse() {
         // Calls the method
-        final ResponseEntity result = this.helper.resolvePostResponse(() -> "/location");
+        final var result = this.helper.resolvePostResponse(() -> "/location");
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");
@@ -142,7 +142,7 @@ class ControllerHelperTest {
     @DisplayName("Resolve PUT response")
     void testResolvePutResponse() {
         // Calls the method
-        final ResponseEntity result = this.helper.resolvePutResponse(Object::new);
+        final var result = this.helper.resolvePutResponse(Object::new);
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");
@@ -166,7 +166,7 @@ class ControllerHelperTest {
     @DisplayName("Resolve DELETE response")
     void testResolveDeleteResponse() {
         // Calls the method
-        final ResponseEntity result = this.helper.resolveDeleteResponse(Object::new);
+        final var result = this.helper.resolveDeleteResponse(Object::new);
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");

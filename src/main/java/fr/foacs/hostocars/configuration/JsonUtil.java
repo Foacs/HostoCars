@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -80,9 +79,9 @@ public final class JsonUtil {
          *
          * @return the optional matched field
          */
-        private static Optional<Field> matchField(final Class serializableClass, final PropertyDescriptor propertyDescriptor) {
+        private static Optional<Field> matchField(final Class<?> serializableClass, final PropertyDescriptor propertyDescriptor) {
             Optional<Field> result;
-            Class<?> currentClass = serializableClass;
+            var currentClass = serializableClass;
 
             do {
                 result = Arrays.stream(currentClass.getDeclaredFields()).filter(field -> field.getName().equals(propertyDescriptor.getName())).findFirst();
@@ -132,18 +131,18 @@ public final class JsonUtil {
             jsonGenerator.writeStartObject();
 
             final Class<?> serializableClass = serializable.getClass();
-            for (final PropertyDescriptor propertyDescriptor : Introspector.getBeanInfo(serializableClass).getPropertyDescriptors()) {
-                final Optional<Field> matchedField = matchField(serializableClass, propertyDescriptor);
+            for (final var propertyDescriptor : Introspector.getBeanInfo(serializableClass).getPropertyDescriptors()) {
+                final var matchedField = matchField(serializableClass, propertyDescriptor);
 
                 if (matchedField.isPresent()) {
-                    final Field field = matchedField.get();
-                    final Method method = propertyDescriptor.getReadMethod();
+                    final var field = matchedField.get();
+                    final var method = propertyDescriptor.getReadMethod();
 
                     if (nonNull(method)) {
                         method.setAccessible(true);
-                        final Object value = method.invoke(serializable);
+                        final var value = method.invoke(serializable);
 
-                        if (Arrays.stream(field.getAnnotations()).noneMatch(annotation -> annotation instanceof Hide)) {
+                        if (Arrays.stream(field.getAnnotations()).noneMatch(Hide.class::isInstance)) {
                             if (isNull(value)) {
                                 jsonGenerator.writeFieldName(field.getName());
                                 jsonGenerator.writeNull();

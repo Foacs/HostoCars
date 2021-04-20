@@ -12,7 +12,6 @@ import java.awt.TrayIcon;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,16 +75,16 @@ public class StartupWorker implements InitializingBean {
         if (SystemTray.isSupported()) {
             try {
                 // Gets the system tray factory
-                final SystemTray tray = SystemTray.getSystemTray();
+                final var tray = SystemTray.getSystemTray();
 
                 // Extracts the URL of the tray icon resource file
-                final URL resource = new PathMatchingResourcePatternResolver().getResources("classpath:*icon.png")[0].getURL();
+                final var resource = new PathMatchingResourcePatternResolver().getResources("classpath:*icon.png")[0].getURL();
 
                 // Creates the tray icon with the icon
-                final TrayIcon trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(resource), this.applicationName);
+                final var trayIcon = new TrayIcon(Toolkit.getDefaultToolkit().getImage(resource), this.applicationName);
 
                 // Generates the application URI
-                final URI applicationUri = new URI("http://" + this.serverAddress + ':' + this.serverPort);
+                final var applicationUri = new URI("http://" + this.serverAddress + ':' + this.serverPort);
 
                 // Adds an event listener to open a tab on the default browser with the application URI
                 trayIcon.addActionListener(e -> {
@@ -99,7 +98,7 @@ public class StartupWorker implements InitializingBean {
                 });
 
                 // Creates a menu item for the tray icon in order to exit the application
-                final MenuItem exitItem = new MenuItem("Quitter");
+                final var exitItem = new MenuItem("Quitter");
 
                 // Adds an event listener to the exit menu item to remove the tray icon and exit the application
                 exitItem.addActionListener(e -> {
@@ -115,7 +114,7 @@ public class StartupWorker implements InitializingBean {
                 });
 
                 // Creates a popup menu for the tray icon
-                final PopupMenu popupMenu = new PopupMenu();
+                final var popupMenu = new PopupMenu();
 
                 // Adds the exit menu item to the popup menu
                 popupMenu.add(exitItem);
@@ -133,7 +132,7 @@ public class StartupWorker implements InitializingBean {
         }
 
         // Closes the splash screen (if there is one)
-        final SplashScreen splashScreen = SplashScreen.getSplashScreen();
+        final var splashScreen = SplashScreen.getSplashScreen();
         if (nonNull(splashScreen)) {
             splashScreen.close();
         }

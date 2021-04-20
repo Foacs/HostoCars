@@ -28,8 +28,8 @@ public class ExceptionInterceptor {
     public ResponseEntity<String> resolve(final Exception exception) {
         log.error("An error occurred", exception);
 
-        final String className = exception.getClass().getSimpleName();
-        final String message = exception.getLocalizedMessage();
+        final var className = exception.getClass().getSimpleName();
+        final var message = exception.getLocalizedMessage();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Objects.isNull(message) ? className : className + ": " + message);
     }
 

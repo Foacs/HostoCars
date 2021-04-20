@@ -15,7 +15,9 @@ import java.lang.reflect.Method;
 import lombok.SneakyThrows;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +30,24 @@ import org.slf4j.LoggerFactory;
 class LoggableMethodInterceptorTest {
 
     private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(LoggableMethodInterceptorTest.class);
+
+    private static Level initialLevel;
+
+    /**
+     * Initialization method called once before all tests.
+     */
+    @BeforeAll
+    static void initializeAll() {
+        initialLevel = LOGGER.getLevel();
+    }
+
+    /**
+     * Demolition method called once after all tests.
+     */
+    @AfterAll
+    static void teardownAll() {
+        LOGGER.setLevel(initialLevel);
+    }
 
     /**
      * Initialization method called before each test.
@@ -53,13 +73,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (inputs = false)")
     void testLogMethodWithInputsAtFalse() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -73,7 +93,7 @@ class LoggableMethodInterceptorTest {
         doReturn(false).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -98,13 +118,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (output = false)")
     void testLogMethodWithOutputAtFalse() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -118,7 +138,7 @@ class LoggableMethodInterceptorTest {
         doReturn(false).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -143,13 +163,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (void method return type)")
     void testLogMethodWithVoidMethodReturnType() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -163,7 +183,7 @@ class LoggableMethodInterceptorTest {
         doReturn(false).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -188,13 +208,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (debug = false)")
     void testLogMethodWithDebugAtFalse() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -209,7 +229,7 @@ class LoggableMethodInterceptorTest {
         doReturn(false).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -235,13 +255,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (debug = true)")
     void testLogMethodWithDebugAtTrue() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -256,7 +276,7 @@ class LoggableMethodInterceptorTest {
         doReturn(true).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -285,13 +305,13 @@ class LoggableMethodInterceptorTest {
         LOGGER.setLevel(Level.INFO);
 
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -303,7 +323,7 @@ class LoggableMethodInterceptorTest {
         doReturn(true).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -329,13 +349,13 @@ class LoggableMethodInterceptorTest {
         LOGGER.setLevel(Level.DEBUG);
 
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -347,7 +367,7 @@ class LoggableMethodInterceptorTest {
         doReturn(true).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -370,13 +390,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (unserializable argument)")
     void testLogMethodWithUnserializableArgument() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String joinPointResult = "result";
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = "result";
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -391,7 +411,7 @@ class LoggableMethodInterceptorTest {
         doReturn(true).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -417,13 +437,13 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (unserializable result)")
     void testLogMethodWithUnserializableResult() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final Object joinPointResult = mock(Object.class);
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var joinPointResult = mock(Object.class);
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -438,7 +458,7 @@ class LoggableMethodInterceptorTest {
         doReturn(false).when(loggable).debug();
 
         // Calls the method
-        final Object result = LoggableMethodInterceptor.logMethod(joinPoint);
+        final var result = LoggableMethodInterceptor.logMethod(joinPoint);
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();
@@ -464,14 +484,14 @@ class LoggableMethodInterceptorTest {
     @DisplayName("Log method (error case)")
     void testLogMethodWithAnError() {
         // Prepares the inputs
-        final ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        final var joinPoint = mock(ProceedingJoinPoint.class);
 
         // Prepares the intermediary results
-        final MethodSignature methodSignature = mock(MethodSignature.class);
-        final Method method = mock(Method.class);
-        final Loggable loggable = mock(Loggable.class);
-        final String message = "message";
-        final Exception exception = new Exception(message);
+        final var methodSignature = mock(MethodSignature.class);
+        final var method = mock(Method.class);
+        final var loggable = mock(Loggable.class);
+        final var message = "message";
+        final var exception = new Exception(message);
 
         // Mocks the calls
         doReturn(methodSignature).when(joinPoint).getSignature();
@@ -484,7 +504,7 @@ class LoggableMethodInterceptorTest {
         doThrow(exception).when(joinPoint).proceed();
 
         // Calls the method
-        final Exception result = assertThrows(Exception.class, () -> LoggableMethodInterceptor.logMethod(joinPoint), "Exception unexpectedly not thrown");
+        final var result = assertThrows(Exception.class, () -> LoggableMethodInterceptor.logMethod(joinPoint), "Exception unexpectedly not thrown");
 
         // Checks the mocks calls
         verify(joinPoint).getSignature();

@@ -1,6 +1,5 @@
 package fr.foacs.hostocars.configuration;
 
-import java.lang.reflect.Method;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -9,7 +8,6 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
@@ -35,10 +33,10 @@ public final class LoggableMethodInterceptor {
     @SneakyThrows
     @Around("@annotation(fr.foacs.hostocars.configuration.Loggable)")
     public static Object logMethod(final ProceedingJoinPoint joinPoint) {
-        final Method method = ((MethodSignature) joinPoint.getSignature()).getMethod();
-        final Loggable loggable = method.getAnnotation(Loggable.class);
-        final Logger logger = LoggerFactory.getLogger(method.getDeclaringClass());
-        final String methodName = method.getName();
+        final var method = ((MethodSignature) joinPoint.getSignature()).getMethod();
+        final var loggable = method.getAnnotation(Loggable.class);
+        final var logger = LoggerFactory.getLogger(method.getDeclaringClass());
+        final var methodName = method.getName();
 
         if (logger.isTraceEnabled()) {
             if (loggable.inputs()) {
@@ -48,9 +46,9 @@ public final class LoggableMethodInterceptor {
             }
         }
 
-        final long startTime = System.currentTimeMillis();
-        final Object result = joinPoint.proceed();
-        final long endTime = System.currentTimeMillis();
+        final var startTime = System.currentTimeMillis();
+        final var result = joinPoint.proceed();
+        final var endTime = System.currentTimeMillis();
 
         if (logger.isTraceEnabled()) {
             if (void.class == method.getReturnType() || !loggable.output()) {

@@ -51,7 +51,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         @Loggable(debug = true, inputs = false, output = false)
         public final Resource getResource(final String resourcePath, final Resource location) {
             if (nonNull(resourcePath)) {
-                final Resource requestedResource = location.createRelative(resourcePath);
+                final var requestedResource = location.createRelative(resourcePath);
                 return requestedResource.exists() && requestedResource.isReadable() ? requestedResource : new ClassPathResource("static/index.html");
             }
 

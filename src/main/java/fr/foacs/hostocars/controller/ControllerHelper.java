@@ -60,7 +60,7 @@ class ControllerHelper {
     @Loggable(debug = true, inputs = false, output = false)
     @SneakyThrows(Exception.class)
     <T> ResponseEntity<Collection<T>> resolveGetCollectionResponse(final Callable<? extends Collection<T>> executable) {
-        final Collection<T> result = executable.call();
+        final var result = executable.call();
         return result.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(result);
     }
 

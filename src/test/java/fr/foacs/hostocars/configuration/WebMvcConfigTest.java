@@ -15,7 +15,6 @@ import java.io.IOException;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.config.annotation.CorsRegistration;
@@ -53,11 +52,11 @@ class WebMvcConfigTest {
     @DisplayName("Add resource handlers")
     final void testAddResourceHandlers() {
         // Prepares the inputs
-        final ResourceHandlerRegistry registry = mock(ResourceHandlerRegistry.class);
+        final var registry = mock(ResourceHandlerRegistry.class);
 
         // Prepares the intermediary results
-        final ResourceHandlerRegistration registryRegistration = mock(ResourceHandlerRegistration.class);
-        final ResourceChainRegistration chainRegistration = mock(ResourceChainRegistration.class);
+        final var registryRegistration = mock(ResourceHandlerRegistration.class);
+        final var chainRegistration = mock(ResourceChainRegistration.class);
 
         // Mocks the calls
         when(registry.addResourceHandler("/**/*")).thenReturn(registryRegistration);
@@ -69,7 +68,7 @@ class WebMvcConfigTest {
         this.webMvcConfig.addResourceHandlers(registry);
 
         // Initializes the argument captors
-        final ArgumentCaptor<CustomPathResourceResolver> resolverCaptor = forClass(CustomPathResourceResolver.class);
+        final var resolverCaptor = forClass(CustomPathResourceResolver.class);
 
         // Checks the mocks calls
         verify(registry).addResourceHandler("/**/*");
@@ -92,10 +91,10 @@ class WebMvcConfigTest {
     @DisplayName("Add CORS mappings")
     final void testAddCorsMappings() {
         // Prepares the inputs
-        final CorsRegistry registry = mock(CorsRegistry.class);
+        final var registry = mock(CorsRegistry.class);
 
         // Prepares the intermediary results
-        final CorsRegistration registryRegistration = mock(CorsRegistration.class);
+        final var registryRegistration = mock(CorsRegistration.class);
 
         // Mocks the calls
         when(registry.addMapping("/**")).thenReturn(registryRegistration);
@@ -128,10 +127,10 @@ class WebMvcConfigTest {
     @DisplayName("Get resource (null resource path)")
     final void testGetResourceWithNullResourcePath() {
         // Prepares the inputs
-        final Resource resource = mock(Resource.class);
+        final var resource = mock(Resource.class);
 
         // Calls the method
-        final Resource result = this.customPathResourceResolver.getResource(null, resource);
+        final var result = this.customPathResourceResolver.getResource(null, resource);
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");
@@ -147,18 +146,18 @@ class WebMvcConfigTest {
     @DisplayName("Get resource (inexistant requested resource)")
     final void testGetResourceWithInexistantRequestedResource() {
         // Prepares the inputs
-        final String resourcePath = "resourcePath";
-        final Resource resource = mock(Resource.class);
+        final var resourcePath = "resourcePath";
+        final var resource = mock(Resource.class);
 
         // Prepares the intermediary results
-        final Resource requestedResource = mock(Resource.class);
+        final var requestedResource = mock(Resource.class);
 
         // Mocks the calls
         when(resource.createRelative(resourcePath)).thenReturn(requestedResource);
         when(requestedResource.exists()).thenReturn(false);
 
         // Calls the method
-        final Resource result = this.customPathResourceResolver.getResource(resourcePath, resource);
+        final var result = this.customPathResourceResolver.getResource(resourcePath, resource);
 
         // Checks the mocks calls
         verify(resource).createRelative(resourcePath);
@@ -178,11 +177,11 @@ class WebMvcConfigTest {
     @DisplayName("Get resource (unreadable requested resource)")
     final void testGetResourceWithUnreadableRequestedResource() {
         // Prepares the inputs
-        final String resourcePath = "resourcePath";
-        final Resource resource = mock(Resource.class);
+        final var resourcePath = "resourcePath";
+        final var resource = mock(Resource.class);
 
         // Prepares the intermediary results
-        final Resource requestedResource = mock(Resource.class);
+        final var requestedResource = mock(Resource.class);
 
         // Mocks the calls
         when(resource.createRelative(resourcePath)).thenReturn(requestedResource);
@@ -190,7 +189,7 @@ class WebMvcConfigTest {
         when(requestedResource.isReadable()).thenReturn(false);
 
         // Calls the method
-        final Resource result = this.customPathResourceResolver.getResource(resourcePath, resource);
+        final var result = this.customPathResourceResolver.getResource(resourcePath, resource);
 
         // Checks the mocks calls
         verify(resource).createRelative(resourcePath);
@@ -211,11 +210,11 @@ class WebMvcConfigTest {
     @DisplayName("Get resource (existent and readable requested resource)")
     final void testGetResourceWithExistentAndReadableRequestedResource() {
         // Prepares the inputs
-        final String resourcePath = "resourcePath";
-        final Resource resource = mock(Resource.class);
+        final var resourcePath = "resourcePath";
+        final var resource = mock(Resource.class);
 
         // Prepares the intermediary results
-        final Resource requestedResource = mock(Resource.class);
+        final var requestedResource = mock(Resource.class);
 
         // Mocks the calls
         when(resource.createRelative(resourcePath)).thenReturn(requestedResource);
@@ -223,7 +222,7 @@ class WebMvcConfigTest {
         when(requestedResource.isReadable()).thenReturn(true);
 
         // Calls the method
-        final Resource result = this.customPathResourceResolver.getResource(resourcePath, resource);
+        final var result = this.customPathResourceResolver.getResource(resourcePath, resource);
 
         // Checks the mocks calls
         verify(resource).createRelative(resourcePath);
@@ -242,18 +241,18 @@ class WebMvcConfigTest {
     @DisplayName("Get resource (error case)")
     final void testGetResourceInError() {
         // Prepares the inputs
-        final String resourcePath = "resourcePath";
-        final Resource resource = mock(Resource.class);
+        final var resourcePath = "resourcePath";
+        final var resource = mock(Resource.class);
 
         // Prepares the intermediary results
-        final String message = "message";
-        final IOException exception = new IOException(message);
+        final var message = "message";
+        final var exception = new IOException(message);
 
         // Mocks the calls
         when(resource.createRelative(resourcePath)).thenThrow(exception);
 
         // Calls the method
-        final Exception result = assertThrows(Exception.class, () -> this.customPathResourceResolver.getResource(resourcePath, resource), "Exception unexpectedly not thrown");
+        final var result = assertThrows(Exception.class, () -> this.customPathResourceResolver.getResource(resourcePath, resource), "Exception unexpectedly not thrown");
 
         // Checks the mocks calls
         verify(resource).createRelative(resourcePath);

@@ -72,7 +72,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Equals (nullity)")
     final void testEqualsNullity() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
+        final var x = this.createDefaultObject();
 
         // Calls the method and checks the result
         assertNotEquals(x, null, "The equals method isn't null-proof");
@@ -88,17 +88,17 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     }
 
     /**
-     * Creates a new instance of {@link AbstractEntity} with the given values.
-     *
-     * @param id
-     *     The ID to set
-     *
-     * @return a new instance of {@link AbstractEntity}
+     * Tests the {@link AbstractEntity#getId()} method.
      */
-    private E createTestObject(final Integer id) {
-        final E testObject = this.constructTestObject();
-        testObject.setId(id);
-        return testObject;
+    @Test
+    @DisplayName("Get ID")
+    final void testGetId() {
+        // Prepares the inputs
+        final Integer id = 1;
+        final var x = this.createTestObject(id);
+
+        // Calls the method and checks the result
+        assertEquals(id, x.getId(), "The ID is different from expected");
     }
 
     /**
@@ -109,17 +109,17 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     abstract E constructTestObject();
 
     /**
-     * Tests the {@link AbstractEntity#getId()} method.
+     * Creates a new instance of {@link AbstractEntity} with the given values.
+     *
+     * @param id
+     *     The ID to set
+     *
+     * @return a new instance of {@link AbstractEntity}
      */
-    @Test
-    @DisplayName("Get ID")
-    final void testGetId() {
-        // Prepares the inputs
-        final Integer id = 1;
-        final E x = this.createTestObject(id);
-
-        // Calls the method and checks the result
-        assertEquals(id, x.getId(), "The ID is different from expected");
+    private E createTestObject(final Integer id) {
+        final var testObject = this.constructTestObject();
+        testObject.setId(id);
+        return testObject;
     }
 
     /**
@@ -130,7 +130,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     final void testSetId() {
         // Prepares the inputs
         final Integer id = 1;
-        final E x = this.constructTestObject();
+        final var x = this.constructTestObject();
 
         // Call the method
         x.setId(id);
@@ -146,7 +146,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Equals (identity)")
     final void testEqualsIdentity() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
+        final var x = this.createDefaultObject();
 
         // Calls the method and checks the result
         assertNotEquals(x, new Object(), "The equals method isn't identity-proof");
@@ -159,7 +159,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Equals (reflexivity)")
     final void testEqualsReflexivity() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
+        final var x = this.createDefaultObject();
 
         // Calls the method and checks the result
         assertEquals(x, x, "The equals method isn't reflexive");
@@ -172,7 +172,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Hash code (reflexivity)")
     final void testHashCodeReflexivity() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
+        final var x = this.createDefaultObject();
 
         // Calls the method and checks the result
         assertEquals(x.hashCode(), x.hashCode(), "The hashCode method isn't reflexive");
@@ -185,8 +185,8 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Equals (symmetry)")
     final void testEqualsSymmetry() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
-        final E y = this.createDefaultObject();
+        final var x = this.createDefaultObject();
+        final var y = this.createDefaultObject();
 
         // Calls the method and checks the results
         assertAll("The equals method isn't symmetry", () -> assertEquals(x, y), () -> assertEquals(y, x));
@@ -199,8 +199,8 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Hash code (symmetry)")
     final void testHashCodeSymmetry() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
-        final E y = this.createDefaultObject();
+        final var x = this.createDefaultObject();
+        final var y = this.createDefaultObject();
 
         // Calls the method and checks the results
         assertAll("The hashCode method isn't symmetry", () -> assertEquals(x.hashCode(), y.hashCode()), () -> assertEquals(y.hashCode(), x.hashCode()));
@@ -213,9 +213,9 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Equals (transitivity)")
     final void testEqualsTransitivity() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
-        final E y = this.createDefaultObject();
-        final E z = this.createDefaultObject();
+        final var x = this.createDefaultObject();
+        final var y = this.createDefaultObject();
+        final var z = this.createDefaultObject();
 
         // Calls the method and checks the results
         assertAll("The equals method isn't transitive", () -> assertEquals(x, y), () -> assertEquals(y, z), () -> assertEquals(x, z));
@@ -228,9 +228,9 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Hash code (transitivity)")
     final void testHashCodeTransitivity() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
-        final E y = this.createDefaultObject();
-        final E z = this.createDefaultObject();
+        final var x = this.createDefaultObject();
+        final var y = this.createDefaultObject();
+        final var z = this.createDefaultObject();
 
         // Calls the method and checks the results
         assertAll("The hashCode method isn't transitive", () -> assertEquals(x.hashCode(), y.hashCode()), () -> assertEquals(y.hashCode(), z.hashCode()),
@@ -244,7 +244,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Equals (consistency)")
     final void testEqualsConsistency() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
+        final var x = this.createDefaultObject();
 
         // Calls the method and checks the results
         assertAll("The equals method isn't consistent", () -> assertNotEquals(x, this.createTestObject(Integer.valueOf(IDS[1]))),
@@ -258,7 +258,7 @@ abstract class AbstractEntityTest<E extends AbstractEntity> {
     @DisplayName("Hash code (consistency)")
     final void testHashCodeConsistency() {
         // Prepares the inputs
-        final E x = this.createDefaultObject();
+        final var x = this.createDefaultObject();
 
         // Calls the method and checks the results
         assertAll("The hashCode method isn't consistent", () -> assertNotEquals(x.hashCode(), this.createTestObject(Integer.valueOf(IDS[1])).hashCode()),
