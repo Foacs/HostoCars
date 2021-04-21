@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml" />
-    <logger level="error" name="com.openpojo" />
-    <logger level="trace" name="fr.foacs.hostocars" />
+    <logger level="off" name="com.openpojo" />
+    <logger level="off" name="fr.foacs.hostocars" />
 </configuration>

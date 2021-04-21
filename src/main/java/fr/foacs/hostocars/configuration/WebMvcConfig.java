@@ -24,7 +24,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * {@inheritDoc}
      */
     @Override
-    @Loggable(debug = true)
+    @Loggable(debug = true, inputs = false)
     public void addResourceHandlers(final ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**/*").addResourceLocations("classpath:/static/").resourceChain(true).addResolver(new CustomPathResourceResolver());
     }
@@ -33,7 +33,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * {@inheritDoc}
      */
     @Override
-    @Loggable(debug = true)
+    @Loggable(debug = true, inputs = false)
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**").allowedHeaders("*").exposedHeaders("Location");
     }
@@ -47,11 +47,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
          * {@inheritDoc}
          */
         @Override
-        @Loggable(debug = true)
         @SneakyThrows(IOException.class)
+        @Loggable(debug = true, inputs = false, output = false)
         public final Resource getResource(final String resourcePath, final Resource location) {
             if (nonNull(resourcePath)) {
-                final Resource requestedResource = location.createRelative(resourcePath);
+                final var requestedResource = location.createRelative(resourcePath);
                 return requestedResource.exists() && requestedResource.isReadable() ? requestedResource : new ClassPathResource("static/index.html");
             }
 

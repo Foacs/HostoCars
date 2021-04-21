@@ -1,6 +1,7 @@
 package fr.foacs.hostocars.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import fr.foacs.hostocars.configuration.Hide;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -11,8 +12,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-import lombok.ToString.Exclude;
 
 /**
  * Entity for the {@code cars} table.
@@ -20,7 +19,6 @@ import lombok.ToString.Exclude;
 @Entity
 @Getter
 @Setter
-@ToString(callSuper = true)
 @Table(name = "cars")
 public class Car extends AbstractEntity {
 
@@ -53,11 +51,11 @@ public class Car extends AbstractEntity {
     @Column(name = "comments", columnDefinition = "TEXT")
     private String comments;
 
-    @Exclude
+    @Hide(asBoolean = true)
     @Column(name = "certificate", columnDefinition = "BLOB")
     private byte[] certificate;
 
-    @Exclude
+    @Hide(asBoolean = true)
     @Column(name = "picture", columnDefinition = "BLOB")
     private byte[] picture;
 

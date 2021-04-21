@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 /**
  * Test class for the {@link ExceptionInterceptor} class.
@@ -23,7 +22,7 @@ class ExceptionInterceptorTest {
     @DisplayName("Resolve (without message)")
     void testResolveWithoutMessage() {
         // Calls the method
-        final ResponseEntity<String> result = this.interceptor.resolve(new Exception());
+        final var result = this.interceptor.resolve(new Exception());
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");
@@ -38,7 +37,7 @@ class ExceptionInterceptorTest {
     @DisplayName("Resolve (with message)")
     void testResolveWithMessage() {
         // Calls the method
-        final ResponseEntity<String> result = this.interceptor.resolve(new Exception("message"));
+        final var result = this.interceptor.resolve(new Exception("message"));
 
         // Checks the result
         assertNotNull(result, "Result object unexpectedly null");

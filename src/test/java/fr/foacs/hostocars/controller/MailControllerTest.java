@@ -22,7 +22,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
-import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -83,9 +82,9 @@ class MailControllerTest {
     @SneakyThrows(IOException.class)
     void testSendMail() {
         // Sets the controller properties
-        final String loggingFileName = "loggingFileName";
+        final var loggingFileName = "loggingFileName";
         ReflectionTestUtils.setField(this.mailController, "loggingFileName", loggingFileName);
-        final String mailServiceUri = "mailServiceUri";
+        final var mailServiceUri = "mailServiceUri";
         ReflectionTestUtils.setField(this.mailController, "mailServiceUri", mailServiceUri);
 
         // Mocks the log file
@@ -98,8 +97,8 @@ class MailControllerTest {
 
         // Prepares the intermediary results
         final ResponseEntity<String> responseEntity = mock(ResponseEntity.class);
-        final HttpStatus statusCode = mock(HttpStatus.class);
-        final String body = "body";
+        final var statusCode = mock(HttpStatus.class);
+        final var body = "body";
 
         // Mocks the calls
         doReturn(responseEntity).when(this.restTemplate).postForEntity(ArgumentMatchers.any(URI.class), ArgumentMatchers.any(Object.class), ArgumentMatchers.any(Class.class));
@@ -107,12 +106,12 @@ class MailControllerTest {
         doReturn(body).when(responseEntity).getBody();
 
         // Calls the method
-        final ResponseEntity<String> result = this.mailController.sendMail(details);
+        final var result = this.mailController.sendMail(details);
 
         // Initializes the argument captors
-        final ArgumentCaptor<URI> uriCaptor = forClass(URI.class);
-        final ArgumentCaptor<Object> requestCaptor = forClass(Object.class);
-        final ArgumentCaptor<Class> responseTypeCaptor = forClass(Class.class);
+        final var uriCaptor = forClass(URI.class);
+        final var requestCaptor = forClass(Object.class);
+        final var responseTypeCaptor = forClass(Class.class);
 
         // Checks the mocks calls
         verify(this.restTemplate).postForEntity(uriCaptor.capture(), requestCaptor.capture(), responseTypeCaptor.capture());
@@ -120,9 +119,9 @@ class MailControllerTest {
         verify(responseEntity).getBody();
 
         // Gets the captured arguments
-        final URI capturedUri = uriCaptor.getValue();
-        final Object capturedRequest = requestCaptor.getValue();
-        final Class capturedResponseType = responseTypeCaptor.getValue();
+        final var capturedUri = uriCaptor.getValue();
+        final var capturedRequest = requestCaptor.getValue();
+        final var capturedResponseType = responseTypeCaptor.getValue();
 
         // Checks the result and captured arguments
         assertNotNull(result, "Result response unexpectedly null");

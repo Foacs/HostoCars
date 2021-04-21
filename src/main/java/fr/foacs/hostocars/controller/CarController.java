@@ -73,7 +73,7 @@ public class CarController {
         responses = @ApiResponse(description = "At least one car has been found.", responseCode = "200",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, array = @ArraySchema(schema = @Schema(implementation = Car.class)))))
     public ResponseEntity<Collection<Car>> getCars(@Parameter(description = "The sorting fields.") @RequestParam(required = false) final String... sortingFields) {
-        final Sort sort = Objects.isNull(sortingFields) ? Sort.by(new String[] {}) : Sort.by(sortingFields);
+        final var sort = Objects.isNull(sortingFields) ? Sort.by(new String[] {}) : Sort.by(sortingFields);
         return this.helper.resolveGetCollectionResponse(() -> this.repository.findAll(sort));
     }
 
