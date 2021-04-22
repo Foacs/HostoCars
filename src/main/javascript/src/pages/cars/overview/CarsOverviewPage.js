@@ -9,7 +9,7 @@ import { AddRounded as CreateIcon, RefreshRounded as RefreshIcon } from '@materi
 import { createCarAction, getCarsAction, updateCurrentPageAction, updateMenuItemsAction, updateSelectedMenuIndexAction } from 'actions';
 import { CarCard, ErrorPanel, LoadingPanel, Page } from 'components';
 import { CreateCarModal } from 'modals';
-import { CarPropType } from 'resources';
+import { CarPropType, compareCars } from 'resources';
 
 import './CarsOverviewPage.scss';
 
@@ -124,9 +124,10 @@ class CarsOverviewPage extends PureComponent {
             // If the cars have been loaded, displays the normal page content
             content = (<>
                 <Grid alignItems='flex-start' className="CarsGrid" container justify='flex-start' spacing={4}>
-                    {cars.map(car => <Grid item key={car.registration} lg={4} md={6} sm={12} xl={3} xs={12}>
-                        <CarCard car={car} className='CarCard' />
-                    </Grid>)}
+                    {cars.sort(compareCars)
+                            .map(car => <Grid item key={car.registration} lg={4} md={6} sm={12} xl={3} xs={12}>
+                                <CarCard car={car} className="CarCard" />
+                            </Grid>)}
                 </Grid>
 
                 <Fab className='CreateCarButton' color='primary' onClick={this.onOpenCreateCarModal} size="medium" variant='round'>

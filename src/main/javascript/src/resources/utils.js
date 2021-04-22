@@ -15,6 +15,29 @@ export const addLeadingZeros = (number, size) => {
 };
 
 /**
+ * Compares the given cars.
+ * <br/>
+ * <br/>
+ * The comparison is performed on the cars' registration field.
+ *
+ * @param car1
+ *     The first car
+ * @param car2
+ *     The second car
+ *
+ * @returns {number} the result of the comparison
+ */
+export const compareCars = (car1, car2) => {
+    if (car1.registration > car2.registration) {
+        return 1;
+    } else if (car1.registration < car2.registration) {
+        return -1;
+    } else {
+        return 0;
+    }
+};
+
+/**
  * Compares the given interventions.
  * <br/>
  * <br/>
