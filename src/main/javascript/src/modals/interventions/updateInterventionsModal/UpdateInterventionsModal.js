@@ -153,6 +153,7 @@ function UpdateInterventionsModal({
             ...car,
             interventions:
                     car.interventions.map((intervention, i) => i === x ? {
+                        ...intervention,
                         operations:
                                 intervention.operations.map((operation, j) => j === y ? {
                                     ...operation,
