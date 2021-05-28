@@ -31,7 +31,7 @@
         "simplebar": "4.2.3",
         "swagger-ui-react": "3.27.0",
         "typeface-roboto": "0.0.54",
-        "underscore": "1.10.2"
+        "underscore": "1.12.1"
     },
     "scripts": {
         "start": "react-scripts start",
